@@ -5,129 +5,194 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ইসলামী ছাত্র কল্যাণ সমিতি</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
 :root {
-  --green:#1a6b3a; --green-light:#2d8f52; --green-dark:#0f4224;
-  --gold:#c9a84c; --gold-light:#e8c96a;
-  --bg:#f5f0e8; --text:#1a1a1a; --text-muted:#666;
-  --border:#d4c9b0; --red:#c0392b; --shadow:0 4px 20px rgba(0,0,0,0.1);
+  --green:#1a6b3a;--green-light:#2d8f52;--green-dark:#0f4224;
+  --gold:#c9a84c;--gold-light:#e8c96a;
+  --bg:#f5f0e8;--text:#1a1a1a;--text-muted:#666;
+  --border:#d4c9b0;--red:#c0392b;--shadow:0 4px 20px rgba(0,0,0,0.1);
+  --blue:#2980b9;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{font-family:'Noto Sans Bengali',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 
 /* HEADER */
-header{background:linear-gradient(135deg,var(--green-dark),var(--green),var(--green-light));color:white;text-align:center;padding:28px 20px 22px;position:relative;overflow:hidden;}
+header{background:linear-gradient(135deg,var(--green-dark),var(--green),var(--green-light));color:white;text-align:center;padding:24px 20px 20px;position:relative;overflow:hidden;}
 header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.02) 20px,rgba(255,255,255,0.02) 40px);}
-.bismillah{font-size:18px;color:var(--gold-light);margin-bottom:8px;font-family:'Noto Serif Bengali',serif;}
-header h1{font-family:'Noto Serif Bengali',serif;font-size:24px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,0.3);}
-header p{font-size:12px;opacity:.85;margin-top:5px;color:var(--gold-light);}
+.bismillah{font-size:17px;color:var(--gold-light);margin-bottom:7px;font-family:'Noto Serif Bengali',serif;}
+header h1{font-family:'Noto Serif Bengali',serif;font-size:22px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,0.3);}
+header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
+
+/* ADMIN CONTACTS */
+.admin-contacts{margin-top:14px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
+.admin-contact-card{background:rgba(255,255,255,0.12);border:1px solid rgba(201,168,76,0.5);border-radius:25px;padding:7px 16px;display:flex;align-items:center;gap:8px;}
+.admin-contact-card .ac-info{text-align:left;}
+.admin-contact-card .ac-role{font-size:10px;color:var(--gold-light);opacity:.9;}
+.admin-contact-card .ac-name{font-size:13px;font-weight:600;color:white;font-family:'Noto Serif Bengali',serif;}
+.ac-call{background:var(--gold);color:var(--green-dark);border:none;border-radius:15px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600;text-decoration:none;display:inline-block;}
 
 /* MAIN NAV */
-.main-nav{background:var(--green-dark);display:flex;justify-content:center;border-bottom:3px solid var(--gold);}
-.main-nav button{background:none;border:none;color:rgba(255,255,255,.75);font-family:'Noto Sans Bengali',sans-serif;font-size:14px;padding:13px 22px;cursor:pointer;transition:all .2s;border-bottom:3px solid transparent;margin-bottom:-3px;}
+.main-nav{background:var(--green-dark);display:flex;justify-content:center;border-bottom:3px solid var(--gold);overflow-x:auto;scrollbar-width:none;}
+.main-nav::-webkit-scrollbar{display:none;}
+.main-nav button{background:none;border:none;color:rgba(255,255,255,.75);font-family:'Noto Sans Bengali',sans-serif;font-size:12px;padding:12px 14px;cursor:pointer;transition:all .2s;border-bottom:3px solid transparent;margin-bottom:-3px;white-space:nowrap;}
 .main-nav button:hover{color:white;background:rgba(255,255,255,.05);}
 .main-nav button.active{color:var(--gold-light);border-bottom-color:var(--gold);background:rgba(255,255,255,.07);}
 
 /* YEAR TABS */
-.year-tabs-wrapper{background:white;border-bottom:2px solid var(--border);padding:0 16px;display:flex;align-items:center;overflow-x:auto;gap:4px;scrollbar-width:none;}
+.year-tabs-wrapper{background:white;border-bottom:2px solid var(--border);padding:0 12px;display:flex;align-items:center;overflow-x:auto;gap:4px;scrollbar-width:none;}
 .year-tabs-wrapper::-webkit-scrollbar{display:none;}
-.year-tab{background:none;border:none;font-family:'Noto Sans Bengali',sans-serif;font-size:14px;padding:12px 20px;cursor:pointer;color:var(--text-muted);border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s;}
+.year-tab{background:none;border:none;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;padding:11px 16px;cursor:pointer;color:var(--text-muted);border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s;}
 .year-tab:hover{color:var(--green);}
 .year-tab.active{color:var(--green-dark);border-bottom-color:var(--green);font-weight:600;}
-.add-year-btn{background:var(--green);color:white;border:none;border-radius:20px;padding:6px 14px;font-family:'Noto Sans Bengali',sans-serif;font-size:12px;cursor:pointer;white-space:nowrap;margin-left:8px;transition:background .2s;}
-.add-year-btn:hover{background:var(--green-dark);}
+.add-year-btn{background:var(--green);color:white;border:none;border-radius:20px;padding:5px 12px;font-family:'Noto Sans Bengali',sans-serif;font-size:11px;cursor:pointer;white-space:nowrap;margin-left:6px;}
 
-.container{max-width:1100px;margin:0 auto;padding:20px 16px;}
-.page{display:none;} .page.active{display:block;}
+.container{max-width:1100px;margin:0 auto;padding:18px 14px;}
+.page{display:none;}.page.active{display:block;}
 
 /* STATS */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:24px;}
-.stat-card{background:white;border-radius:12px;padding:18px;text-align:center;border-left:4px solid var(--green);box-shadow:var(--shadow);}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;}
+.stat-card{background:white;border-radius:12px;padding:16px;text-align:center;border-left:4px solid var(--green);box-shadow:var(--shadow);}
 .stat-card.gold{border-left-color:var(--gold);}
 .stat-card.red{border-left-color:var(--red);}
-.stat-num{font-size:28px;font-weight:700;color:var(--green);font-family:'Noto Serif Bengali',serif;}
+.stat-card.blue{border-left-color:var(--blue);}
+.stat-num{font-size:26px;font-weight:700;color:var(--green);font-family:'Noto Serif Bengali',serif;}
 .stat-card.gold .stat-num{color:var(--gold);}
 .stat-card.red .stat-num{color:var(--red);}
-.stat-label{font-size:12px;color:var(--text-muted);margin-top:3px;}
+.stat-card.blue .stat-num{color:var(--blue);}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:3px;}
 
-.section-title{font-family:'Noto Serif Bengali',serif;font-size:17px;color:var(--green-dark);border-bottom:2px solid var(--gold);padding-bottom:8px;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+.section-title{font-family:'Noto Serif Bengali',serif;font-size:16px;color:var(--green-dark);border-bottom:2px solid var(--gold);padding-bottom:7px;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
+
+/* NOTICE BOARD */
+.notice-board{background:linear-gradient(135deg,#fffde7,#fff8e1);border:2px solid var(--gold);border-radius:12px;padding:16px;margin-bottom:20px;}
+.notice-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.notice-title{font-family:'Noto Serif Bengali',serif;font-size:15px;color:var(--green-dark);font-weight:600;}
+.notice-list{display:flex;flex-direction:column;gap:8px;}
+.notice-item{background:white;border-radius:8px;padding:10px 12px;border-left:3px solid var(--gold);font-size:13px;}
+.notice-item .n-date{font-size:10px;color:var(--text-muted);margin-top:3px;}
+.no-notice{text-align:center;color:var(--text-muted);font-size:13px;padding:10px;}
 
 /* MEMBER CARDS */
-.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
-.member-card{background:white;border-radius:12px;padding:18px;box-shadow:var(--shadow);border-top:3px solid var(--green);transition:transform .2s,box-shadow .2s;}
-.member-card:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(0,0,0,.15);}
+.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;}
+.member-card{background:white;border-radius:12px;padding:16px;box-shadow:var(--shadow);border-top:3px solid var(--green);transition:transform .2s,box-shadow .2s;}
+.member-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.12);}
 .member-card.unpaid{border-top-color:var(--red);}
 .member-card.partial{border-top-color:var(--gold);}
-.member-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
-.member-id{background:var(--green);color:white;font-size:11px;padding:3px 8px;border-radius:20px;font-weight:600;}
-.member-status{font-size:11px;padding:3px 8px;border-radius:20px;font-weight:600;}
+.member-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
+.member-id{background:var(--green);color:white;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;}
+.member-status{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;}
 .status-paid{background:#d4edda;color:#155724;}
 .status-partial{background:#fff3cd;color:#856404;}
 .status-unpaid{background:#f8d7da;color:#721c24;}
-.member-name{font-family:'Noto Serif Bengali',serif;font-size:16px;font-weight:600;color:var(--green-dark);margin-bottom:3px;}
-.member-phone{font-size:12px;color:var(--text-muted);margin-bottom:10px;}
-
-/* PAYMENT DOTS — 14 slots */
-.payment-slots{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:8px;}
-.p-slot{border-radius:6px;padding:4px 2px;text-align:center;font-size:9px;font-weight:600;border:1.5px solid;cursor:default;}
+.member-name{font-family:'Noto Serif Bengali',serif;font-size:15px;font-weight:600;color:var(--green-dark);margin-bottom:2px;}
+.member-phone{font-size:11px;color:var(--text-muted);margin-bottom:8px;}
+.payment-slots{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px;}
+.p-slot{border-radius:5px;padding:3px 1px;text-align:center;font-size:8px;font-weight:600;border:1.5px solid;}
 .slot-paid{background:#d4edda;color:#155724;border-color:#28a745;}
 .slot-unpaid{background:#f5f5f5;color:#aaa;border-color:#ddd;}
-.slot-eid{background:#fff3cd;color:#856404;border-color:var(--gold);}
 .slot-eid-paid{background:#ffd700;color:#5a3e00;border-color:#c9a84c;}
-
-.member-summary{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);margin-top:8px;}
-.paid-bar{flex:1;height:5px;background:#e0e0e0;border-radius:3px;overflow:hidden;}
-.paid-fill{height:100%;background:var(--green);border-radius:3px;transition:width .5s;}
-
-.member-actions{display:flex;gap:6px;margin-top:12px;}
-.btn-sm{flex:1;padding:7px 0;border:none;border-radius:8px;font-family:'Noto Sans Bengali',sans-serif;font-size:12px;cursor:pointer;font-weight:500;transition:opacity .2s;}
-.btn-sm:hover{opacity:.85;}
+.slot-eid{background:#fff3cd;color:#856404;border-color:var(--gold);}
+.member-summary{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted);margin-top:6px;}
+.paid-bar{flex:1;height:4px;background:#e0e0e0;border-radius:2px;overflow:hidden;}
+.paid-fill{height:100%;background:var(--green);border-radius:2px;}
+.member-actions{display:flex;gap:5px;margin-top:10px;}
+.btn-sm{flex:1;padding:6px 0;border:none;border-radius:7px;font-family:'Noto Sans Bengali',sans-serif;font-size:11px;cursor:pointer;font-weight:500;}
 .btn-edit{background:var(--green);color:white;}
 .btn-pay{background:var(--gold);color:var(--green-dark);}
 
 /* TOOLBAR */
-.toolbar{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
-.search-box{flex:1;min-width:180px;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;outline:none;background:white;transition:border-color .2s;}
+.toolbar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.search-box{flex:1;min-width:160px;padding:9px 12px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;outline:none;background:white;}
 .search-box:focus{border-color:var(--green);}
-.filter-select{padding:10px 12px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;background:white;cursor:pointer;outline:none;}
+.filter-select{padding:9px 10px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:12px;background:white;cursor:pointer;outline:none;}
 
 /* MODAL */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;padding:14px;}
 .modal-overlay.open{display:flex;}
-.modal{background:white;border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);}
-.modal-header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;padding:18px 22px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center;}
-.modal-header h3{font-family:'Noto Serif Bengali',serif;font-size:16px;}
-.modal-close{background:rgba(255,255,255,.2);border:none;color:white;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;}
-.modal-body{padding:22px;}
-.form-group{margin-bottom:14px;}
-.form-group label{display:block;font-size:13px;font-weight:500;color:var(--green-dark);margin-bottom:5px;}
-.form-group input,.form-group select{width:100%;padding:10px 13px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
-.form-group input:focus,.form-group select:focus{border-color:var(--green);}
+.modal{background:white;border-radius:16px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+.modal-header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;padding:16px 20px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center;}
+.modal-header h3{font-family:'Noto Serif Bengali',serif;font-size:15px;}
+.modal-close{background:rgba(255,255,255,.2);border:none;color:white;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;}
+.modal-body{padding:20px;}
+.form-group{margin-bottom:12px;}
+.form-group label{display:block;font-size:12px;font-weight:500;color:var(--green-dark);margin-bottom:4px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:9px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green);}
+.form-group textarea{resize:vertical;min-height:80px;}
 
-/* 14-slot checkboxes */
-.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:6px;}
-.slot-check{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;border-radius:8px;border:2px solid var(--border);cursor:pointer;transition:all .2s;font-size:11px;text-align:center;gap:3px;}
+/* PASSWORD EYE */
+.pass-wrapper{position:relative;}
+.pass-wrapper input{padding-right:40px;}
+.eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-muted);}
+
+/* SLOTS */
+.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:5px;}
+.slot-check{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 3px;border-radius:7px;border:2px solid var(--border);cursor:pointer;transition:all .2s;font-size:10px;text-align:center;gap:2px;}
 .slot-check.checked{border-color:var(--green);background:#d4edda;color:#155724;}
 .slot-check.eid-slot{border-color:var(--gold);}
 .slot-check.eid-slot.checked{border-color:#c9a84c;background:#ffd700;color:#5a3e00;}
-.slot-checkmark{width:16px;height:16px;border-radius:50%;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:9px;}
+.slot-checkmark{width:14px;height:14px;border-radius:50%;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:8px;}
 .slot-check.checked .slot-checkmark{background:var(--green);border-color:var(--green);color:white;}
 .slot-check.eid-slot.checked .slot-checkmark{background:#c9a84c;border-color:#c9a84c;color:white;}
 
-/* PAYMENT OPTIONS */
-.payment-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
-.payment-btn{padding:14px;border:2px solid var(--border);border-radius:12px;background:white;cursor:pointer;text-align:center;transition:all .2s;font-family:'Noto Sans Bengali',sans-serif;}
+/* PAYMENT */
+.payment-options{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px;}
+.payment-btn{padding:12px;border:2px solid var(--border);border-radius:11px;background:white;cursor:pointer;text-align:center;transition:all .2s;font-family:'Noto Sans Bengali',sans-serif;}
 .payment-btn:hover{border-color:var(--green);background:#f0fff4;}
-.payment-btn .p-icon{font-size:26px;margin-bottom:5px;}
-.payment-btn .p-name{font-size:13px;font-weight:600;color:var(--green-dark);}
-.payment-btn .p-sub{font-size:10px;color:var(--text-muted);margin-top:2px;}
+.payment-btn .p-icon{font-size:24px;margin-bottom:4px;}
+.payment-btn .p-name{font-size:12px;font-weight:600;color:var(--green-dark);}
 
 /* ADMIN */
-.login-box{max-width:360px;margin:40px auto;background:white;border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
-.login-header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;padding:28px;text-align:center;}
-.login-header h2{font-family:'Noto Serif Bengali',serif;font-size:19px;margin-top:8px;}
-.login-body{padding:26px;}
-.btn-primary{width:100%;padding:12px;background:var(--green);color:white;border:none;border-radius:10px;font-family:'Noto Serif Bengali',serif;font-size:15px;cursor:pointer;transition:background .2s;margin-top:6px;}
+.login-box{max-width:340px;margin:30px auto;background:white;border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
+.login-header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;padding:26px;text-align:center;}
+.login-header h2{font-family:'Noto Serif Bengali',serif;font-size:18px;margin-top:7px;}
+.login-body{padding:24px;}
+.btn-primary{width:100%;padding:11px;background:var(--green);color:white;border:none;border-radius:9px;font-family:'Noto Serif Bengali',serif;font-size:14px;cursor:pointer;transition:background .2s;margin-top:5px;}
+.btn-primary:hover{background:var(--green-dark);}
+
+/* HISTORY TABLE */
+.history-table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
+.history-table th{background:var(--green-dark);color:white;padding:10px 12px;text-align:left;font-size:11px;font-weight:500;}
+.history-table td{padding:9px 12px;border-bottom:1px solid #f0ece4;font-size:11px;}
+.history-table tr:last-child td{border-bottom:none;}
+.history-table tr:hover td{background:#f0fff4;}
+
+/* CHART */
+.chart-container{background:white;border-radius:12px;padding:16px;box-shadow:var(--shadow);margin-bottom:20px;}
+
+/* DUE LIST */
+.due-list{display:flex;flex-direction:column;gap:8px;}
+.due-item{background:white;border-radius:10px;padding:12px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;border-left:3px solid var(--red);}
+.due-item.medium{border-left-color:var(--gold);}
+.due-name{font-size:13px;font-weight:600;color:var(--green-dark);}
+.due-info{font-size:11px;color:var(--text-muted);}
+.due-amount{font-size:14px;font-weight:700;color:var(--red);}
+
+/* EXPENSE */
+.expense-list{display:flex;flex-direction:column;gap:8px;}
+.expense-item{background:white;border-radius:10px;padding:12px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;}
+.expense-name{font-size:13px;font-weight:500;}
+.expense-date{font-size:10px;color:var(--text-muted);}
+.expense-amount{font-size:14px;font-weight:700;color:var(--red);}
+
+/* MEETING */
+.meeting-list{display:flex;flex-direction:column;gap:8px;}
+.meeting-item{background:white;border-radius:10px;padding:14px;box-shadow:var(--shadow);border-left:3px solid var(--blue);}
+.meeting-title{font-size:14px;font-weight:600;color:var(--green-dark);}
+.meeting-info{font-size:11px;color:var(--text-muted);margin-top:4px;}
+
+/* COMMENT */
+.comment-form{background:white;border-radius:12px;padding:16px;box-shadow:var(--shadow);margin-bottom:16px;}
+.comment-list{display:flex;flex-direction:column;gap:8px;}
+.comment-item{background:white;border-radius:10px;padding:12px;box-shadow:var(--shadow);border-left:3px solid var(--blue);}
+.comment-author{font-size:12px;font-weight:600;color:var(--green-dark);}
+.comment-text{font-size:13px;margin-top:4px;}
+.comment-date{font-size:10px;color:var(--text-muted);margin-top:3px;}
+
+/* PROFILE */
+.profile-card{background:white
+-top:6px;}
 .btn-primary:hover{background:var(--green-dark);}
 
 /* HISTORY TABLE */
