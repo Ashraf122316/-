@@ -15,65 +15,49 @@
   --blue:#2980b9;
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'Noto Sans Bengali',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-
-/* HEADER */
+body{font-family:"Noto Sans Bengali",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
 header{background:linear-gradient(135deg,var(--green-dark),var(--green),var(--green-light));color:white;text-align:center;padding:24px 20px 20px;position:relative;overflow:hidden;}
-header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.02) 20px,rgba(255,255,255,0.02) 40px);}
-.bismillah{font-size:17px;color:var(--gold-light);margin-bottom:7px;font-family:'Noto Serif Bengali',serif;}
-header h1{font-family:'Noto Serif Bengali',serif;font-size:22px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,0.3);}
+header::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.02) 20px,rgba(255,255,255,0.02) 40px);}
+.bismillah{font-size:17px;color:var(--gold-light);margin-bottom:7px;font-family:"Noto Serif Bengali",serif;}
+header h1{font-family:"Noto Serif Bengali",serif;font-size:22px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,0.3);}
 header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
-
-/* ADMIN CONTACTS */
 .admin-contacts{margin-top:14px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
 .admin-contact-card{background:rgba(255,255,255,0.12);border:1px solid rgba(201,168,76,0.5);border-radius:25px;padding:7px 16px;display:flex;align-items:center;gap:8px;}
 .admin-contact-card .ac-info{text-align:left;}
 .admin-contact-card .ac-role{font-size:10px;color:var(--gold-light);opacity:.9;}
-.admin-contact-card .ac-name{font-size:13px;font-weight:600;color:white;font-family:'Noto Serif Bengali',serif;}
+.admin-contact-card .ac-name{font-size:13px;font-weight:600;color:white;font-family:"Noto Serif Bengali",serif;}
 .ac-call{background:var(--gold);color:var(--green-dark);border:none;border-radius:15px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600;text-decoration:none;display:inline-block;}
-
-/* MAIN NAV */
 .main-nav{background:var(--green-dark);display:flex;justify-content:center;border-bottom:3px solid var(--gold);overflow-x:auto;scrollbar-width:none;}
 .main-nav::-webkit-scrollbar{display:none;}
-.main-nav button{background:none;border:none;color:rgba(255,255,255,.75);font-family:'Noto Sans Bengali',sans-serif;font-size:12px;padding:12px 14px;cursor:pointer;transition:all .2s;border-bottom:3px solid transparent;margin-bottom:-3px;white-space:nowrap;}
+.main-nav button{background:none;border:none;color:rgba(255,255,255,.75);font-family:"Noto Sans Bengali",sans-serif;font-size:12px;padding:12px 14px;cursor:pointer;transition:all .2s;border-bottom:3px solid transparent;margin-bottom:-3px;white-space:nowrap;}
 .main-nav button:hover{color:white;background:rgba(255,255,255,.05);}
 .main-nav button.active{color:var(--gold-light);border-bottom-color:var(--gold);background:rgba(255,255,255,.07);}
-
-/* YEAR TABS */
 .year-tabs-wrapper{background:white;border-bottom:2px solid var(--border);padding:0 12px;display:flex;align-items:center;overflow-x:auto;gap:4px;scrollbar-width:none;}
 .year-tabs-wrapper::-webkit-scrollbar{display:none;}
-.year-tab{background:none;border:none;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;padding:11px 16px;cursor:pointer;color:var(--text-muted);border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s;}
+.year-tab{background:none;border:none;font-family:"Noto Sans Bengali",sans-serif;font-size:13px;padding:11px 16px;cursor:pointer;color:var(--text-muted);border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s;}
 .year-tab:hover{color:var(--green);}
 .year-tab.active{color:var(--green-dark);border-bottom-color:var(--green);font-weight:600;}
-.add-year-btn{background:var(--green);color:white;border:none;border-radius:20px;padding:5px 12px;font-family:'Noto Sans Bengali',sans-serif;font-size:11px;cursor:pointer;white-space:nowrap;margin-left:6px;}
-
+.add-year-btn{background:var(--green);color:white;border:none;border-radius:20px;padding:5px 12px;font-family:"Noto Sans Bengali",sans-serif;font-size:11px;cursor:pointer;white-space:nowrap;margin-left:6px;}
 .container{max-width:1100px;margin:0 auto;padding:18px 14px;}
 .page{display:none;}.page.active{display:block;}
-
-/* STATS */
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;}
 .stat-card{background:white;border-radius:12px;padding:16px;text-align:center;border-left:4px solid var(--green);box-shadow:var(--shadow);}
-.stat-card.gold{border-left-color:var(--gold);}
-.stat-card.red{border-left-color:var(--red);}
-.stat-card.blue{border-left-color:var(--blue);}
-.stat-num{font-size:26px;font-weight:700;color:var(--green);font-family:'Noto Serif Bengali',serif;}
+.stat-card.gold {border-left-color:var(--gold);}
+.stat-card.red {border-left-color:var(--red);}
+.stat-card.blue {border-left-color:var(--blue);}
+.stat-num{font-size:26px;font-weight:700;color:var(--green);font-family:"Noto Serif Bengali",serif;}
 .stat-card.gold .stat-num{color:var(--gold);}
 .stat-card.red .stat-num{color:var(--red);}
 .stat-card.blue .stat-num{color:var(--blue);}
 .stat-label{font-size:11px;color:var(--text-muted);margin-top:3px;}
-
-.section-title{font-family:'Noto Serif Bengali',serif;font-size:16px;color:var(--green-dark);border-bottom:2px solid var(--gold);padding-bottom:7px;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
-
-/* NOTICE BOARD */
+.section-title{font-family:"Noto Serif Bengali",serif;font-size:16px;color:var(--green-dark);border-bottom:2px solid var(--gold);padding-bottom:7px;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
 .notice-board{background:linear-gradient(135deg,#fffde7,#fff8e1);border:2px solid var(--gold);border-radius:12px;padding:16px;margin-bottom:20px;}
 .notice-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.notice-title{font-family:'Noto Serif Bengali',serif;font-size:15px;color:var(--green-dark);font-weight:600;}
+.notice-title{font-family:"Noto Serif Bengali",serif;font-size:15px;color:var(--green-dark);font-weight:600;}
 .notice-list{display:flex;flex-direction:column;gap:8px;}
 .notice-item{background:white;border-radius:8px;padding:10px 12px;border-left:3px solid var(--gold);font-size:13px;}
 .notice-item .n-date{font-size:10px;color:var(--text-muted);margin-top:3px;}
 .no-notice{text-align:center;color:var(--text-muted);font-size:13px;padding:10px;}
-
-/* MEMBER CARDS */
 .members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;}
 .member-card{background:white;border-radius:12px;padding:16px;box-shadow:var(--shadow);border-top:3px solid var(--green);transition:transform .2s,box-shadow .2s;}
 .member-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.12);}
@@ -85,7 +69,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
 .status-paid{background:#d4edda;color:#155724;}
 .status-partial{background:#fff3cd;color:#856404;}
 .status-unpaid{background:#f8d7da;color:#721c24;}
-.member-name{font-family:'Noto Serif Bengali',serif;font-size:15px;font-weight:600;color:var(--green-dark);margin-bottom:2px;}
+.member-name{font-family:"Noto Serif Bengali",serif;font-size:15px;font-weight:600;color:var(--green-dark);margin-bottom:2px;}
 .member-phone{font-size:11px;color:var(--text-muted);margin-bottom:8px;}
 .payment-slots{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px;}
 .p-slot{border-radius:5px;padding:3px 1px;text-align:center;font-size:8px;font-weight:600;border:1.5px solid;}
@@ -97,36 +81,28 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
 .paid-bar{flex:1;height:4px;background:#e0e0e0;border-radius:2px;overflow:hidden;}
 .paid-fill{height:100%;background:var(--green);border-radius:2px;}
 .member-actions{display:flex;gap:5px;margin-top:10px;}
-.btn-sm{flex:1;padding:6px 0;border:none;border-radius:7px;font-family:'Noto Sans Bengali',sans-serif;font-size:11px;cursor:pointer;font-weight:500;}
+.btn-sm{flex:1;padding:6px 0;border:none;border-radius:7px;font-family:"Noto Sans Bengali",sans-serif;font-size:11px;cursor:pointer;font-weight:500;}
 .btn-edit{background:var(--green);color:white;}
 .btn-pay{background:var(--gold);color:var(--green-dark);}
-
-/* TOOLBAR */
 .toolbar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
-.search-box{flex:1;min-width:160px;padding:9px 12px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;outline:none;background:white;}
+.search-box{flex:1;min-width:160px;padding:9px 12px;border:2px solid var(--border);border-radius:10px;font-family:"Noto Sans Bengali",sans-serif;font-size:13px;outline:none;background:white;}
 .search-box:focus{border-color:var(--green);}
-.filter-select{padding:9px 10px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:12px;background:white;cursor:pointer;outline:none;}
-
-/* MODAL */
+.filter-select{padding:9px 10px;border:2px solid var(--border);border-radius:10px;font-family:"Noto Sans Bengali",sans-serif;font-size:12px;background:white;cursor:pointer;outline:none;}
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;padding:14px;}
 .modal-overlay.open{display:flex;}
 .modal{background:white;border-radius:16px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);}
 .modal-header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;padding:16px 20px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center;}
-.modal-header h3{font-family:'Noto Serif Bengali',serif;font-size:15px;}
+.modal-header h3{font-family:"Noto Serif Bengali",serif;font-size:15px;}
 .modal-close{background:rgba(255,255,255,.2);border:none;color:white;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;}
 .modal-body{padding:20px;}
 .form-group{margin-bottom:12px;}
 .form-group label{display:block;font-size:12px;font-weight:500;color:var(--green-dark);margin-bottom:4px;}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:9px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:99px;font-family:"Noto Sans Bengali",sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green);}
-.form-group textarea{resize:vertical;min-height:80px;}
-
-/* PASSWORD EYE */
+.form-group textarea{resize:vertical;min-height:80px;border-radius:9px;}
 .pass-wrapper{position:relative;}
 .pass-wrapper input{padding-right:40px;}
 .eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-muted);}
-
-/* SLOTS */
 .slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:5px;}
 .slot-check{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 3px;border-radius:7px;border:2px solid var(--border);cursor:pointer;transition:all .2s;font-size:10px;text-align:center;gap:2px;}
 .slot-check.checked{border-color:var(--green);background:#d4edda;color:#155724;}
@@ -135,129 +111,109 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
 .slot-checkmark{width:14px;height:14px;border-radius:50%;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:8px;}
 .slot-check.checked .slot-checkmark{background:var(--green);border-color:var(--green);color:white;}
 .slot-check.eid-slot.checked .slot-checkmark{background:#c9a84c;border-color:#c9a84c;color:white;}
-
-/* PAYMENT */
 .payment-options{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px;}
-.payment-btn{padding:12px;border:2px solid var(--border);border-radius:11px;background:white;cursor:pointer;text-align:center;transition:all .2s;font-family:'Noto Sans Bengali',sans-serif;}
+.payment-btn{padding:12px;border:2px solid var(--border);border-radius:11px;background:white;cursor:pointer;text-align:center;transition:all .2s;font-family:"Noto Sans Bengali",sans-serif;}
 .payment-btn:hover{border-color:var(--green);background:#f0fff4;}
 .payment-btn .p-icon{font-size:24px;margin-bottom:4px;}
 .payment-btn .p-name{font-size:12px;font-weight:600;color:var(--green-dark);}
-
-/* ADMIN */
 .login-box{max-width:340px;margin:30px auto;background:white;border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
 .login-header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;padding:26px;text-align:center;}
-.login-header h2{font-family:'Noto Serif Bengali',serif;font-size:18px;margin-top:7px;}
+.login-header h2{font-family:"Noto Serif Bengali",serif;font-size:18px;margin-top:7px;}
 .login-body{padding:24px;}
-.btn-primary{width:100%;padding:11px;background:var(--green);color:white;border:none;border-radius:9px;font-family:'Noto Serif Bengali',serif;font-size:14px;cursor:pointer;transition:background .2s;margin-top:5px;}
+.btn-primary{width:100%;padding:11px;background:var(--green);color:white;border:none;border-radius:9px;font-family:"Noto Serif Bengali",serif;font-size:14px;cursor:pointer;transition:background .2s;margin-top:5px;}
 .btn-primary:hover{background:var(--green-dark);}
-
-/* HISTORY TABLE */
 .history-table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
 .history-table th{background:var(--green-dark);color:white;padding:10px 12px;text-align:left;font-size:11px;font-weight:500;}
 .history-table td{padding:9px 12px;border-bottom:1px solid #f0ece4;font-size:11px;}
 .history-table tr:last-child td{border-bottom:none;}
 .history-table tr:hover td{background:#f0fff4;}
-
-/* CHART */
 .chart-container{background:white;border-radius:12px;padding:16px;box-shadow:var(--shadow);margin-bottom:20px;}
-
-/* DUE LIST */
 .due-list{display:flex;flex-direction:column;gap:8px;}
 .due-item{background:white;border-radius:10px;padding:12px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;border-left:3px solid var(--red);}
 .due-item.medium{border-left-color:var(--gold);}
 .due-name{font-size:13px;font-weight:600;color:var(--green-dark);}
-.due-info{font-size:11px;color:var(--text-muted);}
+.due-info{font-size:11px;color:var(--text-muted);margin-top:4px;}
 .due-amount{font-size:14px;font-weight:700;color:var(--red);}
-
-/* EXPENSE */
 .expense-list{display:flex;flex-direction:column;gap:8px;}
 .expense-item{background:white;border-radius:10px;padding:12px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;}
 .expense-name{font-size:13px;font-weight:500;}
 .expense-date{font-size:10px;color:var(--text-muted);}
 .expense-amount{font-size:14px;font-weight:700;color:var(--red);}
-
-/* MEETING */
 .meeting-list{display:flex;flex-direction:column;gap:8px;}
 .meeting-item{background:white;border-radius:10px;padding:14px;box-shadow:var(--shadow);border-left:3px solid var(--blue);}
 .meeting-title{font-size:14px;font-weight:600;color:var(--green-dark);}
 .meeting-info{font-size:11px;color:var(--text-muted);margin-top:4px;}
-
-/* COMMENT */
 .comment-form{background:white;border-radius:12px;padding:16px;box-shadow:var(--shadow);margin-bottom:16px;}
 .comment-list{display:flex;flex-direction:column;gap:8px;}
 .comment-item{background:white;border-radius:10px;padding:12px;box-shadow:var(--shadow);border-left:3px solid var(--blue);}
 .comment-author{font-size:12px;font-weight:600;color:var(--green-dark);}
 .comment-text{font-size:13px;margin-top:4px;}
 .comment-date{font-size:10px;color:var(--text-muted);margin-top:3px;}
-
-/* PROFILE */
-.profile-card{background:white
--top:6px;}
-.btn-primary:hover{background:var(--green-dark);}
-
-/* HISTORY TABLE */
-.history-table{width:100%;border-collapse:collapse;background:white;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);}
-.history-table th{background:var(--green-dark);color:white;padding:11px 14px;text-align:left;font-size:12px;font-weight:500;}
-.history-table td{padding:10px 14px;border-bottom:1px solid #f0ece4;font-size:12px;}
-.history-table tr:last-child td{border-bottom:none;}
-.history-table tr:nth-child(even) td{background:#fafaf7;}
-.history-table tr:hover td{background:#f0fff4;}
-
-/* TOAST */
-.toast{position:fixed;bottom:20px;right:20px;background:var(--green-dark);color:white;padding:12px 20px;border-radius:10px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.25);transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;border-left:4px solid var(--gold);}
+.profile-card{background:white;border-radius:16px;padding:24px;box-shadow:var(--shadow);max-width:500px;margin:0 auto;}
+.profile-header{text-align:center;margin-bottom:20px;}
+.profile-avatar{width:70px;height:70px;background:var(--green);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 10px;}
+.profile-name{font-family:"Noto Serif Bengali",serif;font-size:20px;font-weight:700;color:var(--green-dark);}
+.profile-id{font-size:13px;color:var(--text-muted);}
+.guide-section{margin-bottom:14px;}
+.guide-section h4{font-family:"Noto Serif Bengali",serif;color:var(--green-dark);font-size:14px;margin-bottom:6px;border-bottom:1px solid var(--border);padding-bottom:4px;}
+.guide-section p,.guide-section li{font-size:12px;color:var(--text);line-height:1.7;}
+.guide-section ul{padding-left:16px;}
+.toast{position:fixed;bottom:18px;right:18px;background:var(--green-dark);color:white;padding:11px 18px;border-radius:9px;font-size:12px;box-shadow:0 8px 24px rgba(0,0,0,.25);transform:translateY(80px);opacity:0;transition:all .3s;z-index:9999;border-left:3px solid var(--gold);}
 .toast.show{transform:translateY(0);opacity:1;}
-
-.admin-badge{background:var(--gold);color:var(--green-dark);font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700;margin-left:8px;}
-
-@media(max-width:600px){
-  header h1{font-size:19px;}
-  .main-nav button{padding:11px 13px;font-size:12px;}
-  .slots-grid{grid-template-columns:repeat(3,1fr);}
-  .payment-options{grid-template-columns:1fr 1fr;}
-}
+.admin-badge{background:var(--gold);color:var(--green-dark);font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700;margin-left:6px;}
+.badge-green{background:var(--green);color:white;font-size:10px;padding:2px 8px;border-radius:20px;font-weight:600;}
+@media(max-width:600px){header h1{font-size:19px;}.slots-grid{grid-template-columns:repeat(3,1fr);}.payment-options{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
-  <div style="font-size:44px;margin-bottom:6px">🕌</div>
-  <h1>ইসলামী ছাত্র কল্যাণ সমিতি</h1>
-  <p>সদস্য ব্যবস্থাপনা ও পেমেন্ট ট্র্যাকার</p>
-  <div style="margin-top:12px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap">
-    <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(201,168,76,0.6);border-radius:30px;padding:6px 18px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:18px">👤</span>
-      <div style="text-align:left">
-        <div style="font-size:11px;color:var(--gold-light);opacity:0.9">অ্যাডমিন</div>
-        <div style="font-size:14px;font-weight:600;color:white;font-family:Noto Serif Bengali,serif">আশরাফ উদ্দিন</div>
+  <div class="bismillah">&#x628;&#x650;&#x633;&#x652;&#x645;&#x650; &#x627;&#x644;&#x644;&#x647;&#x650; &#x627;&#x644;&#x631;&#x651;&#x62D;&#x652;&#x645;&#x670;&#x646;&#x650; &#x627;&#x644;&#x631;&#x651;&#x62D;&#x650;&#x64A;&#x652;&#x645;&#x650;</div>
+  <div style="font-size:40px;margin-bottom:5px">&#x1F54C;</div>
+  <h1>&#x987;&#x9B8;&#x9B2;&#x9BE;&#x9AE;&#x9C0; &#x99B;&#x9BE;&#x9A4;&#x9CD;&#x9B0; &#x995;&#x9B2;&#x9CD;&#x9AF;&#x9BE;&#x9A3; &#x9B8;&#x9AE;&#x9BF;&#x9A4;&#x9BF;</h1>
+  <p>&#x9B8;&#x9A6;&#x9B8;&#x9CD;&#x9AF; &#x9AC;&#x9CD;&#x9AF;&#x9AC;&#x9B8;&#x9CD;&#x9A5;&#x9BE;&#x9AA;&#x9A8;&#x9BE; &#x993; &#x9AA;&#x9C7;&#x9AE;&#x9C7;&#x9A8;&#x9CD;&#x99F; &#x99F;&#x9CD;&#x9B0;&#x9CD;&#x9AF;&#x9BE;&#x995;&#x9BE;&#x9B0;</p>
+  <div class="admin-contacts">
+    <div class="admin-contact-card">
+      <div>&#x1F464;</div>
+      <div class="ac-info">
+        <div class="ac-role">&#x985;&#x9CD;&#x9AF;&#x9BE;&#x9A1;&#x9AE;&#x9BF;&#x9A8;</div>
+        <div class="ac-name">&#x986;&#x9B6;&#x9B0;&#x9BE;&#x9AB; &#x989;&#x9A6;&#x9CD;&#x9A6;&#x9BF;&#x9A8;</div>
       </div>
+      <a href="tel:01340122316" class="ac-call">&#x1F4DE; &#x995;&#x9B2;</a>
     </div>
-    <div style="background:rgba(255,255,255,0.15);border:1px solid rgba(201,168,76,0.6);border-radius:30px;padding:6px 18px;display:flex;align-items:center;gap:8px">
-      <span style="font-size:18px">👤</span>
-      <div style="text-align:left">
-        <div style="font-size:11px;color:var(--gold-light);opacity:0.9">অ্যাডমিন</div>
-        <div style="font-size:14px;font-weight:600;color:white;font-family:Noto Serif Bengali,serif">সিয়াম হাসান</div>
+    <div class="admin-contact-card">
+      <div>&#x1F464;</div>
+      <div class="ac-info">
+        <div class="ac-role">&#x985;&#x9CD;&#x9AF;&#x9BE;&#x9A1;&#x9AE;&#x9BF;&#x9A8;</div>
+        <div class="ac-name">&#x9B8;&#x9BF;&#x9AF;&#x9BC;&#x9BE;&#x9AE; &#x9B9;&#x9BE;&#x9B8;&#x9BE;&#x9A8;</div>
       </div>
+      <a href="tel:01753003126" class="ac-call">&#x1F4DE; &#x995;&#x9B2;</a>
     </div>
   </div>
 </header>
-
-<!-- MAIN NAV -->
 <nav class="main-nav">
-  <button class="active" onclick="showPage('members',this)">👥 সদস্যগণ</button>
-  <button onclick="showPage('history',this)">📋 হিস্টোরি</button>
-  <button onclick="showPage('admin',this)">🔒 অ্যাডমিন</button>
+  <button class="active" onclick="showPage('members',this)">&#x1F465; &#x9B8;&#x9A6;&#x9B8;&#x9CD;&#x9AF;</button>
+  <button onclick="showPage('profile',this)">&#x1FAA6; &#x9AA;&#x9CD;&#x9B0;&#x9CB;&#x9AB;&#x9BE;&#x987;&#x9B2;</button>
+  <button onclick="showPage('due',this)">&#x26A0;&#xFE0F; &#x9AC;&#x9B0;&#x9BE;&#x9B8;&#x9CD;&#x9A1;&#x9B0;&#x9BE;</button>
+  <button onclick="showPage('report',this)">&#x1F4CA; &#x9B0;&#x9BF;&#x9AA;&#x9CB;&#x9B0;&#x9CD;&#x99F;</button>
+  <button onclick="showPage('expense',this)">&#x1F4B0; &#x996;&#x9B0;&#x99A;</button>
+  <button onclick="showPage('meeting',this)">&#x1F4C5; &#x9AE;&#x9BF;&#x99F;&#x9BF;&#x982;</button>
+  <button onclick="showPage('comment',this)">&#x1F4AC; &#x9AC;&#x9BE;&#x9B0;&#x9CD;&#x9A4;&#x9BE;</button>
+  <button onclick="showPage('history',this)">&#x1F4CB; &#x9B9;&#x9BF;&#x9B8;&#x9CD;&#x99F;&#x9CB;&#x9B0;&#x9BF;</button>
+  <button onclick="showPage('admin',this)">&#x1F512; &#x985;&#x9CD;&#x9AF;&#x9BE;&#x9A1;&#x9AE;&#x9BF;&#x9A8;</button>
 </nav>
-
-<!-- YEAR TABS -->
 <div class="year-tabs-wrapper" id="year-tabs-wrapper">
-  <!-- rendered by JS -->
-  <button class="add-year-btn" onclick="openAddYear()">＋ নতুন সাল</button>
+  <button class="add-year-btn" onclick="openAddYear()">&#xFF0B; &#x9A8;&#x9A4;&#x9C1;&#x9A8; &#x9B8;&#x9BE;&#x9B2;</button>
+</div>
+<div style="text-align:center;padding:10px;background:white;border-bottom:1px solid var(--border)">
+  <button onclick="openModal('guide-modal')" style="background:var(--green);color:white;border:none;border-radius:20px;padding:7px 20px;font-family:inherit;font-size:12px;cursor:pointer">&#x1F4D6; &#x9AC;&#x9CD;&#x9AF;&#x9AC;&#x9B9;&#x9BE;&#x9B0; &#x9A8;&#x9BF;&#x9B0;&#x9CD;&#x9A6;&#x9C7;&#x9B6;&#x9BF;&#x995;&#x9BE;</button>
 </div>
 
-<!-- MEMBERS PAGE -->
 <div id="page-members" class="page active">
   <div class="container">
+    <div class="notice-board">
+      <div class="notice-header"><div class="notice-title">📢 নোটিশ বোর্ড</div></div>
+      <div class="notice-list" id="notice-list"><div class="no-notice">কোনো নোটিশ নেই</div></div>
+    </div>
     <div class="stats-grid" id="stats-grid"></div>
     <div class="toolbar">
       <input type="text" class="search-box" placeholder="🔍 নাম বা ID দিয়ে খুঁজুন..." oninput="filterMembers()" id="search-input">
@@ -268,65 +224,126 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
         <option value="unpaid">বকেয়া</option>
       </select>
     </div>
-    <div class="section-title">👥 সদস্য তালিকা — <span id="year-label-members">২০২৪</span></div>
+    <div class="section-title">👥 সদস্য তালিকা — <span id="year-label-members">২০২৪</span> <span id="member-count-badge" class="badge-green">40</span></div>
     <div class="members-grid" id="members-grid"></div>
   </div>
 </div>
 
-<!-- HISTORY PAGE -->
+<div id="page-profile" class="page">
+  <div class="container">
+    <div class="section-title">🪪 আমার প্রোফাইল</div>
+    <div style="max-width:400px;margin:0 auto">
+      <div style="background:white;border-radius:12px;padding:20px;box-shadow:var(--shadow);margin-bottom:16px">
+        <div class="form-group">
+          <label>আপনার ID লিখুন (যেমন: S-001)</label>
+          <input type="text" id="profile-id-input" placeholder="S-001">
+        </div>
+        <button onclick="loadProfile()" class="btn-primary">🔍 প্রোফাইল দেখুন</button>
+      </div>
+      <div id="profile-result"></div>
+    </div>
+  </div>
+</div>
+
+<div id="page-due" class="page">
+  <div class="container">
+    <div class="section-title">⚠️ বকেয়া তালিকা — <span id="year-label-due">২০২৪</span></div>
+    <div class="due-list" id="due-list"></div>
+  </div>
+</div>
+
+<div id="page-report" class="page">
+  <div class="container">
+    <div class="section-title">📊 মাসিক রিপোর্ট — <span id="year-label-report">২০২৪</span></div>
+    <div class="chart-container"><canvas id="monthly-chart" height="200"></canvas></div>
+    <div class="stats-grid" id="report-stats"></div>
+  </div>
+</div>
+
+<div id="page-expense" class="page">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div class="section-title" style="margin-bottom:0">💰 খরচের হিসাব</div>
+      <div id="expense-admin-btn" style="display:none">
+        <button onclick="openModal('add-expense-modal')" style="padding:8px 16px;background:var(--green);color:white;border:none;border-radius:8px;font-family:inherit;cursor:pointer;font-size:12px">➕ খরচ যোগ</button>
+      </div>
+    </div>
+    <div class="stats-grid" id="expense-stats"></div>
+    <div class="expense-list" id="expense-list"></div>
+  </div>
+</div>
+
+<div id="page-meeting" class="page">
+  <div class="container">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+      <div class="section-title" style="margin-bottom:0">📅 মিটিং শিডিউল</div>
+      <div id="meeting-admin-btn" style="display:none">
+        <button onclick="openModal('add-meeting-modal')" style="padding:8px 16px;background:var(--green);color:white;border:none;border-radius:8px;font-family:inherit;cursor:pointer;font-size:12px">➕ মিটিং যোগ</button>
+      </div>
+    </div>
+    <div class="meeting-list" id="meeting-list"></div>
+  </div>
+</div>
+
+<div id="page-comment" class="page">
+  <div class="container">
+    <div class="section-title">💬 বার্তা / মন্তব্য</div>
+    <div class="comment-form">
+      <div class="form-group"><label>আপনার নাম</label><input type="text" id="comment-name" placeholder="নাম লিখুন"></div>
+      <div class="form-group"><label>বার্তা লিখুন</label><textarea id="comment-text" placeholder="আপনার বার্তা লিখুন..."></textarea></div>
+      <button onclick="submitComment()" class="btn-primary">📤 পাঠান</button>
+    </div>
+    <div id="comment-admin-view" style="display:none">
+      <div class="section-title">📨 সব বার্তা</div>
+      <div class="comment-list" id="admin-comment-list"></div>
+    </div>
+    <div id="comment-sent-msg" style="display:none;text-align:center;padding:20px;color:var(--green);font-size:14px">✅ বার্তা পাঠানো হয়েছে!</div>
+  </div>
+</div>
+
 <div id="page-history" class="page">
   <div class="container">
     <div class="section-title">📋 পেমেন্ট হিস্টোরি — <span id="year-label-history">২০২৪</span></div>
     <div style="overflow-x:auto">
       <table class="history-table">
-        <thead>
-          <tr>
-            <th>ID</th><th>নাম</th><th>মোবাইল</th>
-            <th>পরিশোধিত</th><th>বকেয়া মাস</th>
-            <th>মোট পরিশোধ</th><th>অবস্থা</th>
-          </tr>
-        </thead>
+        <thead><tr><th>ID</th><th>নাম</th><th>মোবাইল</th><th>পরিশোধিত</th><th>বকেয়া</th><th>মোট</th><th>অবস্থা</th></tr></thead>
         <tbody id="history-body"></tbody>
       </table>
     </div>
   </div>
 </div>
 
-<!-- ADMIN PAGE -->
 <div id="page-admin" class="page">
   <div class="container">
     <div id="admin-login">
       <div class="login-box">
-        <div class="login-header">
-          <div style="font-size:38px">🔐</div>
-          <h2>অ্যাডমিন লগইন</h2>
-        </div>
+        <div class="login-header"><div style="font-size:36px">🔐</div><h2>অ্যাডমিন লগইন</h2></div>
         <div class="login-body">
           <div class="form-group">
             <label>পাসওয়ার্ড</label>
-            <input type="password" id="admin-pass" placeholder="পাসওয়ার্ড দিন" onkeydown="if(event.key==='Enter')adminLogin()">
+            <div class="pass-wrapper">
+              <input type="password" id="admin-pass" placeholder="পাসওয়ার্ড দিন" onkeydown="if(event.key==='Enter')adminLogin()">
+              <button class="eye-btn" onclick="togglePass()">👁️</button>
+            </div>
           </div>
           <button class="btn-primary" onclick="adminLogin()">🔓 লগইন করুন</button>
-          <p style="text-align:center;font-size:11px;color:var(--text-muted);margin-top:10px">ডিফল্ট পাসওয়ার্ড: <strong>admin123</strong></p>
         </div>
       </div>
     </div>
     <div id="admin-panel" style="display:none">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px">
         <div class="section-title" style="margin-bottom:0">⚙️ অ্যাডমিন প্যানেল <span class="admin-badge">ADMIN</span></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap">
-          <button onclick="openAddMember()" style="padding:8px 16px;background:var(--green);color:white;border:none;border-radius:8px;font-family:inherit;cursor:pointer;font-size:12px">➕ সদস্য যোগ</button>
-          <button onclick="changePassword()" style="padding:8px 16px;background:var(--gold);color:var(--green-dark);border:none;border-radius:8px;font-family:inherit;cursor:pointer;font-size:12px">🔑 পাসওয়ার্ড</button>
-          <button onclick="adminLogout()" style="padding:8px 16px;background:var(--red);color:white;border:none;border-radius:8px;font-family:inherit;cursor:pointer;font-size:12px">🚪 লগআউট</button>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <button onclick="openAddMember()" style="padding:7px 12px;background:var(--green);color:white;border:none;border-radius:7px;font-family:inherit;cursor:pointer;font-size:11px">➕ সদস্য</button>
+          <button onclick="openModal('add-notice-modal')" style="padding:7px 12px;background:var(--gold);color:var(--green-dark);border:none;border-radius:7px;font-family:inherit;cursor:pointer;font-size:11px">📢 নোটিশ</button>
+          <button onclick="adminLogout()" style="padding:7px 12px;background:var(--red);color:white;border:none;border-radius:7px;font-family:inherit;cursor:pointer;font-size:11px">🚪 লগআউট</button>
         </div>
       </div>
       <div class="stats-grid" id="admin-stats"></div>
       <div class="section-title" style="margin-top:10px">✏️ সদস্য তালিকা — <span id="year-label-admin">২০২৪</span></div>
       <div style="overflow-x:auto">
         <table class="history-table">
-          <thead>
-            <tr><th>ID</th><th>নাম</th><th>মোবাইল</th><th>মাসিক চাঁদা</th><th>পরিশোধিত স্লট</th><th>অ্যাকশন</th></tr>
-          </thead>
+          <thead><tr><th>ID</th><th>নাম</th><th>মোবাইল</th><th>চাঁদা</th><th>পরিশোধ</th><th>অ্যাকশন</th></tr></thead>
           <tbody id="admin-tbody"></tbody>
         </table>
       </div>
@@ -334,108 +351,137 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
   </div>
 </div>
 
-<!-- EDIT MODAL -->
 <div class="modal-overlay" id="edit-modal">
   <div class="modal">
-    <div class="modal-header">
-      <h3>✏️ সদস্য তথ্য সম্পাদনা</h3>
-      <button class="modal-close" onclick="closeModal('edit-modal')">✕</button>
-    </div>
+    <div class="modal-header"><h3>✏️ সদস্য সম্পাদনা</h3><button class="modal-close" onclick="closeModal('edit-modal')">✕</button></div>
     <div class="modal-body">
       <input type="hidden" id="edit-idx">
-      <div class="form-group"><label>সদস্য ID</label><input type="text" id="edit-id" placeholder="যেমন: S-001"></div>
-      <div class="form-group"><label>পূর্ণ নাম</label><input type="text" id="edit-name" placeholder="নাম লিখুন"></div>
-      <div class="form-group"><label>মোবাইল নম্বর</label><input type="text" id="edit-phone" placeholder="01XXXXXXXXX"></div>
-      <div class="form-group"><label>মাসিক চাঁদা (টাকা)</label><input type="number" id="edit-amount" placeholder="যেমন: 200"></div>
-      <div class="form-group">
-        <label>পরিশোধিত মাস ও ঈদ নির্বাচন করুন</label>
-        <div class="slots-grid" id="slots-checkboxes"></div>
-      </div>
-      <button class="btn-primary" onclick="saveEdit()">💾 সংরক্ষণ করুন</button>
+      <div class="form-group"><label>সদস্য ID</label><input type="text" id="edit-id"></div>
+      <div class="form-group"><label>পূর্ণ নাম</label><input type="text" id="edit-name"></div>
+      <div class="form-group"><label>মোবাইল নম্বর</label><input type="text" id="edit-phone"></div>
+      <div class="form-group"><label>মাসিক চাঁদা (টাকা)</label><input type="number" id="edit-amount"></div>
+      <div class="form-group"><label>পরিশোধিত মাস ও ঈদ</label><div class="slots-grid" id="slots-checkboxes"></div></div>
+      <button class="btn-primary" onclick="saveEdit()">💾 সংরক্ষণ</button>
     </div>
   </div>
 </div>
-
-<!-- ADD MEMBER MODAL -->
 <div class="modal-overlay" id="add-member-modal">
   <div class="modal">
-    <div class="modal-header">
-      <h3>➕ নতুন সদস্য যোগ করুন</h3>
-      <button class="modal-close" onclick="closeModal('add-member-modal')">✕</button>
-    </div>
+    <div class="modal-header"><h3>➕ নতুন সদস্য</h3><button class="modal-close" onclick="closeModal('add-member-modal')">✕</button></div>
     <div class="modal-body">
-      <div class="form-group"><label>সদস্য ID</label><input type="text" id="new-id" placeholder="যেমন: S-041"></div>
-      <div class="form-group"><label>পূর্ণ নাম</label><input type="text" id="new-name" placeholder="নাম লিখুন"></div>
-      <div class="form-group"><label>মোবাইল নম্বর</label><input type="text" id="new-phone" placeholder="01XXXXXXXXX"></div>
-      <div class="form-group"><label>মাসিক চাঁদা (টাকা)</label><input type="number" id="new-amount" placeholder="100 বা 200"></div>
+      <div class="form-group"><label>সদস্য ID</label><input type="text" id="new-id" placeholder="S-041"></div>
+      <div class="form-group"><label>পূর্ণ নাম</label><input type="text" id="new-name"></div>
+      <div class="form-group"><label>মোবাইল নম্বর</label><input type="text" id="new-phone"></div>
+      <div class="form-group"><label>মাসিক চাঁদা</label><input type="number" id="new-amount" placeholder="200"></div>
       <button class="btn-primary" onclick="addMember()">✅ যোগ করুন</button>
     </div>
   </div>
 </div>
-
-<!-- ADD YEAR MODAL -->
-<div class="modal-overlay" id="add-year-modal">
-  <div class="modal" style="max-width:360px">
-    <div class="modal-header">
-      <h3>📅 নতুন সাল যোগ করুন</h3>
-      <button class="modal-close" onclick="closeModal('add-year-modal')">✕</button>
-    </div>
+<div class="modal-overlay" id="add-notice-modal">
+  <div class="modal" style="max-width:400px">
+    <div class="modal-header"><h3>📢 নোটিশ যোগ করুন</h3><button class="modal-close" onclick="closeModal('add-notice-modal')">✕</button></div>
     <div class="modal-body">
-      <div class="form-group">
-        <label>সাল লিখুন</label>
-        <input type="number" id="new-year-input" placeholder="যেমন: ২০২৭ লিখুন 2027" min="2020" max="2060">
-      </div>
-      <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px">⚠️ আগের বছরের সদস্যরা অটো কপি হবে, পেমেন্ট ফাঁকা থাকবে</p>
-      <button class="btn-primary" onclick="addNewYear()">✅ সাল তৈরি করুন</button>
+      <div class="form-group"><label>নোটিশ লিখুন</label><textarea id="notice-text" placeholder="নোটিশ লিখুন..."></textarea></div>
+      <button class="btn-primary" onclick="addNotice()">📢 প্রকাশ করুন</button>
     </div>
   </div>
 </div>
-
-<!-- PAY MODAL -->
+<div class="modal-overlay" id="add-year-modal">
+  <div class="modal" style="max-width:340px">
+    <div class="modal-header"><h3>📅 নতুন সাল</h3><button class="modal-close" onclick="closeModal('add-year-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>সাল লিখুন</label><input type="number" id="new-year-input" placeholder="2027" min="2020" max="2060"></div>
+      <p style="font-size:11px;color:var(--text-muted);margin-bottom:12px">আগের বছরের সদস্যরা কপি হবে</p>
+      <button class="btn-primary" onclick="addNewYear()">✅ তৈরি করুন</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="add-expense-modal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-header"><h3>💰 খরচ যোগ করুন</h3><button class="modal-close" onclick="closeModal('add-expense-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>বিবরণ</label><input type="text" id="exp-desc" placeholder="খরচের বিবরণ"></div>
+      <div class="form-group"><label>পরিমাণ (টাকা)</label><input type="number" id="exp-amount" placeholder="500"></div>
+      <div class="form-group"><label>তারিখ</label><input type="date" id="exp-date"></div>
+      <button class="btn-primary" onclick="addExpense()">✅ যোগ করুন</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="add-meeting-modal">
+  <div class="modal" style="max-width:380px">
+    <div class="modal-header"><h3>📅 মিটিং যোগ করুন</h3><button class="modal-close" onclick="closeModal('add-meeting-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>বিষয়</label><input type="text" id="meet-title" placeholder="মিটিংয়ের বিষয়"></div>
+      <div class="form-group"><label>তারিখ ও সময়</label><input type="datetime-local" id="meet-date"></div>
+      <div class="form-group"><label>স্থান</label><input type="text" id="meet-place" placeholder="মসজিদ হল"></div>
+      <div class="form-group"><label>বিবরণ</label><textarea id="meet-desc" placeholder="বিবরণ..."></textarea></div>
+      <button class="btn-primary" onclick="addMeeting()">✅ যোগ করুন</button>
+    </div>
+  </div>
+</div>
 <div class="modal-overlay" id="pay-modal">
   <div class="modal">
-    <div class="modal-header" style="background:linear-gradient(135deg,#1a5276,#2980b9)">
-      <h3>💳 পেমেন্ট পাঠান</h3>
-      <button class="modal-close" onclick="closeModal('pay-modal')">✕</button>
-    </div>
+    <div class="modal-header" style="background:linear-gradient(135deg,#1a5276,#2980b9)"><h3>💳 পেমেন্ট পাঠান</h3><button class="modal-close" onclick="closeModal('pay-modal')">✕</button></div>
     <div class="modal-body">
-      <div style="background:#eaf4fb;border-radius:10px;padding:13px;margin-bottom:16px;border-left:4px solid #2980b9">
-        <p style="font-size:14px;font-weight:600;color:#1a5276" id="pay-member-name"></p>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:3px" id="pay-amount-info"></p>
+      <div style="background:#eaf4fb;border-radius:9px;padding:12px;margin-bottom:14px;border-left:4px solid #2980b9">
+        <p style="font-size:13px;font-weight:600;color:#1a5276" id="pay-member-name"></p>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:2px" id="pay-amount-info"></p>
       </div>
-      <p style="font-size:12px;color:var(--text-muted);margin-bottom:10px">পেমেন্ট মাধ্যম নির্বাচন করুন:</p>
       <div class="payment-options">
-        <button class="payment-btn" onclick="sendPayment('bkash')"><div class="p-icon">💗</div><div class="p-name">বিকাশ</div><div class="p-sub">Send Money</div></button>
-        <button class="payment-btn" onclick="sendPayment('nagad')"><div class="p-icon">🧡</div><div class="p-name">নগদ</div><div class="p-sub">Send Money</div></button>
-        <button class="payment-btn" onclick="sendPayment('rocket')"><div class="p-icon">💜</div><div class="p-name">রকেট</div><div class="p-sub">Send Money</div></button>
-        <button class="payment-btn" onclick="sendPayment('upay')"><div class="p-icon">💙</div><div class="p-name">উপায়</div><div class="p-sub">Send Money</div></button>
+        <button class="payment-btn" onclick="sendPayment('bkash')"><div class="p-icon">💗</div><div class="p-name">বিকাশ</div></button>
+        <button class="payment-btn" onclick="sendPayment('nagad')"><div class="p-icon">🧡</div><div class="p-name">নগদ</div></button>
+        <button class="payment-btn" onclick="sendPayment('rocket')"><div class="p-icon">💜</div><div class="p-name">রকেট</div></button>
+        <button class="payment-btn" onclick="sendPayment('upay')"><div class="p-icon">💙</div><div class="p-name">উপায়</div></button>
       </div>
-      <p style="font-size:11px;color:var(--text-muted);margin-top:12px;text-align:center">পাঠানোর পর অ্যাডমিনকে WhatsApp এ জানান</p>
     </div>
   </div>
 </div>
-
-<!-- NOTIFY MODAL -->
 <div class="modal-overlay" id="notify-modal">
   <div class="modal">
-    <div class="modal-header" style="background:linear-gradient(135deg,#145a32,#25d366)">
-      <h3>📲 অ্যাডমিনকে জানান</h3>
-      <button class="modal-close" onclick="closeModal('notify-modal')">✕</button>
-    </div>
+    <div class="modal-header" style="background:linear-gradient(135deg,#145a32,#25d366)"><h3>📲 অ্যাডমিনকে জানান</h3><button class="modal-close" onclick="closeModal('notify-modal')">✕</button></div>
     <div class="modal-body">
-      <div style="background:#eafaf1;border-radius:10px;padding:13px;margin-bottom:16px;border-left:4px solid #25d366">
-        <p style="font-size:14px;font-weight:600;color:#145a32" id="notify-member-name"></p>
-        <p style="font-size:12px;color:var(--text-muted);margin-top:3px">কোন মাসের টাকা দিয়েছেন সিলেক্ট করুন</p>
+      <div style="background:#eafaf1;border-radius:9px;padding:12px;margin-bottom:14px;border-left:4px solid #25d366">
+        <p style="font-size:13px;font-weight:600;color:#145a32" id="notify-member-name"></p>
+        <p style="font-size:11px;color:var(--text-muted);margin-top:2px">কোন মাসের টাকা দিয়েছেন সিলেক্ট করুন</p>
       </div>
-      <div class="form-group">
-        <label>মাস / ঈদ সিলেক্ট করুন</label>
-        <div class="slots-grid" id="notify-slots"></div>
-      </div>
-      <div style="background:#fff8e1;border-radius:10px;padding:11px;margin:14px 0;border-left:4px solid var(--gold)">
-        <p style="font-size:12px;color:#856404">📨 নিচের বাটন চাপলে দুজন অ্যাডমিনের WhatsApp এ মেসেজ যাবে</p>
-        <p style="font-size:13px;font-weight:600;color:var(--green-dark);margin-top:5px">👤 আশরাফ উদ্দিন &nbsp;&nbsp; 👤 সিয়াম হাসান</p>
+      <div class="form-group"><label>মাস / ঈদ সিলেক্ট করুন</label><div class="slots-grid" id="notify-slots"></div></div>
+      <div style="background:#fff8e1;border-radius:9px;padding:10px;margin:12px 0;border-left:3px solid var(--gold)">
+        <p style="font-size:11px;color:#856404">👤 আশরাফ উদ্দিন ও সিয়াম হাসানের WhatsApp এ মেসেজ যাবে</p>
       </div>
       <button class="btn-primary" onclick="submitNotify()" style="background:linear-gradient(135deg,#25d366,#128c7e)">📲 WhatsApp এ জানান</button>
+    </div>
+  </div>
+</div>
+<div class="modal-overlay" id="guide-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>📖 ব্যবহার নির্দেশিকা</h3><button class="modal-close" onclick="closeModal('guide-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="guide-section"><h4>🌐 ওয়েবসাইট লিংক</h4><p><strong>islami-samiti.netlify.app</strong></p></div>
+      <div class="guide-section">
+        <h4>👥 সদস্যরা যা করতে পারবেন</h4>
+        <ul>
+          <li>নিজের কার্ডে পেমেন্ট ইতিহাস দেখুন</li>
+          <li>💳 পেমেন্ট বাটনে চেপে টাকা পাঠান</li>
+          <li>পাঠানোর পর মাস সিলেক্ট করে WhatsApp এ জানান</li>
+          <li>🪪 প্রোফাইলে নিজের ID দিয়ে হিসাব দেখুন</li>
+          <li>💬 বার্তায় অ্যাডমিনকে যোগাযোগ করুন</li>
+        </ul>
+      </div>
+      <div class="guide-section">
+        <h4>🔒 অ্যাডমিন যা করতে পারবেন</h4>
+        <ul>
+          <li>সদস্যের তথ্য ও পেমেন্ট আপডেট করুন</li>
+          <li>নোটিশ বোর্ডে নোটিশ দিন</li>
+          <li>মিটিং শিডিউল যোগ করুন</li>
+          <li>খরচের হিসাব রাখুন</li>
+          <li>সদস্যদের বার্তা দেখুন</li>
+        </ul>
+      </div>
+      <div class="guide-section">
+        <h4>📞 অ্যাডমিন যোগাযোগ</h4>
+        <p>👤 আশরাফ উদ্দিন — 01340122316</p>
+        <p>👤 সিয়াম হাসান — 01753003126</p>
+      </div>
     </div>
   </div>
 </div>
@@ -443,381 +489,456 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
 <div class="toast" id="toast"></div>
 
 <script>
-// ===== CONSTANTS =====
-const SLOTS = ['জানু','ফেব্রু','মার্চ','এপ্রিল','মে','জুন','জুলাই','আগস্ট','সেপ্টে','অক্টো','নভে','ডিসে','ঈদুল ফিতর','ঈদুল আযহা'];
-const EID_SLOTS = [12, 13];
-const STORAGE_KEY = 'ics_data_v2';
-const PASS_KEY = 'ics_pass';
-const ADMIN1 = { name: 'আশরাফ উদ্দিন', phone: '01340122316' };
-const ADMIN2 = { name: 'সিয়াম হাসান', phone: '01753003126' };
+const SLOTS=["জানু","ফেব্রু","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টে","অক্টো","নভে","ডিসে","ঈদুল ফিতর","ঈদুল আযহা"];
+const EID_SLOTS=[12,13];
+const STORAGE_KEY="ics_data_v3";
+const FIXED_PASS="Student of Madinah";
+const ADMIN1={name:"আশরাফ উদ্দিন",phone:"01340122316"};
+const ADMIN2={name:"সিয়াম হাসান",phone:"01753003126"};
 
-// ===== DATA STRUCTURE =====
-// { years: { "2024": { members: [...] }, "2025": {...} } }
-function initData() {
-  const saved = localStorage.getItem(STORAGE_KEY);
-  if (saved) return JSON.parse(saved);
-  const data = { years: {} };
-  data.years['2024'] = { members: createBlankMembers(40) };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+function initData(){
+  const saved=localStorage.getItem(STORAGE_KEY);
+  if(saved)return JSON.parse(saved);
+  const data={years:{},notices:[],expenses:[],meetings:[],comments:[]};
+  data.years["2024"]={members:createBlankMembers(40)};
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(data));
   return data;
 }
-
-function createBlankMembers(count) {
-  const arr = [];
-  for (let i = 1; i <= count; i++) {
-    arr.push({
-      id: 'S-' + String(i).padStart(3,'0'),
-      name: 'সদস্য ' + i,
-      phone: '',
-      amount: 200,
-      paid: []
-    });
+function createBlankMembers(count){
+  const arr=[];
+  for(let i=1;i<=count;i++){
+    arr.push({id:"S-"+String(i).padStart(3,"0"),name:"সদস্য "+i,phone:"",amount:200,paid:[]});
   }
   return arr;
 }
+let appData=initData();
+let currentYear=Object.keys(appData.years)[0];
+let currentPayIdx=-1;
+let tempPaid=[];
+let notifyPaid=[];
+function saveData(){localStorage.setItem(STORAGE_KEY,JSON.stringify(appData));}
+function getMembers(){return appData.years[currentYear].members;}
 
-let appData = initData();
-let currentYear = Object.keys(appData.years)[0];
-let currentPayIdx = -1;
-let tempPaid = [];
-let notifyPaid = [];
-
-function saveData() { localStorage.setItem(STORAGE_KEY, JSON.stringify(appData)); }
-function getMembers() { return appData.years[currentYear].members; }
-
-// ===== YEAR TABS =====
-function renderYearTabs() {
-  const wrapper = document.getElementById('year-tabs-wrapper');
-  const addBtn = wrapper.querySelector('.add-year-btn');
-  // remove old tabs
-  wrapper.querySelectorAll('.year-tab').forEach(t => t.remove());
-  const years = Object.keys(appData.years).sort();
-  years.forEach(y => {
-    const btn = document.createElement('button');
-    btn.className = 'year-tab' + (y === currentYear ? ' active' : '');
-    btn.textContent = y + ' সাল';
-    btn.onclick = function() { currentYear = y; renderYearTabs(); refreshAll(); };
-    wrapper.insertBefore(btn, addBtn);
+function renderYearTabs(){
+  const wrapper=document.getElementById("year-tabs-wrapper");
+  const addBtn=wrapper.querySelector(".add-year-btn");
+  wrapper.querySelectorAll(".year-tab").forEach(t=>t.remove());
+  Object.keys(appData.years).sort().forEach(y=>{
+    const btn=document.createElement("button");
+    btn.className="year-tab"+(y===currentYear?" active":"");
+    btn.textContent=y+" সাল";
+    btn.onclick=function(){currentYear=y;renderYearTabs();refreshAll();};
+    wrapper.insertBefore(btn,addBtn);
   });
-  document.querySelectorAll('[id^="year-label-"]').forEach(el => el.textContent = currentYear + ' সাল');
+  document.querySelectorAll("[id^=year-label-]").forEach(el=>el.textContent=currentYear+" সাল");
+}
+function openAddYear(){openModal("add-year-modal");}
+function addNewYear(){
+  const y=document.getElementById("new-year-input").value.trim();
+  if(!y||isNaN(y)||y<2020||y>2060){showToast("⚠️ সঠিক সাল দিন");return;}
+  if(appData.years[y]){showToast("⚠️ এই সাল আগেই আছে!");return;}
+  const latest=Object.keys(appData.years).sort().pop();
+  appData.years[y]={members:appData.years[latest].members.map(m=>({id:m.id,name:m.name,phone:m.phone,amount:m.amount,paid:[]}))};
+  currentYear=y;
+  saveData();closeModal("add-year-modal");renderYearTabs();refreshAll();
+  showToast("✅ "+y+" সাল তৈরি হয়েছে!");
 }
 
-function openAddYear() { openModal('add-year-modal'); }
-
-function addNewYear() {
-  const y = document.getElementById('new-year-input').value.trim();
-  if (!y || isNaN(y) || y < 2020 || y > 2060) { showToast('⚠️ সঠিক সাল দিন (2020-2060)'); return; }
-  if (appData.years[y]) { showToast('⚠️ এই সাল আগেই আছে!'); return; }
-  // copy members from latest year, reset paid
-  const latestYear = Object.keys(appData.years).sort().pop();
-  const prevMembers = appData.years[latestYear].members;
-  appData.years[y] = {
-    members: prevMembers.map(m => ({ id: m.id, name: m.name, phone: m.phone, amount: m.amount, paid: [] }))
-  };
-  currentYear = y;
-  saveData();
-  closeModal('add-year-modal');
-  renderYearTabs();
-  refreshAll();
-  showToast('✅ ' + y + ' সাল তৈরি হয়েছে! সদস্যরা কপি হয়েছে।');
+function calcStats(members){
+  const fullPaid=members.filter(m=>m.paid.length===14).length;
+  const partial=members.filter(m=>m.paid.length>0&&m.paid.length<14).length;
+  const unpaid=members.filter(m=>m.paid.length===0).length;
+  const collected=members.reduce((s,m)=>s+m.paid.reduce((t,si)=>t+(EID_SLOTS.includes(si)?m.amount*2:m.amount),0),0);
+  const due=members.reduce((s,m)=>{
+    let d=0;for(let i=0;i<14;i++) if(!m.paid.includes(i)) d+=(EID_SLOTS.includes(i)?m.amount*2:m.amount);return s+d;
+  },0);
+  return{total:members.length,fullPaid,partial,unpaid,collected,due};
+}
+function statsHTML(s){
+  return "<div class=stat-card><div class=stat-num>"+s.total+"</div><div class=stat-label>মোট সদস্য</div></div>"+
+    "<div class=\"stat-card gold\"><div class=stat-num>"+s.fullPaid+"</div><div class=stat-label>সম্পূর্ণ পরিশোধ</div></div>"+
+    "<div class=\"stat-card red\"><div class=stat-num>"+s.unpaid+"</div><div class=stat-label>বকেয়া</div></div>"+
+    "<div class=stat-card><div class=stat-num>৳"+s.collected.toLocaleString()+"</div><div class=stat-label>সংগৃহীত</div></div>";
+}
+function updateStats(){
+  const s=calcStats(getMembers());
+  const sg=document.getElementById("stats-grid");
+  if(sg)sg.innerHTML=statsHTML(s);
+  const as=document.getElementById("admin-stats");
+  if(as)as.innerHTML=statsHTML(s)+"<div class=\"stat-card red\"><div class=stat-num>৳"+s.due.toLocaleString()+"</div><div class=stat-label>বকেয়া টাকা</div></div>";
 }
 
-// ===== STATS =====
-function updateStats() {
-  const members = getMembers();
-  const totalSlots = 14;
-  const fullPaid = members.filter(m => m.paid.length === totalSlots).length;
-  const partial = members.filter(m => m.paid.length > 0 && m.paid.length < totalSlots).length;
-  const unpaid = members.filter(m => m.paid.length === 0).length;
-  const collected = members.reduce((s, m) => {
-    let total = 0;
-    m.paid.forEach(si => { total += EID_SLOTS.includes(si) ? m.amount * 2 : m.amount; });
-    return s + total;
-  }, 0);
-  const due = members.reduce((s, m) => {
-    let d = 0;
-    for (let i = 0; i < totalSlots; i++) {
-      if (!m.paid.includes(i)) d += EID_SLOTS.includes(i) ? m.amount * 2 : m.amount;
-    }
-    return s + d;
-  }, 0);
-
-  const sg = document.getElementById('stats-grid');
-  if (sg) sg.innerHTML = statsHTML(members.length, fullPaid, unpaid + partial, collected);
-  const as = document.getElementById('admin-stats');
-  if (as) as.innerHTML = statsHTML(members.length, fullPaid, unpaid + partial, collected) +
-    '<div class="stat-card red"><div class="stat-num">৳' + due.toLocaleString() + '</div><div class="stat-label">বকেয়া টাকা</div></div>';
+function renderNotices(){
+  const list=document.getElementById("notice-list");
+  const notices=appData.notices||[];
+  if(!notices.length){list.innerHTML="<div class=no-notice>কোনো নোটিশ নেই</div>";return;}
+  list.innerHTML=notices.slice().reverse().map((n,i)=>
+    "<div class=notice-item>"+n.text+"<div class=n-date>"+n.date+"</div>"+(isAdmin()?"<button onclick=\"deleteNotice("+(notices.length-1-i)+")\" style=\"float:right;background:var(--red);color:white;border:none;border-radius:5px;padding:2px 8px;font-size:10px;cursor:pointer\">মুছুন</button>":"")+"</div>"
+  ).join("");
 }
-
-function statsHTML(total, paid, unpaid, collected) {
-  return '<div class="stat-card"><div class="stat-num">' + total + '</div><div class="stat-label">মোট সদস্য</div></div>' +
-    '<div class="stat-card gold"><div class="stat-num">' + paid + '</div><div class="stat-label">সম্পূর্ণ পরিশোধ</div></div>' +
-    '<div class="stat-card red"><div class="stat-num">' + unpaid + '</div><div class="stat-label">বকেয়া আছে</div></div>' +
-    '<div class="stat-card"><div class="stat-num">৳' + collected.toLocaleString() + '</div><div class="stat-label">সংগৃহীত টাকা</div></div>';
+function addNotice(){
+  const text=document.getElementById("notice-text").value.trim();
+  if(!text){showToast("⚠️ নোটিশ লিখুন");return;}
+  if(!appData.notices)appData.notices=[];
+  appData.notices.push({text,date:new Date().toLocaleDateString("bn-BD")});
+  saveData();closeModal("add-notice-modal");
+  document.getElementById("notice-text").value="";
+  renderNotices();showToast("📢 নোটিশ প্রকাশিত!");
 }
+function deleteNotice(idx){appData.notices.splice(idx,1);saveData();renderNotices();showToast("🗑️ মুছে ফেলা হয়েছে");}
 
-// ===== RENDER MEMBERS =====
-function renderMembers(list) {
-  const grid = document.getElementById('members-grid');
-  if (!list.length) { grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px;color:var(--text-muted)"><div style="font-size:40px">🔍</div><p>কোনো সদস্য পাওয়া যায়নি</p></div>'; return; }
-  grid.innerHTML = list.map(m => {
-    const idx = getMembers().indexOf(m);
-    const paidCount = m.paid.length;
-    const pct = Math.round(paidCount / 14 * 100);
-    let cardClass = 'unpaid', statusLabel = 'বকেয়া', statusCSS = 'status-unpaid';
-    if (paidCount === 14) { cardClass = ''; statusLabel = 'সম্পূর্ণ পরিশোধ'; statusCSS = 'status-paid'; }
-    else if (paidCount > 0) { cardClass = 'partial'; statusLabel = 'আংশিক'; statusCSS = 'status-partial'; }
-
-    const slots = SLOTS.map((s, si) => {
-      const isPaid = m.paid.includes(si);
-      const isEid = EID_SLOTS.includes(si);
-      let cls = isPaid ? (isEid ? 'slot-eid-paid' : 'slot-paid') : (isEid ? 'slot-eid' : 'slot-unpaid');
-      return '<div class="p-slot ' + cls + '" title="' + s + '">' + s.substring(0,3) + '</div>';
-    }).join('');
-
-    const collected = m.paid.reduce((s, si) => s + (EID_SLOTS.includes(si) ? m.amount * 2 : m.amount), 0);
-
-    return '<div class="member-card ' + cardClass + '">' +
-      '<div class="member-top"><span class="member-id">' + m.id + '</span><span class="member-status ' + statusCSS + '">' + statusLabel + '</span></div>' +
-      '<div class="member-name">' + m.name + '</div>' +
-      '<div class="member-phone">' + (m.phone || 'নম্বর নেই') + ' | মাসিক: ৳' + m.amount + ' | দিয়েছে: ৳' + collected + '</div>' +
-      '<div class="payment-slots">' + slots + '</div>' +
-      '<div class="member-summary"><span>' + paidCount + '/14</span><div class="paid-bar"><div class="paid-fill" style="width:' + pct + '%"></div></div><span>' + pct + '%</span></div>' +
-      '<div class="member-actions">' +
-      '<button class="btn-sm btn-pay" onclick="openPayModal(' + idx + ')">💳 পেমেন্ট</button>' +
-      (isAdmin() ? '<button class="btn-sm btn-edit" onclick="openEditModal(' + idx + ')">✏️ এডিট</button>' : '') +
-      '</div></div>';
-  }).join('');
+function renderMembers(list){
+  const grid=document.getElementById("members-grid");
+  if(!list.length){grid.innerHTML="<div style=\"grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)\">🔍 কোনো সদস্য পাওয়া যায়নি</div>";return;}
+  grid.innerHTML=list.map(m=>{
+    const idx=getMembers().indexOf(m);
+    const pct=Math.round(m.paid.length/14*100);
+    let cardClass="unpaid",statusLabel="বকেয়া",statusCSS="status-unpaid";
+    if(m.paid.length===14){cardClass="";statusLabel="সম্পূর্ণ পরিশোধ";statusCSS="status-paid";}
+    else if(m.paid.length>0){cardClass="partial";statusLabel="আংশিক";statusCSS="status-partial";}
+    const slots=SLOTS.map((s,si)=>{
+      const isPaid=m.paid.includes(si),isEid=EID_SLOTS.includes(si);
+      let cls=isPaid?(isEid?"slot-eid-paid":"slot-paid"):(isEid?"slot-eid":"slot-unpaid");
+      return "<div class=\"p-slot "+cls+"\" title=\""+s+"\">"+s.substring(0,2)+"</div>";
+    }).join("");
+    const collected=m.paid.reduce((s,si)=>s+(EID_SLOTS.includes(si)?m.amount*2:m.amount),0);
+    return "<div class=\"member-card "+cardClass+"\">"+
+      "<div class=member-top><span class=member-id>"+m.id+"</span><span class=\"member-status "+statusCSS+"\">"+statusLabel+"</span></div>"+
+      "<div class=member-name>"+m.name+"</div>"+
+      "<div class=member-phone>"+(m.phone||"নম্বর নেই")+" | মাসিক: ৳"+m.amount+" | দিয়েছে: ৳"+collected+"</div>"+
+      "<div class=payment-slots>"+slots+"</div>"+
+      "<div class=member-summary><span>"+m.paid.length+"/14</span><div class=paid-bar><div class=paid-fill style=\"width:"+pct+"%\"></div></div><span>"+pct+"%</span></div>"+
+      "<div class=member-actions>"+
+      "<button class=\"btn-sm btn-pay\" onclick=\"openPayModal("+idx+")\">💳 পেমেন্ট</button>"+
+      (isAdmin()?"<button class=\"btn-sm btn-edit\" onclick=\"openEditModal("+idx+")\">✏️ এডিট</button>":"")+
+      "</div></div>";
+  }).join("");
 }
-
-function filterMembers() {
-  const q = document.getElementById('search-input').value.toLowerCase();
-  const f = document.getElementById('filter-status').value;
-  let list = getMembers().filter(m => {
-    const match = m.name.toLowerCase().includes(q) || m.id.toLowerCase().includes(q) || m.phone.includes(q);
-    if (!match) return false;
-    if (f === 'paid') return m.paid.length === 14;
-    if (f === 'partial') return m.paid.length > 0 && m.paid.length < 14;
-    if (f === 'unpaid') return m.paid.length === 0;
+function filterMembers(){
+  const q=document.getElementById("search-input").value.toLowerCase();
+  const f=document.getElementById("filter-status").value;
+  let list=getMembers().filter(m=>{
+    const match=m.name.toLowerCase().includes(q)||m.id.toLowerCase().includes(q)||m.phone.includes(q);
+    if(!match)return false;
+    if(f==="paid")return m.paid.length===14;
+    if(f==="partial")return m.paid.length>0&&m.paid.length<14;
+    if(f==="unpaid")return m.paid.length===0;
     return true;
   });
+  const badge=document.getElementById("member-count-badge");
+  if(badge)badge.textContent=list.length;
   renderMembers(list);
 }
 
-// ===== HISTORY =====
-function renderHistory() {
-  const tbody = document.getElementById('history-body');
-  tbody.innerHTML = getMembers().map(m => {
-    const paidNames = m.paid.map(i => SLOTS[i]).join(', ') || '—';
-    const due = 14 - m.paid.length;
-    const collected = m.paid.reduce((s, si) => s + (EID_SLOTS.includes(si) ? m.amount * 2 : m.amount), 0);
-    const status = m.paid.length === 14 ? '✅ সম্পূর্ণ' : m.paid.length > 0 ? '⚠️ আংশিক' : '❌ বকেয়া';
-    return '<tr><td><strong>' + m.id + '</strong></td><td>' + m.name + '</td><td>' + (m.phone||'—') + '</td>' +
-      '<td style="font-size:11px">' + paidNames + '</td><td style="color:var(--red)">' + due + ' টি</td>' +
-      '<td>৳' + collected.toLocaleString() + '</td><td>' + status + '</td></tr>';
-  }).join('');
+function loadProfile(){
+  const id=document.getElementById("profile-id-input").value.trim().toUpperCase();
+  const m=getMembers().find(m=>m.id.toUpperCase()===id);
+  const result=document.getElementById("profile-result");
+  if(!m){result.innerHTML="<div style=\"text-align:center;padding:20px;color:var(--red)\">❌ পাওয়া যায়নি</div>";return;}
+  const pct=Math.round(m.paid.length/14*100);
+  const collected=m.paid.reduce((s,si)=>s+(EID_SLOTS.includes(si)?m.amount*2:m.amount),0);
+  const slots=SLOTS.map((s,si)=>{
+    const isPaid=m.paid.includes(si),isEid=EID_SLOTS.includes(si);
+    let cls=isPaid?(isEid?"slot-eid-paid":"slot-paid"):(isEid?"slot-eid":"slot-unpaid");
+    return "<div class=\"p-slot "+cls+"\" style=\"font-size:10px;padding:5px 2px\">"+s+"</div>";
+  }).join("");
+  result.innerHTML="<div class=profile-card>"+
+    "<div class=profile-header><div class=profile-avatar>👤</div>"+
+    "<div class=profile-name>"+m.name+"</div><div class=profile-id>"+m.id+" | "+currentYear+" সাল</div></div>"+
+    "<div class=stats-grid style=\"margin-bottom:14px\">"+
+    "<div class=\"stat-card gold\"><div class=stat-num>৳"+m.amount+"</div><div class=stat-label>মাসিক চাঁদা</div></div>"+
+    "<div class=stat-card><div class=stat-num>৳"+collected+"</div><div class=stat-label>মোট পরিশোধ</div></div>"+
+    "<div class=\"stat-card red\"><div class=stat-num>"+(14-m.paid.length)+"</div><div class=stat-label>বাকি স্লট</div></div></div>"+
+    "<div style=\"font-size:12px;color:var(--text-muted);margin-bottom:8px\">পেমেন্ট অগ্রগতি: "+pct+"%</div>"+
+    "<div style=\"background:#e0e0e0;border-radius:5px;height:8px;margin-bottom:12px\"><div style=\"background:var(--green);height:8px;border-radius:5px;width:"+pct+"%\"></div></div>"+
+    "<div class=payment-slots style=\"grid-template-columns:repeat(7,1fr);gap:4px\">"+slots+"</div></div>";
 }
 
-// ===== ADMIN TABLE =====
-function renderAdminTable() {
-  const tbody = document.getElementById('admin-tbody');
-  tbody.innerHTML = getMembers().map((m, i) => {
-    return '<tr><td>' + m.id + '</td><td>' + m.name + '</td><td>' + (m.phone||'—') + '</td>' +
-      '<td>৳' + m.amount + '</td><td>' + m.paid.length + '/14</td>' +
-      '<td><button onclick="openEditModal(' + i + ')" style="padding:5px 12px;background:var(--green);color:white;border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-size:11px">✏️ এডিট</button>' +
-      '<button onclick="deleteMember(' + i + ')" style="padding:5px 10px;background:var(--red);color:white;border:none;border-radius:6px;cursor:pointer;font-family:inherit;font-size:11px;margin-left:5px">🗑️</button></td></tr>';
-  }).join('');
+function renderDueList(){
+  const list=document.getElementById("due-list");
+  const members=getMembers().filter(m=>m.paid.length<14);
+  members.sort((a,b)=>a.paid.length-b.paid.length);
+  if(!members.length){list.innerHTML="<div style=\"text-align:center;padding:30px;color:var(--green)\">🎉 সবাই পরিশোধ করেছে!</div>";return;}
+  list.innerHTML=members.map(m=>{
+    const due=14-m.paid.length;
+    const dueAmt=Array.from({length:14},(_,si)=>m.paid.includes(si)?0:(EID_SLOTS.includes(si)?m.amount*2:m.amount)).reduce((a,b)=>a+b,0);
+    return "<div class=\"due-item"+(due>7?" ":" medium")+"\">"+
+      "<div><div class=due-name>"+m.name+" ("+m.id+")</div><div class=due-info>"+(m.phone||"নম্বর নেই")+" | "+due+" স্লট বাকি</div></div>"+
+      "<div class=due-amount>৳"+dueAmt+"</div></div>";
+  }).join("");
 }
 
-// ===== SLOT CHECKBOXES =====
-function buildSlotCheckboxes(containerId, paidArr, prefix) {
-  const grid = document.getElementById(containerId);
-  grid.innerHTML = SLOTS.map((s, si) => {
-    const isEid = EID_SLOTS.includes(si);
-    const isPaid = paidArr.includes(si);
-    return '<div class="slot-check ' + (isEid ? 'eid-slot' : '') + (isPaid ? ' checked' : '') + '" id="' + prefix + si + '" onclick="toggleSlot(\'' + prefix + '\',' + si + ')">' +
-      '<div class="slot-checkmark">' + (isPaid ? '✓' : '') + '</div>' +
-      '<span>' + s + '</span>' +
-      (isEid ? '<span style="font-size:9px;color:#856404">ডাবল</span>' : '') +
-      '</div>';
-  }).join('');
+let myChart=null;
+function renderReport(){
+  const members=getMembers();
+  const amounts=SLOTS.map((_,si)=>members.reduce((t,m)=>t+(m.paid.includes(si)?(EID_SLOTS.includes(si)?m.amount*2:m.amount):0),0));
+  const ctx=document.getElementById("monthly-chart").getContext("2d");
+  if(myChart)myChart.destroy();
+  myChart=new Chart(ctx,{type:"bar",data:{labels:SLOTS,datasets:[{label:"টাকা (৳)",data:amounts,backgroundColor:"rgba(26,107,58,0.7)",borderColor:"rgba(26,107,58,1)",borderWidth:1}]},options:{responsive:true,scales:{y:{beginAtZero:true}}}});
+  const s=calcStats(members);
+  const rs=document.getElementById("report-stats");
+  if(rs)rs.innerHTML="<div class=\"stat-card gold\"><div class=stat-num>৳"+s.collected.toLocaleString()+"</div><div class=stat-label>মোট সংগৃহীত</div></div>"+
+    "<div class=\"stat-card red\"><div class=stat-num>৳"+s.due.toLocaleString()+"</div><div class=stat-label>মোট বকেয়া</div></div>"+
+    "<div class=stat-card><div class=stat-num>"+(s.fullPaid+s.partial)+"</div><div class=stat-label>পেমেন্ট করেছে</div></div>";
 }
 
-function toggleSlot(prefix, si) {
-  const arr = prefix === 'sc-' ? tempPaid : notifyPaid;
-  const label = document.getElementById(prefix + si);
-  const idx = arr.indexOf(si);
-  if (idx > -1) {
-    arr.splice(idx, 1);
-    label.classList.remove('checked');
-    label.querySelector('.slot-checkmark').textContent = '';
-  } else {
-    arr.push(si);
-    label.classList.add('checked');
-    label.querySelector('.slot-checkmark').textContent = '✓';
+function renderExpenses(){
+  if(isAdmin()){const btn=document.getElementById("expense-admin-btn");if(btn)btn.style.display="block";}
+  const expenses=appData.expenses||[];
+  const total=expenses.reduce((s,e)=>s+e.amount,0);
+  const collected=calcStats(getMembers()).collected;
+  const es=document.getElementById("expense-stats");
+  if(es)es.innerHTML="<div class=stat-card><div class=stat-num>৳"+collected.toLocaleString()+"</div><div class=stat-label>মোট আয়</div></div>"+
+    "<div class=\"stat-card red\"><div class=stat-num>৳"+total.toLocaleString()+"</div><div class=stat-label>মোট খরচ</div></div>"+
+    "<div class=\"stat-card gold\"><div class=stat-num>৳"+(collected-total).toLocaleString()+"</div><div class=stat-label>অবशिष्ट</div></div>";
+  const list=document.getElementById("expense-list");
+  if(!expenses.length){list.innerHTML="<div style=\"text-align:center;padding:30px;color:var(--text-muted)\">কোনো খরচ নেই</div>";return;}
+  list.innerHTML=expenses.slice().reverse().map((e,i)=>
+    "<div class=expense-item>"+
+    "<div><div class=expense-name>"+e.desc+"</div><div class=expense-date>"+e.date+"</div></div>"+
+    "<div style=\"display:flex;align-items:center;gap:8px\"><div class=expense-amount>৳"+e.amount+"</div>"+
+    (isAdmin()?"<button onclick=\"deleteExpense("+(expenses.length-1-i)+")\" style=\"background:var(--red);color:white;border:none;border-radius:5px;padding:2px 7px;font-size:10px;cursor:pointer\">মুছুন</button>":"")+
+    "</div></div>"
+  ).join("");
+}
+function addExpense(){
+  const desc=document.getElementById("exp-desc").value.trim();
+  const amount=parseInt(document.getElementById("exp-amount").value)||0;
+  const date=document.getElementById("exp-date").value;
+  if(!desc||!amount){showToast("⚠️ সব তথ্য দিন");return;}
+  if(!appData.expenses)appData.expenses=[];
+  appData.expenses.push({desc,amount,date:date||new Date().toLocaleDateString("bn-BD")});
+  saveData();closeModal("add-expense-modal");
+  document.getElementById("exp-desc").value="";document.getElementById("exp-amount").value="";
+  renderExpenses();showToast("✅ খরচ যোগ হয়েছে!");
+}
+function deleteExpense(idx){appData.expenses.splice(idx,1);saveData();renderExpenses();showToast("🗑️ মুছে ফেলা হয়েছে");}
+
+function renderMeetings(){
+  if(isAdmin()){const btn=document.getElementById("meeting-admin-btn");if(btn)btn.style.display="block";}
+  const meetings=appData.meetings||[];
+  const list=document.getElementById("meeting-list");
+  if(!meetings.length){list.innerHTML="<div style=\"text-align:center;padding:30px;color:var(--text-muted)\">কোনো মিটিং নেই</div>";return;}
+  list.innerHTML=meetings.slice().reverse().map((m,i)=>
+    "<div class=meeting-item>"+
+    "<div style=\"display:flex;justify-content:space-between;align-items:flex-start\">"+
+    "<div class=meeting-title>"+m.title+"</div>"+
+    (isAdmin()?"<button onclick=\"deleteMeeting("+(meetings.length-1-i)+")\" style=\"background:var(--red);color:white;border:none;border-radius:5px;padding:2px 7px;font-size:10px;cursor:pointer\">মুছুন</button>":"")+
+    "</div><div class=meeting-info>📅 "+m.date+" | 📍 "+m.place+"</div>"+
+    (m.desc?"<div style=\"font-size:12px;margin-top:6px\">"+m.desc+"</div>":"")+
+    "</div>"
+  ).join("");
+}
+function addMeeting(){
+  const title=document.getElementById("meet-title").value.trim();
+  const date=document.getElementById("meet-date").value;
+  const place=document.getElementById("meet-place").value.trim();
+  const desc=document.getElementById("meet-desc").value.trim();
+  if(!title){showToast("⚠️ বিষয় লিখুন");return;}
+  if(!appData.meetings)appData.meetings=[];
+  appData.meetings.push({title,date:date||"তারিখ নির্ধারিত হয়নি",place:place||"স্থান নির্ধারিত হয়নি",desc});
+  saveData();closeModal("add-meeting-modal");renderMeetings();showToast("✅ মিটিং যোগ হয়েছে!");
+}
+function deleteMeeting(idx){appData.meetings.splice(idx,1);saveData();renderMeetings();showToast("🗑️ মুছে ফেলা হয়েছে");}
+
+function submitComment(){
+  const name=document.getElementById("comment-name").value.trim();
+  const text=document.getElementById("comment-text").value.trim();
+  if(!name||!text){showToast("⚠️ নাম ও বার্তা লিখুন");return;}
+  if(!appData.comments)appData.comments=[];
+  appData.comments.push({name,text,date:new Date().toLocaleDateString("bn-BD")});
+  saveData();
+  const msg=encodeURIComponent("🕌 *ইসলামী ছাত্র কল্যাণ সমিতি*\n💬 *নতুন বার্তা*\n\n👤 "+name+"\n📝 "+text);
+  window.open("https://wa.me/88"+ADMIN1.phone+"?text="+msg,"_blank");
+  setTimeout(function(){window.open("https://wa.me/88"+ADMIN2.phone+"?text="+msg,"_blank");},800);
+  document.getElementById("comment-name").value="";document.getElementById("comment-text").value="";
+  document.getElementById("comment-sent-msg").style.display="block";
+  showToast("✅ বার্তা পাঠানো হয়েছে!");
+}
+function renderComments(){
+  if(isAdmin()){
+    const v=document.getElementById("comment-admin-view");
+    if(v)v.style.display="block";
+    const comments=appData.comments||[];
+    const list=document.getElementById("admin-comment-list");
+    if(!comments.length){list.innerHTML="<div style=\"text-align:center;padding:20px;color:var(--text-muted)\">কোনো বার্তা নেই</div>";return;}
+    list.innerHTML=comments.slice().reverse().map((c,i)=>
+      "<div class=comment-item>"+
+      "<div style=\"display:flex;justify-content:space-between\">"+
+      "<span class=comment-author>👤 "+c.name+"</span>"+
+      "<button onclick=\"deleteComment("+(comments.length-1-i)+")\" style=\"background:var(--red);color:white;border:none;border-radius:5px;padding:2px 7px;font-size:10px;cursor:pointer\">মুছুন</button>"+
+      "</div><div class=comment-text>"+c.text+"</div><div class=comment-date>"+c.date+"</div></div>"
+    ).join("");
   }
 }
+function deleteComment(idx){appData.comments.splice(idx,1);saveData();renderComments();showToast("🗑️ মুছে ফেলা হয়েছে");}
 
-// ===== EDIT MODAL =====
-function openEditModal(idx) {
-  if (!isAdmin()) { showToast('⚠️ শুধু অ্যাডমিন এডিট করতে পারবেন'); return; }
-  const m = getMembers()[idx];
-  tempPaid = m.paid.slice();
-  document.getElementById('edit-idx').value = idx;
-  document.getElementById('edit-id').value = m.id;
-  document.getElementById('edit-name').value = m.name;
-  document.getElementById('edit-phone').value = m.phone;
-  document.getElementById('edit-amount').value = m.amount;
-  buildSlotCheckboxes('slots-checkboxes', tempPaid, 'sc-');
-  openModal('edit-modal');
-}
-
-function saveEdit() {
-  const idx = parseInt(document.getElementById('edit-idx').value);
-  const members = getMembers();
-  members[idx].id = document.getElementById('edit-id').value;
-  members[idx].name = document.getElementById('edit-name').value;
-  members[idx].phone = document.getElementById('edit-phone').value;
-  members[idx].amount = parseInt(document.getElementById('edit-amount').value) || 200;
-  members[idx].paid = tempPaid.slice();
-  saveData();
-  closeModal('edit-modal');
-  refreshAll();
-  showToast('✅ সংরক্ষিত হয়েছে!');
+function renderHistory(){
+  const tbody=document.getElementById("history-body");
+  tbody.innerHTML=getMembers().map(m=>{
+    const paidNames=m.paid.map(i=>SLOTS[i]).join(", ")||"—";
+    const due=14-m.paid.length;
+    const collected=m.paid.reduce((s,si)=>s+(EID_SLOTS.includes(si)?m.amount*2:m.amount),0);
+    const status=m.paid.length===14?"✅ সম্পূর্ণ":m.paid.length>0?"⚠️ আংশিক":"❌ বকেয়া";
+    return "<tr><td><strong>"+m.id+"</strong></td><td>"+m.name+"</td><td>"+(m.phone||"—")+"</td>"+
+      "<td style=\"font-size:10px\">"+paidNames+"</td><td style=\"color:var(--red)\">"+due+" টি</td>"+
+      "<td>৳"+collected+"</td><td>"+status+"</td></tr>";
+  }).join("");
 }
 
-// ===== ADD MEMBER =====
-function openAddMember() { openModal('add-member-modal'); }
-function addMember() {
-  const id = document.getElementById('new-id').value.trim();
-  const name = document.getElementById('new-name').value.trim();
-  const phone = document.getElementById('new-phone').value.trim();
-  const amount = parseInt(document.getElementById('new-amount').value) || 200;
-  if (!id || !name) { showToast('⚠️ ID ও নাম দিন'); return; }
-  getMembers().push({ id, name, phone, amount, paid: [] });
-  saveData();
-  closeModal('add-member-modal');
-  refreshAll();
-  showToast('✅ নতুন সদস্য যোগ হয়েছে!');
+function renderAdminTable(){
+  const tbody=document.getElementById("admin-tbody");
+  tbody.innerHTML=getMembers().map((m,i)=>
+    "<tr><td>"+m.id+"</td><td>"+m.name+"</td><td>"+(m.phone||"—")+"</td><td>৳"+m.amount+"</td><td>"+m.paid.length+"/14</td>"+
+    "<td><button onclick=\"openEditModal("+i+")\" style=\"padding:4px 10px;background:var(--green);color:white;border:none;border-radius:5px;cursor:pointer;font-family:inherit;font-size:10px\">✏️</button>"+
+    "<button onclick=\"deleteMember("+i+")\" style=\"padding:4px 8px;background:var(--red);color:white;border:none;border-radius:5px;cursor:pointer;font-family:inherit;font-size:10px;margin-left:4px\">🗑️</button></td></tr>"
+  ).join("");
 }
 
-function deleteMember(idx) {
-  if (!confirm('এই সদস্য মুছে ফেলবেন?')) return;
-  getMembers().splice(idx, 1);
-  saveData();
-  refreshAll();
-  showToast('🗑️ সদস্য মুছে ফেলা হয়েছে');
+function buildSlotCheckboxes(containerId,paidArr,prefix){
+  const grid=document.getElementById(containerId);
+  grid.innerHTML=SLOTS.map((s,si)=>{
+    const isEid=EID_SLOTS.includes(si),isPaid=paidArr.includes(si);
+    return "<div class=\"slot-check "+(isEid?"eid-slot":"")+(isPaid?" checked":"")+"\" id=\""+prefix+si+"\" onclick=\"toggleSlot('"+prefix+"',"+si+")\">"+
+      "<div class=slot-checkmark>"+(isPaid?"✓":"")+"</div><span>"+s+"</span>"+(isEid?"<span style=\"font-size:8px;color:#856404\">ডাবল</span>":"")+
+      "</div>";
+  }).join("");
+}
+function toggleSlot(prefix,si){
+  const arr=prefix==="sc-"?tempPaid:notifyPaid;
+  const label=document.getElementById(prefix+si);
+  const idx=arr.indexOf(si);
+  if(idx>-1){arr.splice(idx,1);label.classList.remove("checked");label.querySelector(".slot-checkmark").textContent="";}
+  else{arr.push(si);label.classList.add("checked");label.querySelector(".slot-checkmark").textContent="✓";}
 }
 
-// ===== PAY MODAL =====
-function openPayModal(idx) {
-  currentPayIdx = idx;
-  const m = getMembers()[idx];
-  const due = (14 - m.paid.length);
-  document.getElementById('pay-member-name').textContent = m.name + ' (' + m.id + ')';
-  document.getElementById('pay-amount-info').textContent = 'বকেয়া: ' + due + ' টি স্লট | মাসিক চাঁদা: ৳' + m.amount;
-  openModal('pay-modal');
+function openEditModal(idx){
+  if(!isAdmin()){showToast("⚠️ শুধু অ্যাডমিন এডিট করতে পারবেন");return;}
+  const m=getMembers()[idx];
+  tempPaid=m.paid.slice();
+  document.getElementById("edit-idx").value=idx;
+  document.getElementById("edit-id").value=m.id;
+  document.getElementById("edit-name").value=m.name;
+  document.getElementById("edit-phone").value=m.phone;
+  document.getElementById("edit-amount").value=m.amount;
+  buildSlotCheckboxes("slots-checkboxes",tempPaid,"sc-");
+  openModal("edit-modal");
+}
+function saveEdit(){
+  const idx=parseInt(document.getElementById("edit-idx").value);
+  const members=getMembers();
+  members[idx].id=document.getElementById("edit-id").value;
+  members[idx].name=document.getElementById("edit-name").value;
+  members[idx].phone=document.getElementById("edit-phone").value;
+  members[idx].amount=parseInt(document.getElementById("edit-amount").value)||200;
+  members[idx].paid=tempPaid.slice();
+  saveData();closeModal("edit-modal");refreshAll();showToast("✅ সংরক্ষিত হয়েছে!");
 }
 
-function sendPayment(method) {
-  const m = getMembers()[currentPayIdx];
-  const phone = ADMIN1.phone;
-  const amount = m.amount;
-  const apps = { bkash: 'bkash://send?number='+phone+'&amount='+amount, nagad: 'nagad://send?number='+phone+'&amount='+amount, rocket: 'rocket://send?number='+phone+'&amount='+amount, upay: 'upay://send?number='+phone+'&amount='+amount };
-  window.location.href = apps[method];
-  closeModal('pay-modal');
-  setTimeout(function(){ openNotifyModal(); }, 1500);
-  showToast('📲 পেমেন্ট অ্যাপ খুলছে...');
+function openAddMember(){openModal("add-member-modal");}
+function addMember(){
+  const id=document.getElementById("new-id").value.trim();
+  const name=document.getElementById("new-name").value.trim();
+  const phone=document.getElementById("new-phone").value.trim();
+  const amount=parseInt(document.getElementById("new-amount").value)||200;
+  if(!id||!name){showToast("⚠️ ID ও নাম দিন");return;}
+  getMembers().push({id,name,phone,amount,paid:[]});
+  saveData();closeModal("add-member-modal");refreshAll();showToast("✅ নতুন সদস্য যোগ হয়েছে!");
+}
+function deleteMember(idx){
+  if(!confirm("এই সদস্য মুছে ফেলবেন?"))return;
+  getMembers().splice(idx,1);saveData();refreshAll();showToast("🗑️ সদস্য মুছে ফেলা হয়েছে");
 }
 
-function openNotifyModal() {
-  const m = getMembers()[currentPayIdx];
-  document.getElementById('notify-member-name').textContent = m.name + ' (' + m.id + ') — ' + currentYear + ' সাল';
-  notifyPaid = [];
-  buildSlotCheckboxes('notify-slots', [], 'ns-');
-  openModal('notify-modal');
+function openPayModal(idx){
+  currentPayIdx=idx;
+  const m=getMembers()[idx];
+  document.getElementById("pay-member-name").textContent=m.name+" ("+m.id+")";
+  document.getElementById("pay-amount-info").textContent="মাসিক চাঁদা: ৳"+m.amount+" | বাকি: "+(14-m.paid.length)+" স্লট";
+  openModal("pay-modal");
+}
+function sendPayment(method){
+  const m=getMembers()[currentPayIdx];
+  const phone=ADMIN1.phone;
+  const apps={bkash:"bkash://send?number="+phone+"&amount="+m.amount,nagad:"nagad://send?number="+phone+"&amount="+m.amount,rocket:"rocket://send?number="+phone+"&amount="+m.amount,upay:"upay://send?number="+phone+"&amount="+m.amount};
+  window.location.href=apps[method];
+  closeModal("pay-modal");
+  setTimeout(function(){openNotifyModal();},1500);
+  showToast("📲 পেমেন্ট অ্যাপ খুলছে...");
+}
+function openNotifyModal(){
+  const m=getMembers()[currentPayIdx];
+  document.getElementById("notify-member-name").textContent=m.name+" ("+m.id+") — "+currentYear+" সাল";
+  notifyPaid=[];
+  buildSlotCheckboxes("notify-slots",[],"ns-");
+  openModal("notify-modal");
+}
+function submitNotify(){
+  const m=getMembers()[currentPayIdx];
+  if(!notifyPaid.length){showToast("⚠️ কমপক্ষে একটি মাস সিলেক্ট করুন");return;}
+  const slotNames=notifyPaid.map(i=>SLOTS[i]).join(", ");
+  const total=notifyPaid.reduce((s,si)=>s+(EID_SLOTS.includes(si)?m.amount*2:m.amount),0);
+  const msg=encodeURIComponent("🕌 *ইসলামী ছাত্র কল্যাণ সমিতি*\n✅ *নতুন পেমেন্ট*\n\n📅 সাল: "+currentYear+"\n👤 নাম: "+m.name+"\n🪪 ID: "+m.id+"\n📱 নম্বর: "+(m.phone||"নেই")+"\n📅 স্লট: "+slotNames+"\n💰 পরিমাণ: ৳"+total+"\n⏳ কনফার্ম করুন");
+  window.open("https://wa.me/88"+ADMIN1.phone+"?text="+msg,"_blank");
+  setTimeout(function(){window.open("https://wa.me/88"+ADMIN2.phone+"?text="+msg,"_blank");},800);
+  closeModal("notify-modal");showToast("✅ অ্যাডমিনদের জানানো হয়েছে!");
 }
 
-function submitNotify() {
-  const m = getMembers()[currentPayIdx];
-  if (!notifyPaid.length) { showToast('⚠️ কমপক্ষে একটি মাস সিলেক্ট করুন'); return; }
-  const slotNames = notifyPaid.map(i => SLOTS[i]).join(', ');
-  const total = notifyPaid.reduce((s, si) => s + (EID_SLOTS.includes(si) ? m.amount * 2 : m.amount), 0);
-  const msg = encodeURIComponent(
-    '🕌 *ইসলামী ছাত্র কল্যাণ সমিতি*\n━━━━━━━━━━━━━━━\n✅ *নতুন পেমেন্ট নোটিফিকেশন*\n\n' +
-    '📅 সাল: ' + currentYear + '\n' +
-    '👤 নাম: ' + m.name + '\n🪪 ID: ' + m.id + '\n📱 নম্বর: ' + (m.phone||'নেই') + '\n' +
-    '📅 স্লট: ' + slotNames + '\n💰 পরিমাণ: ৳' + total +
-    '\n━━━━━━━━━━━━━━━\n⏳ অনুগ্রহ করে কনফার্ম করুন'
-  );
-  window.open('https://wa.me/88' + ADMIN1.phone + '?text=' + msg, '_blank');
-  setTimeout(function(){ window.open('https://wa.me/88' + ADMIN2.phone + '?text=' + msg, '_blank'); }, 800);
-  closeModal('notify-modal');
-  showToast('✅ আশরাফ উদ্দিন ও সিয়াম হাসানকে জানানো হয়েছে!');
+function isAdmin(){return sessionStorage.getItem("ics_admin")==="yes";}
+function togglePass(){const inp=document.getElementById("admin-pass");inp.type=inp.type==="password"?"text":"password";}
+function adminLogin(){
+  const pass=document.getElementById("admin-pass").value;
+  if(pass===FIXED_PASS){
+    sessionStorage.setItem("ics_admin","yes");
+    document.getElementById("admin-login").style.display="none";
+    document.getElementById("admin-panel").style.display="block";
+    renderAdminTable();updateStats();showToast("✅ অ্যাডমিন লগইন সফল!");
+  }else{showToast("❌ পাসওয়ার্ড ভুল!");}
+}
+function adminLogout(){
+  sessionStorage.removeItem("ics_admin");
+  document.getElementById("admin-login").style.display="block";
+  document.getElementById("admin-panel").style.display="none";
+  document.getElementById("admin-pass").value="";
+  showToast("👋 লগআউট সফল");
 }
 
-// ===== ADMIN AUTH =====
-function isAdmin() { return sessionStorage.getItem('ics_admin') === 'yes'; }
-function adminLogin() {
-  const pass = document.getElementById('admin-pass').value;
-  const stored = localStorage.getItem(PASS_KEY) || 'admin123';
-  if (pass === stored) {
-    sessionStorage.setItem('ics_admin','yes');
-    document.getElementById('admin-login').style.display = 'none';
-    document.getElementById('admin-panel').style.display = 'block';
-    renderAdminTable(); updateStats();
-    showToast('✅ অ্যাডমিন লগইন সফল!');
-  } else { showToast('❌ পাসওয়ার্ড ভুল!'); }
-}
-function adminLogout() {
-  sessionStorage.removeItem('ics_admin');
-  document.getElementById('admin-login').style.display = 'block';
-  document.getElementById('admin-panel').style.display = 'none';
-  document.getElementById('admin-pass').value = '';
-  showToast('👋 লগআউট সফল');
-}
-function changePassword() {
-  const p = prompt('নতুন পাসওয়ার্ড দিন:');
-  if (p && p.length >= 4) { localStorage.setItem(PASS_KEY, p); showToast('🔑 পাসওয়ার্ড পরিবর্তিত!'); }
-  else if (p) showToast('⚠️ কমপক্ষে ৪ অক্ষর দিন');
+function showPage(page,btn){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".main-nav button").forEach(b=>b.classList.remove("active"));
+  document.getElementById("page-"+page).classList.add("active");
+  if(btn)btn.classList.add("active");
+  if(page==="members"){filterMembers();updateStats();renderNotices();}
+  if(page==="due")renderDueList();
+  if(page==="report")renderReport();
+  if(page==="expense")renderExpenses();
+  if(page==="meeting")renderMeetings();
+  if(page==="comment")renderComments();
+  if(page==="history")renderHistory();
+  if(page==="admin"){updateStats();if(isAdmin())renderAdminTable();}
 }
 
-// ===== PAGE NAV =====
-function showPage(page, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.main-nav button').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + page).classList.add('active');
-  if (btn) btn.classList.add('active');
-  if (page === 'members') { filterMembers(); updateStats(); }
-  if (page === 'history') renderHistory();
-  if (page === 'admin') { updateStats(); if (isAdmin()) renderAdminTable(); }
-}
-
-// ===== MODAL HELPERS =====
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(o => {
-  o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('open'); });
+function openModal(id){document.getElementById(id).classList.add("open");}
+function closeModal(id){document.getElementById(id).classList.remove("open");}
+document.querySelectorAll(".modal-overlay").forEach(o=>{
+  o.addEventListener("click",function(e){if(e.target===o)o.classList.remove("open");});
 });
 
-// ===== TOAST =====
-function showToast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg; t.classList.add('show');
-  setTimeout(function(){ t.classList.remove('show'); }, 3000);
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg;t.classList.add("show");
+  setTimeout(function(){t.classList.remove("show");},3000);
+}
+function refreshAll(){
+  updateStats();filterMembers();renderNotices();
+  if(isAdmin())renderAdminTable();
+  document.querySelectorAll("[id^=year-label-]").forEach(el=>el.textContent=currentYear+" সাল");
 }
 
-function refreshAll() {
-  updateStats(); filterMembers();
-  if (isAdmin()) renderAdminTable();
-  renderHistory();
-  document.querySelectorAll('[id^="year-label-"]').forEach(el => el.textContent = currentYear + ' সাল');
-}
-
-// ===== INIT =====
 renderYearTabs();
 renderMembers(getMembers());
 updateStats();
+renderNotices();
 </script>
 </body>
 </html>
