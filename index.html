@@ -42,9 +42,9 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
 .page{display:none;}.page.active{display:block;}
 .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;}
 .stat-card{background:white;border-radius:12px;padding:16px;text-align:center;border-left:4px solid var(--green);box-shadow:var(--shadow);}
-.stat-card.gold {border-left-color:var(--gold);}
-.stat-card.red {border-left-color:var(--red);}
-.stat-card.blue {border-left-color:var(--blue);}
+.stat-card.gold{border-left-color:var(--gold);}
+.stat-card.red{border-left-color:var(--red);}
+.stat-card.blue{border-left-color:var(--blue);}
 .stat-num{font-size:26px;font-weight:700;color:var(--green);font-family:"Noto Serif Bengali",serif;}
 .stat-card.gold .stat-num{color:var(--gold);}
 .stat-card.red .stat-num{color:var(--red);}
@@ -97,9 +97,9 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
 .modal-body{padding:20px;}
 .form-group{margin-bottom:12px;}
 .form-group label{display:block;font-size:12px;font-weight:500;color:var(--green-dark);margin-bottom:4px;}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:99px;font-family:"Noto Sans Bengali",sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:9px;font-family:"Noto Sans Bengali",sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green);}
-.form-group textarea{resize:vertical;min-height:80px;border-radius:9px;}
+.form-group textarea{resize:vertical;min-height:80px;}
 .pass-wrapper{position:relative;}
 .pass-wrapper input{padding-right:40px;}
 .eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-muted);}
@@ -132,7 +132,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
 .due-item{background:white;border-radius:10px;padding:12px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;border-left:3px solid var(--red);}
 .due-item.medium{border-left-color:var(--gold);}
 .due-name{font-size:13px;font-weight:600;color:var(--green-dark);}
-.due-info{font-size:11px;color:var(--text-muted);margin-top:4px;}
+.due-info{font-size:11px;color:var(--text-muted);}
 .due-amount{font-size:14px;font-weight:700;color:var(--red);}
 .expense-list{display:flex;flex-direction:column;gap:8px;}
 .expense-item{background:white;border-radius:10px;padding:12px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;}
@@ -175,7 +175,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
     <div class="admin-contact-card">
       <div>&#x1F464;</div>
       <div class="ac-info">
-        <div class="ac-role">&#x985;&#x9CD;&#x9AF;&#x9BE;&#x9A1;&#x9AE;&#x9BF;&#x9A8;</div>
+        <div class="ac-role">&#x985;&#x9CD;&#x9AF;&#x9BE;&#x9A1;&#x9AE;&#x9BF;&#x9AAdmin</div>
         <div class="ac-name">&#x986;&#x9B6;&#x9B0;&#x9BE;&#x9AB; &#x989;&#x9A6;&#x9CD;&#x9A6;&#x9BF;&#x9A8;</div>
       </div>
       <a href="tel:01340122316" class="ac-call">&#x1F4DE; &#x995;&#x9B2;</a>
@@ -183,7 +183,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
     <div class="admin-contact-card">
       <div>&#x1F464;</div>
       <div class="ac-info">
-        <div class="ac-role">&#x985;&#x9CD;&#x9AF;&#x9BE;&#x9A1;&#x9AE;&#x9BF;&#x9A8;</div>
+        <div class="ac-role">&#x985;&#x9CD;&#x9AF;&#x9BE;&#x9A1;&#x9AE;&#x9BF;&#x9AAdmin</div>
         <div class="ac-name">&#x9B8;&#x9BF;&#x9AF;&#x9BC;&#x9BE;&#x9AE; &#x9B9;&#x9BE;&#x9B8;&#x9BE;&#x9A8;</div>
       </div>
       <a href="tel:01753003126" class="ac-call">&#x1F4DE; &#x995;&#x9B2;</a>
@@ -205,9 +205,10 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
   <button class="add-year-btn" onclick="openAddYear()">&#xFF0B; &#x9A8;&#x9A4;&#x9C1;&#x9A8; &#x9B8;&#x9BE;&#x9B2;</button>
 </div>
 <div style="text-align:center;padding:10px;background:white;border-bottom:1px solid var(--border)">
-  <button onclick="openModal('guide-modal')" style="background:var(--green);color:white;border:none;border-radius:20px;padding:7px 20px;font-family:inherit;font-size:12px;cursor:pointer">&#x1F4D6; &#x9AC;&#x9CD;&#x9AF;&#x9AC;&#x9B9;&#x9BE;&#x9B0; &#x9A8;&#x9BF;&#x9B0;&#x9CD;&#x9A6;&#x9C7;&#x9B6;&#x9BF;&#x995;&#x9BE;</button>
+  <button onclick="openModal('guide-modal')" style="background:var(--green);color:white;border:none;border-radius:20px;padding:7px 20px;font-family:inherit;font-size:12px;cursor:pointer">&#x1F4D6; &#x9AC;&#x9CD;&#x9AF;&#x9BA;&#x9B9;&#x9BE;&#x9B0; &#x9A8;&#x9BF;&#x9B0;&#x9CD;&#x9A6;&#x9C7;&#x9B6;&#x9BF;&#x995;&#x9BE;</button>
 </div>
 
+<!-- MEMBERS PAGE -->
 <div id="page-members" class="page active">
   <div class="container">
     <div class="notice-board">
@@ -229,6 +230,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
   </div>
 </div>
 
+<!-- PROFILE PAGE -->
 <div id="page-profile" class="page">
   <div class="container">
     <div class="section-title">🪪 আমার প্রোফাইল</div>
@@ -245,6 +247,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
   </div>
 </div>
 
+<!-- DUE PAGE -->
 <div id="page-due" class="page">
   <div class="container">
     <div class="section-title">⚠️ বকেয়া তালিকা — <span id="year-label-due">২০২৪</span></div>
@@ -252,6 +255,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
   </div>
 </div>
 
+<!-- REPORT PAGE -->
 <div id="page-report" class="page">
   <div class="container">
     <div class="section-title">📊 মাসিক রিপোর্ট — <span id="year-label-report">২০২৪</span></div>
@@ -260,6 +264,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
   </div>
 </div>
 
+<!-- EXPENSE PAGE -->
 <div id="page-expense" class="page">
   <div class="container">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
@@ -273,6 +278,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
   </div>
 </div>
 
+<!-- MEETING PAGE -->
 <div id="page-meeting" class="page">
   <div class="container">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
@@ -285,6 +291,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
   </div>
 </div>
 
+<!-- COMMENT PAGE -->
 <div id="page-comment" class="page">
   <div class="container">
     <div class="section-title">💬 বার্তা / মন্তব্য</div>
@@ -301,6 +308,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
   </div>
 </div>
 
+<!-- HISTORY PAGE -->
 <div id="page-history" class="page">
   <div class="container">
     <div class="section-title">📋 পেমেন্ট হিস্টোরি — <span id="year-label-history">২০২৪</span></div>
@@ -313,6 +321,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
   </div>
 </div>
 
+<!-- ADMIN PAGE -->
 <div id="page-admin" class="page">
   <div class="container">
     <div id="admin-login">
@@ -351,6 +360,7 @@ header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
   </div>
 </div>
 
+<!-- MODALS -->
 <div class="modal-overlay" id="edit-modal">
   <div class="modal">
     <div class="modal-header"><h3>✏️ সদস্য সম্পাদনা</h3><button class="modal-close" onclick="closeModal('edit-modal')">✕</button></div>
@@ -583,7 +593,7 @@ function addNotice(){
   appData.notices.push({text,date:new Date().toLocaleDateString("bn-BD")});
   saveData();closeModal("add-notice-modal");
   document.getElementById("notice-text").value="";
-  renderNotices();showToast("📢 নোটিশ প্রকাশিত!");
+  renderNotices();showToast("📢 நோটিশ প্রকাশিত!");
 }
 function deleteNotice(idx){appData.notices.splice(idx,1);saveData();renderNotices();showToast("🗑️ মুছে ফেলা হয়েছে");}
 
@@ -610,7 +620,7 @@ function renderMembers(list){
       "<div class=member-summary><span>"+m.paid.length+"/14</span><div class=paid-bar><div class=paid-fill style=\"width:"+pct+"%\"></div></div><span>"+pct+"%</span></div>"+
       "<div class=member-actions>"+
       "<button class=\"btn-sm btn-pay\" onclick=\"openPayModal("+idx+")\">💳 পেমেন্ট</button>"+
-      (isAdmin()?"<button class=\"btn-sm btn-edit\" onclick=\"openEditModal("+idx+")\">✏️ এডিট</button>":"")+
+      (isAdmin()?'<button class="btn-sm btn-edit" onclick="openEditModal('+idx+')">✏️ এডিট</button>':'')+
       "</div></div>";
   }).join("");
 }
@@ -690,7 +700,7 @@ function renderExpenses(){
   const es=document.getElementById("expense-stats");
   if(es)es.innerHTML="<div class=stat-card><div class=stat-num>৳"+collected.toLocaleString()+"</div><div class=stat-label>মোট আয়</div></div>"+
     "<div class=\"stat-card red\"><div class=stat-num>৳"+total.toLocaleString()+"</div><div class=stat-label>মোট খরচ</div></div>"+
-    "<div class=\"stat-card gold\"><div class=stat-num>৳"+(collected-total).toLocaleString()+"</div><div class=stat-label>অবशिष्ट</div></div>";
+    "<div class=\"stat-card gold\"><div class=stat-num>৳"+(collected-total).toLocaleString()+"</div><div class=stat-label>অবশিষ্ট</div></div>";
   const list=document.getElementById("expense-list");
   if(!expenses.length){list.innerHTML="<div style=\"text-align:center;padding:30px;color:var(--text-muted)\">কোনো খরচ নেই</div>";return;}
   list.innerHTML=expenses.slice().reverse().map((e,i)=>
