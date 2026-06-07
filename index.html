@@ -3,489 +3,194 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ইসলামী ছাত্র কল্যাণ সমিতি - Amjad Hosneyara Technical Training Institute</title>
-<meta name="description" content="ইসলামী ছাত্র কল্যাণ সমিতি, Amjad Hosneyara Technical Training Institute, Dhaka। শিক্ষার্থীদের কল্যাণমূলক এবং প্রশাসনিক কার্যক্রম পরিচালনার ডিজিটাল প্ল্যাটফর্ম।">
-<meta name="keywords" content="ইসলামী ছাত্র কল্যাণ সমিতি, Amjad Hosneyara Technical Training Institute, ছাত্র সংগঠন, পেমেন্ট ম্যানেজমেন্ট, শিক্ষা">
-<meta name="author" content="Admin">
+<title>সমিতি ম্যানেজমেন্ট PRO</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<!-- Firebase COMPAT (IMPORTANT) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
 <style>
-:root {
-  --green:#1a6b3a;--green-light:#2d8f52;--green-dark:#0f4224;
-  --gold:#c9a84c;--gold-light:#e8c96a;
-  --bg:#f5f0e8;--text:#1a1a1a;--text-muted:#666;
-  --border:#d4c9b0;--red:#c0392b;--shadow:0 4px 20px rgba(0,0,0,0.1);
-  --blue:#2980b9;
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:"Noto Sans Bengali",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
-header{background:linear-gradient(135deg,var(--green-dark),var(--green),var(--green-light));color:white;text-align:center;padding:24px 20px 20px;position:relative;overflow:hidden;}
-header::before{content:"";position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:repeating-linear-gradient(45deg,transparent,transparent 20px,rgba(255,255,255,0.02) 20px,rgba(255,255,255,0.02) 40px);}
-.bismillah{font-size:17px;color:var(--gold-light);margin-bottom:7px;font-family:"Noto Serif Bengali",serif;}
-header h1{font-family:"Noto Serif Bengali",serif;font-size:22px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,0.3);}
-header p{font-size:12px;opacity:.85;margin-top:4px;color:var(--gold-light);}
-.admin-contacts{margin-top:14px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
-.admin-contact-card{background:rgba(255,255,255,0.12);border:1px solid rgba(201,168,76,0.5);border-radius:25px;padding:7px 16px;display:flex;align-items:center;gap:8px;}
-.admin-contact-card .ac-info{text-align:left;}
-.admin-contact-card .ac-role{font-size:10px;color:var(--gold-light);opacity:.9;}
-.admin-contact-card .ac-name{font-size:13px;font-weight:600;color:white;font-family:"Noto Serif Bengali",serif;}
-.ac-call{background:var(--gold);color:var(--green-dark);border:none;border-radius:15px;padding:4px 10px;font-size:11px;cursor:pointer;font-weight:600;text-decoration:none;display:inline-block;}
-.main-nav{background:var(--green-dark);display:flex;justify-content:center;border-bottom:3px solid var(--gold);overflow-x:auto;scrollbar-width:none;}
-.main-nav::-webkit-scrollbar{display:none;}
-.main-nav button{background:none;border:none;color:rgba(255,255,255,.75);font-family:"Noto Sans Bengali",sans-serif;font-size:12px;padding:12px 14px;cursor:pointer;transition:all .2s;border-bottom:3px solid transparent;margin-bottom:-3px;white-space:nowrap;}
-.main-nav button:hover{color:white;background:rgba(255,255,255,.05);}
-.main-nav button.active{color:var(--gold-light);border-bottom-color:var(--gold);background:rgba(255,255,255,.07);}
-.year-tabs-wrapper{background:white;border-bottom:2px solid var(--border);padding:0 12px;display:flex;align-items:center;overflow-x:auto;gap:4px;scrollbar-width:none;}
-.year-tabs-wrapper::-webkit-scrollbar{display:none;}
-.year-tab{background:none;border:none;font-family:"Noto Sans Bengali",sans-serif;font-size:13px;padding:11px 16px;cursor:pointer;color:var(--text-muted);border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s;}
-.year-tab:hover{color:var(--green);}
-.year-tab.active{color:var(--green-dark);border-bottom-color:var(--green);font-weight:600;}
-.add-year-btn{background:var(--green);color:white;border:none;border-radius:20px;padding:5px 12px;font-family:"Noto Sans Bengali",sans-serif;font-size:11px;cursor:pointer;white-space:nowrap;margin-left:6px;}
-.container{max-width:1100px;margin:0 auto;padding:18px 14px;}
-.page{display:none;}.page.active{display:block;}
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px;}
-.stat-card{background:white;border-radius:12px;padding:16px;text-align:center;border-left:4px solid var(--green);box-shadow:var(--shadow);}
-.stat-card.gold{border-left-color:var(--gold);}
-.stat-card.red{border-left-color:var(--red);}
-.stat-card.blue{border-left-color:var(--blue);}
-.stat-num{font-size:26px;font-weight:700;color:var(--green);font-family:"Noto Serif Bengali",serif;}
-.stat-card.gold .stat-num{color:var(--gold);}
-.stat-card.red .stat-num{color:var(--red);}
-.stat-card.blue .stat-num{color:var(--blue);}
-.stat-label{font-size:11px;color:var(--text-muted);margin-top:3px;}
-.section-title{font-family:"Noto Serif Bengali",serif;font-size:16px;color:var(--green-dark);border-bottom:2px solid var(--gold);padding-bottom:7px;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
-.notice-board{background:linear-gradient(135deg,#fffde7,#fff8e1);border:2px solid var(--gold);border-radius:12px;padding:16px;margin-bottom:20px;}
-.notice-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
-.notice-title{font-family:"Noto Serif Bengali",serif;font-size:15px;color:var(--green-dark);font-weight:600;}
-.notice-list{display:flex;flex-direction:column;gap:8px;}
-.notice-item{background:white;border-radius:8px;padding:10px 12px;border-left:3px solid var(--gold);font-size:13px;}
-.notice-item .n-date{font-size:10px;color:var(--text-muted);margin-top:3px;}
-.no-notice{text-align:center;color:var(--text-muted);font-size:13px;padding:10px;}
-.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;}
-.member-card{background:white;border-radius:12px;padding:16px;box-shadow:var(--shadow);border-top:3px solid var(--green);transition:transform .2s,box-shadow .2s;}
-.member-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.12);}
-.member-card.unpaid{border-top-color:var(--red);}
-.member-card.partial{border-top-color:var(--gold);}
-.member-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;}
-.member-id{background:var(--green);color:white;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;}
-.member-status{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;}
-.status-paid{background:#d4edda;color:#155724;}
-.status-partial{background:#fff3cd;color:#856404;}
-.status-unpaid{background:#f8d7da;color:#721c24;}
-.member-name{font-family:"Noto Serif Bengali",serif;font-size:15px;font-weight:600;color:var(--green-dark);margin-bottom:2px;}
-.member-phone{font-size:11px;color:var(--text-muted);margin-bottom:8px;}
-.payment-slots{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:6px;}
-.p-slot{border-radius:5px;padding:3px 1px;text-align:center;font-size:8px;font-weight:600;border:1.5px solid;}
-.slot-paid{background:#d4edda;color:#155724;border-color:#28a745;}
-.slot-unpaid{background:#f5f5f5;color:#aaa;border-color:#ddd;}
-.slot-eid-paid{background:#ffd700;color:#5a3e00;border-color:#c9a84c;}
-.slot-eid{background:#fff3cd;color:#856404;border-color:var(--gold);}
-.member-summary{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text-muted);margin-top:6px;}
-.paid-bar{flex:1;height:4px;background:#e0e0e0;border-radius:2px;overflow:hidden;}
-.paid-fill{height:100%;background:var(--green);border-radius:2px;}
-.member-actions{display:flex;gap:5px;margin-top:10px;}
-.btn-sm{flex:1;padding:6px 0;border:none;border-radius:7px;font-family:"Noto Sans Bengali",sans-serif;font-size:11px;cursor:pointer;font-weight:500;}
-.btn-edit{background:var(--green);color:white;}
-.btn-pay{background:var(--gold);color:var(--green-dark);}
-.toolbar{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
-.search-box{flex:1;min-width:160px;padding:9px 12px;border:2px solid var(--border);border-radius:10px;font-family:"Noto Sans Bengali",sans-serif;font-size:13px;outline:none;background:white;}
-.search-box:focus{border-color:var(--green);}
-.filter-select{padding:9px 10px;border:2px solid var(--border);border-radius:10px;font-family:"Noto Sans Bengali",sans-serif;font-size:12px;background:white;cursor:pointer;outline:none;}
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1000;align-items:center;justify-content:center;padding:14px;}
-.modal-overlay.open{display:flex;}
-.modal{background:white;border-radius:16px;width:100%;max-width:500px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);}
-.modal-header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;padding:16px 20px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center;}
-.modal-header h3{font-family:"Noto Serif Bengali",serif;font-size:15px;}
-.modal-close{background:rgba(255,255,255,.2);border:none;color:white;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:14px;}
-.modal-body{padding:20px;}
-.form-group{margin-bottom:12px;}
-.form-group label{display:block;font-size:12px;font-weight:500;color:var(--green-dark);margin-bottom:4px;}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:9px;font-family:"Noto Sans Bengali",sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green);}
-.form-group textarea{resize:vertical;min-height:80px;}
-.pass-wrapper{position:relative;}
-.pass-wrapper input{padding-right:40px;}
-.eye-btn{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--text-muted);}
-.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:5px;}
-.slot-check{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7px 3px;border-radius:7px;border:2px solid var(--border);cursor:pointer;transition:all .2s;font-size:10px;text-align:center;gap:2px;}
-.slot-check.checked{border-color:var(--green);background:#d4edda;color:#155724;}
-.slot-check.eid-slot{border-color:var(--gold);}
-.slot-check.eid-slot.checked{border-color:#c9a84c;background:#ffd700;color:#5a3e00;}
-.slot-checkmark{width:14px;height:14px;border-radius:50%;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:8px;}
-.slot-check.checked .slot-checkmark{background:var(--green);border-color:var(--green);color:white;}
-.slot-check.eid-slot.checked .slot-checkmark{background:#c9a84c;border-color:#c9a84c;color:white;}
-.payment-options{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px;}
-.payment-btn{padding:12px;border:2px solid var(--border);border-radius:11px;background:white;cursor:pointer;text-align:center;transition:all .2s;font-family:"Noto Sans Bengali",sans-serif;}
-.payment-btn:hover{border-color:var(--green);background:#f0fff4;}
-.payment-btn .p-icon{font-size:24px;margin-bottom:4px;}
-.payment-btn .p-name{font-size:12px;font-weight:600;color:var(--green-dark);}
-.login-box{max-width:340px;margin:30px auto;background:white;border-radius:16px;box-shadow:var(--shadow);overflow:hidden;}
-.login-header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;padding:24px;text-align:center;}
-.login-header h2{font-family:"Noto Serif Bengali",serif;font-size:18px;margin-bottom:6px;}
-.login-body{padding:24px;}
-.login-body .form-group{margin-bottom:16px;}
-.login-body .form-group input{padding-right:44px;}
-.login-btn{width:100%;background:var(--green);color:white;border:none;padding:11px;border-radius:10px;font-family:"Noto Sans Bengali",sans-serif;font-size:13px;cursor:pointer;font-weight:600;transition:all .2s;}
-.login-btn:hover{background:var(--green-dark);}
-.login-logout{display:flex;gap:6px;}
-.logout-btn{flex:1;background:#999;color:white;border:none;padding:8px;border-radius:8px;font-family:"Noto Sans Bengali",sans-serif;font-size:11px;cursor:pointer;}
-#admin-panel{display:none;background:#f0fff4;border-radius:12px;padding:16px;margin-bottom:20px;}
-.admin-title{color:var(--green-dark);font-family:"Noto Serif Bengali",serif;font-size:15px;margin-bottom:12px;font-weight:600;}
-.table-wrapper{overflow-x:auto;}
-.admin-table{width:100%;border-collapse:collapse;font-size:12px;}
-.admin-table th{background:var(--green);color:white;padding:10px;text-align:left;font-weight:600;}
-.admin-table td{padding:10px;border-bottom:1px solid var(--border);}
-.admin-table tr:hover{background:#e8f5e9;}
-.ai-chat-btn{position:fixed;bottom:20px;right:20px;width:60px;height:60px;background:var(--green);color:white;border:none;border-radius:50%;cursor:pointer;font-size:24px;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:500;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.ai-chat-btn:hover{background:var(--green-dark);transform:scale(1.1);}
-.ai-chat-modal{display:none;position:fixed;bottom:100px;right:20px;width:350px;height:500px;background:white;border-radius:12px;box-shadow:0 4px 30px rgba(0,0,0,0.2);z-index:500;flex-direction:column;}
-.ai-chat-modal.open{display:flex;}
-.ai-chat-header{background:var(--green);color:white;padding:12px;border-radius:12px 12px 0 0;display:flex;justify-content:space-between;align-items:center;font-weight:600;}
-.ai-chat-close{background:none;border:none;color:white;cursor:pointer;font-size:18px;}
-.ai-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;}
-.ai-message{padding:8px 12px;border-radius:8px;max-width:85%;word-wrap:break-word;}
-.ai-message.user{background:var(--green);color:white;align-self:flex-end;text-align:right;}
-.ai-message.bot{background:#f0f0f0;color:#333;align-self:flex-start;}
-.ai-input-wrap{padding:12px;border-top:1px solid var(--border);display:flex;gap:8px;}
-.ai-input{flex:1;padding:8px;border:1px solid var(--border);border-radius:6px;font-family:"Noto Sans Bengali",sans-serif;outline:none;}
-.ai-send-btn{background:var(--green);color:white;border:none;padding:8px 12px;border-radius:6px;cursor:pointer;font-weight:600;}
-.ai-loading{text-align:center;color:var(--text-muted);font-size:12px;}
-.toast{display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#333;color:white;padding:12px 20px;border-radius:8px;z-index:2000;animation:slideUp .3s;}
-.toast.show{display:block;}
-@keyframes slideUp{from{transform:translateX(-50%) translateY(100px);opacity:0;}to{transform:translateX(-50%) translateY(0);opacity:1;}}
-@media (max-width:600px){
-  .members-grid{grid-template-columns:1fr;}
-  .ai-chat-modal{width:calc(100% - 20px);right:10px;left:10px;bottom:80px;}
-  header h1{font-size:18px;}
-  .main-nav button{padding:10px 8px;font-size:11px;}
-}
+body{font-family:sans-serif;background:#f4f4f4;padding:15px}
+.box{max-width:950px;margin:auto;background:#fff;padding:15px;border-radius:10px}
+input,button{padding:8px;margin:5px}
+button{cursor:pointer}
+.member{border-bottom:1px solid #ddd;padding:10px}
+.paid{color:green;font-weight:bold}
+.unpaid{color:red;font-weight:bold}
+.topbar{display:flex;gap:10px;flex-wrap:wrap}
+.hidden{display:none}
+.card{background:#eef;padding:10px;margin:5px;border-radius:8px}
 </style>
 </head>
+
 <body>
-<header>
-  <div style="position:relative;z-index:1;">
-    <div class="bismillah">বিসমিল্লাহির রাহমানির রাহিম</div>
-    <h1>🕌 ইসলামী ছাত্র কল্যাণ সমিতি</h1>
-    <p>Amjad Hosneyara Technical Training Institute, Dhaka</p>
-    <div class="admin-contacts">
-      <div class="admin-contact-card">
-        <div class="ac-info">
-          <div class="ac-role">সভাপতি</div>
-          <div class="ac-name">আশরাফ উদ্দিন</div>
-        </div>
-        <a href="tel:01712345678" class="ac-call">☎️</a>
-      </div>
-      <div class="admin-contact-card">
-        <div class="ac-info">
-          <div class="ac-role">সাধারণ সম্পাদক</div>
-          <div class="ac-name">শিয়াম হাসান</div>
-        </div>
-        <a href="tel:01787654321" class="ac-call">☎️</a>
-      </div>
-    </div>
-  </div>
-</header>
 
-<nav class="main-nav">
-  <button onclick="showPage('dashboard',this)">📊 ড্যাশবোর্ড</button>
-  <button onclick="showPage('members',this)">👥 সদস্য</button>
-  <button onclick="showPage('due',this)">💳 বকেয়া</button>
-  <button onclick="showPage('notice',this)">📢 নোটিস</button>
-  <button onclick="showPage('report',this)">📈 রিপোর্ট</button>
-  <button onclick="showPage('expense',this)">💰 খরচ</button>
-  <button onclick="showPage('admin',this)">⚙️ অ্যাডমিন</button>
-</nav>
+<div class="box">
 
-<div class="year-tabs-wrapper">
-  <button class="year-tab" onclick="switchYear('2024')">2024</button>
-  <button class="year-tab" onclick="switchYear('2025')">2025</button>
-  <button class="year-tab" onclick="switchYear('2026')">2026</button>
-  <button class="add-year-btn" onclick="addYear()">+ নতুন বছর</button>
+<h2>🟢 ইসলামী ছাত্র কল্যাণ সমিতি (PRO)</h2>
+
+<!-- LOGIN -->
+<div id="loginBox">
+  <h3>🔐 Admin Login</h3>
+  <input id="email" placeholder="Email">
+  <input id="pass" type="password" placeholder="Password">
+  <button onclick="login()">Login</button>
 </div>
 
-<div class="container">
-  <div id="page-dashboard" class="page active">
-    <h2 class="section-title">📊 সর্বসাধারণ পরিসংখ্যান</h2>
-    <div class="stats-grid" id="dashboard-stats"></div>
-    <div id="notice-board-dashboard" class="notice-board"></div>
-  </div>
+<!-- DASHBOARD -->
+<div id="panel" class="hidden">
 
-  <div id="page-members" class="page">
-    <h2 class="section-title">👥 সদস্য তথ্য <span id="year-label-members"></span></h2>
-    <div class="toolbar">
-      <input type="text" class="search-box" id="search-members" placeholder="সদস্য খোঁজ..." onkeyup="filterMembers()">
-      <select class="filter-select" id="payment-filter" onchange="filterMembers()">
-        <option value="">সব পেমেন্ট স্ট্যাটাস</option>
-        <option value="paid">সম্পূর্ণ প্রদান করেছেন</option>
-        <option value="partial">আংশিক প্রদান করেছেন</option>
-        <option value="unpaid">পেমেন্ট করেননি</option>
-      </select>
-      <button class="btn-sm btn-edit" onclick="openAddMember()" style="flex:0 0 auto;">➕ যোগ করুন</button>
-    </div>
-    <div id="notice-board-members" class="notice-board"></div>
-    <div class="members-grid" id="members-list"></div>
-  </div>
+<div class="topbar">
+  <input id="name" placeholder="নাম">
+  <input id="code" placeholder="কোড">
+  <input id="phone" placeholder="মোবাইল">
+  <button onclick="addMember()">➕ Add</button>
 
-  <div id="page-due" class="page">
-    <h2 class="section-title">💳 বকেয়া তালিকা <span id="year-label-due"></span></h2>
-    <table class="admin-table" style="width:100%;margin-top:12px;">
-      <thead><tr><th>নাম</th><th>ID</th><th>বকেয়া</th><th>অ্যাকশন</th></tr></thead>
-      <tbody id="due-list"></tbody>
-    </table>
-  </div>
-
-  <div id="page-notice" class="page">
-    <h2 class="section-title">📢 নোটিশ বোর্ড <span id="year-label-notice"></span></h2>
-    <div id="admin-panel" style="display:none;">
-      <div class="admin-title">📝 নোটিশ যোগ করুন (অ্যাডমিন)</div>
-      <div class="form-group">
-        <input type="text" id="notice-text" placeholder="নোটিশ লিখুন...">
-      </div>
-      <button class="btn-sm btn-edit" onclick="addNotice()" style="width:100%;">📌 যোগ করুন</button>
-    </div>
-    <div id="notice-board-page" class="notice-board"></div>
-  </div>
-
-  <div id="page-report" class="page">
-    <h2 class="section-title">📈 পেমেন্ট রিপোর্ট <span id="year-label-report"></span></h2>
-    <div style="position:relative;height:300px;margin:20px 0;">
-      <canvas id="payment-chart"></canvas>
-    </div>
-    <div class="stats-grid" id="report-stats"></div>
-  </div>
-
-  <div id="page-expense" class="page">
-    <h2 class="section-title">💰 খরচ ব্যবস্থাপনা</h2>
-    <div id="admin-panel-expense" style="display:none;">
-      <div class="admin-title">নতুন খরচ যোগ করুন</div>
-      <div class="form-group">
-        <input type="text" id="exp-title" placeholder="খরচের শিরোনাম">
-      </div>
-      <div class="form-group">
-        <input type="number" id="exp-amount" placeholder="পরিমাণ">
-      </div>
-      <button class="btn-sm btn-edit" onclick="addExpense()" style="width:100%;">➕ যোগ করুন</button>
-    </div>
-    <div id="expenses-list"></div>
-  </div>
-
-  <div id="page-admin" class="page">
-    <h2 class="section-title">⚙️ অ্যাডমিন প্যানেল</h2>
-    <div id="admin-login">
-      <div class="login-box">
-        <div class="login-header">
-          <h2>🔐 অ্যাডমিন লগইন</h2>
-          <p style="font-size:11px;opacity:.8;">শুধুমাত্র অনুমোদিত ব্যবহারকারীর জন্য</p>
-        </div>
-        <div class="login-body">
-          <div class="form-group">
-            <label>পাসওয়ার্ড দিন:</label>
-            <div class="pass-wrapper">
-              <input type="password" id="admin-pass" placeholder="পাসওয়ার্ড">
-              <button class="eye-btn" onclick="togglePass()">👁️</button>
-            </div>
-          </div>
-          <button class="login-btn" onclick="adminLogin()">🔓 লগইন করুন</button>
-        </div>
-      </div>
-    </div>
-    <div id="admin-panel-main" style="display:none;">
-      <div style="display:flex;gap:8px;margin-bottom:16px;">
-        <button class="login-btn" style="flex:1;" onclick="adminLogout()">🚪 লগআউট</button>
-        <button class="login-btn" style="flex:1;background:#ff6b6b;" onclick="clearAllData()">⚠️ সব ডেটা মুছুন</button>
-      </div>
-      <div class="admin-title">সদস্য ব্যবস্থাপনা</div>
-      <div class="table-wrapper">
-        <table class="admin-table" id="admin-members-table"></table>
-      </div>
-    </div>
-  </div>
+  <input id="search" placeholder="Search" onkeyup="render()">
 </div>
 
-<div id="add-member-modal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>নতুন সদস্য যোগ করুন</h3>
-      <button class="modal-close" onclick="closeModal('add-member-modal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-group"><label>নাম:</label><input type="text" id="new-name" placeholder="সম্পূর্ণ নাম"></div>
-      <div class="form-group"><label>ID:</label><input type="text" id="new-id" placeholder="যেমন: S001"></div>
-      <div class="form-group"><label>মোবাইল নম্বর:</label><input type="tel" id="new-phone" placeholder="01xxxxxxxxx"></div>
-      <div class="form-group"><label>মাসিক চাঁদা (টাকা):</label><input type="number" id="new-amount" value="200"></div>
-      <button class="login-btn" onclick="addMember()">✅ যোগ করুন</button>
-    </div>
-  </div>
+<!-- DASHBOARD STATS -->
+<div class="card" id="stats"></div>
+
+<hr>
+
+<div id="list"></div>
+
+<button onclick="logout()">Logout</button>
 </div>
 
-<div id="pay-modal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>পেমেন্ট করুন</h3>
-      <button class="modal-close" onclick="closeModal('pay-modal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="margin-bottom:12px;padding:10px;background:#f0f0f0;border-radius:8px;">
-        <div style="font-size:13px;font-weight:600;" id="pay-member-name"></div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:4px;" id="pay-amount-info"></div>
-      </div>
-      <div class="payment-options">
-        <button class="payment-btn" onclick="sendPayment('bkash')"><div class="p-icon">📱</div><div class="p-name">bKash</div></button>
-        <button class="payment-btn" onclick="sendPayment('nagad')"><div class="p-icon">📱</div><div class="p-name">Nagad</div></button>
-        <button class="payment-btn" onclick="sendPayment('rocket')"><div class="p-icon">📱</div><div class="p-name">Rocket</div></button>
-        <button class="payment-btn" onclick="sendPayment('upay')"><div class="p-icon">📱</div><div class="p-name">Upay</div></button>
-      </div>
-    </div>
-  </div>
 </div>
-
-<div id="notify-modal" class="modal-overlay">
-  <div class="modal">
-    <div class="modal-header">
-      <h3>পেমেন্ট নিশ্চিত করুন</h3>
-      <button class="modal-close" onclick="closeModal('notify-modal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="margin-bottom:12px;padding:10px;background:#f0f0f0;border-radius:8px;">
-        <div style="font-size:13px;font-weight:600;" id="notify-member-name"></div>
-      </div>
-      <label style="font-size:12px;color:var(--green-dark);margin-bottom:8px;display:block;">কোন মাসের পেমেন্ট?</label>
-      <div id="notify-slots"></div>
-      <button class="login-btn" onclick="submitNotify()" style="margin-top:12px;">✅ অ্যাডমিনদের জানান</button>
-    </div>
-  </div>
-</div>
-
-<button class="ai-chat-btn" onclick="toggleAiChat()">🤖</button>
-<div id="ai-chat-modal" class="ai-chat-modal">
-  <div class="ai-chat-header"><span>AI সহায়ক</span><button class="ai-chat-close" onclick="toggleAiChat()">✕</button></div>
-  <div class="ai-messages" id="ai-messages"></div>
-  <div class="ai-input-wrap">
-    <input type="text" class="ai-input" id="ai-input" placeholder="প্রশ্ন জিজ্ঞাসা করুন..." onkeypress="handleAiKeyPress(event)">
-    <button class="ai-send-btn" onclick="sendAiMessage()">পাঠাও</button>
-  </div>
-</div>
-<div id="toast" class="toast"></div>
 
 <script>
-// ===== CONFIG =====
-const FIXED_PASS = "স্টুডেন্ট অফ মাদিনাহ";
-const ADMIN1 = {name:"আশরাফ উদ্দিন",role:"সভাপতি",phone:"01712345678"};
-const ADMIN2 = {name:"শিয়াম হাসান",role:"সাধারণ সম্পাদক",phone:"01787654321"};
-const SLOTS = ["জানুয়ারি","ফেব্রুয়ারি","মার্চ","এপ্রিল","মে","জুন","জুলাই","আগস্ট","সেপ্টেম্বর","অক্টোবর","নভেম্বর","ডিসেম্বর"];
-const EID_SLOTS = [9,10];
-let currentYear = 2025;
-let currentPayIdx = 0;
-let notifyPaid = [];
-let chartInstance = null;
+/* 🔥 FIREBASE CONFIG */
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID"
+};
 
-// ===== STORAGE =====
-function getMembers(){ return JSON.parse(localStorage.getItem(`ics_members_${currentYear}`) || "[]"); }
-function saveData(){ localStorage.setItem(`ics_members_${currentYear}`, JSON.stringify(getMembers())); broadcastSync(); }
-function broadcastSync(){ localStorage.setItem("ics_sync_time", Date.now()); }
-function getNotices(){ return JSON.parse(localStorage.getItem(`ics_notices_${currentYear}`) || "[]"); }
-function saveNotices(){ localStorage.setItem(`ics_notices_${currentYear}`, JSON.stringify(getNotices())); broadcastSync(); }
-function getExpenses(){ return JSON.parse(localStorage.getItem("ics_expenses") || "[]"); }
-function saveExpenses(){ localStorage.setItem("ics_expenses", JSON.stringify(getExpenses())); broadcastSync(); }
-function isAdmin(){ return localStorage.getItem("ics_admin") === "yes"; }
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+const auth = firebase.auth();
 
-// ===== APP LOGIC =====
-function adminLogin(){
-  if(document.getElementById("admin-pass").value === FIXED_PASS){
-    localStorage.setItem("ics_admin","yes");
-    location.reload();
-  } else { showToast("❌ পাসওয়ার্ড ভুল!"); }
-}
-function adminLogout(){ localStorage.removeItem("ics_admin"); location.reload(); }
-function togglePass(){ const inp = document.getElementById("admin-pass"); inp.type = inp.type === "password" ? "text" : "password"; }
+const months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
 
-function showPage(page, btn){
-  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-  document.querySelectorAll(".main-nav button").forEach(b => b.classList.remove("active"));
-  document.getElementById("page-" + page).classList.add("active");
-  if(btn) btn.classList.add("active");
-  refreshAll();
+let members = [];
+
+/* 🔐 LOGIN */
+function login(){
+  auth.signInWithEmailAndPassword(email.value, pass.value)
+  .then(()=>{
+    loginBox.classList.add("hidden");
+    panel.classList.remove("hidden");
+    loadData();
+  })
+  .catch(()=>alert("Login failed"));
 }
 
-function showToast(msg){
-  const t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 3000);
+/* 🚪 LOGOUT */
+function logout(){
+  auth.signOut();
+  location.reload();
 }
 
-function renderMembers(members){
-  const list = document.getElementById("members-list");
-  list.innerHTML = members.map((m,i) => {
-    const paidCount = (m.paid || []).length;
-    const percent = Math.round(paidCount / 14 * 100);
-    const status = paidCount === 14 ? "paid" : paidCount > 0 ? "partial" : "unpaid";
-    return `<div class="member-card ${status}">
-        <div class="member-top"><div class="member-id">${m.id}</div><div class="member-status status-${status}">${status === "paid" ? "✅ প্রদান" : status === "partial" ? "⏳ আংশিক" : "❌ বকেয়া"}</div></div>
-        <div class="member-name">${m.name}</div>
-        <div class="payment-slots">${SLOTS.map((s,si) => `<div class="p-slot ${EID_SLOTS.includes(si) ? "slot-eid" : ""} ${(m.paid || []).includes(si) ? (EID_SLOTS.includes(si) ? "slot-eid-paid" : "slot-paid") : "slot-unpaid"}">${s.substring(0,2)}</div>`).join("")}</div>
-        <div class="member-actions"><button class="btn-sm btn-pay" onclick="openPayModal(${i})">💳 পেমেন্ট</button>${isAdmin() ? `<button class="btn-sm btn-edit" onclick="editMember(${i})">✏️</button><button class="btn-sm" style="background:#f44336;color:white;" onclick="deleteMember(${i})">🗑️</button>` : ""}</div>
-      </div>`;
-  }).join("");
+/* ➕ ADD MEMBER */
+function addMember(){
+  db.collection("members").add({
+    name:name.value,
+    code:code.value,
+    phone:phone.value,
+    payments:{
+      jan:false,feb:false,mar:false,apr:false,
+      may:false,jun:false,jul:false,aug:false,
+      sep:false,oct:false,nov:false,dec:false
+    }
+  });
+
+  name.value="";code.value="";phone.value="";
 }
 
-function openPayModal(idx){
-  currentPayIdx = idx;
-  const m = getMembers()[idx];
-  document.getElementById("pay-member-name").textContent = m.name;
-  document.getElementById("pay-amount-info").textContent = "মাসিক চাঁদা: ৳" + m.amount;
-  document.getElementById("pay-modal").classList.add("open");
+/* 📡 LOAD DATA */
+function loadData(){
+  db.collection("members").onSnapshot(snap=>{
+    members = [];
+    snap.forEach(doc=>{
+      members.push({id:doc.id,...doc.data()});
+    });
+    render();
+  });
 }
 
-function sendPayment(method){
-  const m = getMembers()[currentPayIdx];
-  const apps = {bkash: "bkash://send?number="+ADMIN1.phone+"&amount="+m.amount, nagad: "nagad://send?number="+ADMIN1.phone+"&amount="+m.amount, rocket: "rocket://send?number="+ADMIN1.phone+"&amount="+m.amount, upay: "upay://send?number="+ADMIN1.phone+"&amount="+m.amount};
-  window.location.href = apps[method];
-  document.getElementById("pay-modal").classList.remove("open");
-  openNotifyModal();
+/* 📊 DASHBOARD */
+function updateStats(){
+  let total = members.length;
+  let paid = 0;
+
+  members.forEach(m=>{
+    if(Object.values(m.payments).filter(v=>v).length>0) paid++;
+  });
+
+  stats.innerHTML = `
+    👥 Total Members: ${total}<br>
+    💰 Active Paid Members: ${paid}<br>
+    ❗ Unpaid: ${total-paid}
+  `;
 }
 
-function openNotifyModal(){
-  const m = getMembers()[currentPayIdx];
-  document.getElementById("notify-member-name").textContent = m.name;
-  notifyPaid = [];
-  const container = document.getElementById("notify-slots");
-  container.innerHTML = `<div class="slots-grid">${SLOTS.map((s, i) => `<div class="slot-check ${EID_SLOTS.includes(i) ? "eid-slot" : ""}" onclick="toggleSlot(this, ${i})"><div class="slot-checkmark"></div><span>${s.substring(0,2)}</span></div>`).join("")}</div>`;
-  document.getElementById("notify-modal").classList.add("open");
+/* 📄 RENDER */
+function render(){
+  let key = search.value?.toLowerCase() || "";
+
+  let html = "";
+
+  members
+  .filter(m=>m.name.toLowerCase().includes(key) || m.code.includes(key))
+  .forEach(m=>{
+
+    html += `
+    <div class="member">
+      <b>[${m.code}] ${m.name}</b><br>
+      📱 ${m.phone}<br><br>
+
+      ${months.map(mon=>`
+        <button onclick="toggle('${m.id}','${mon}',${m.payments[mon]})">
+          ${mon.toUpperCase()} : ${m.payments[mon] ? "PAID":"UNPAID"}
+        </button>
+      `).join('')}
+
+      <br><br>
+      <button onclick="del('${m.id}')">❌ Delete</button>
+    </div>
+    `;
+  });
+
+  list.innerHTML = html;
+
+  updateStats();
 }
 
-function toggleSlot(el, i){
-  if(el.classList.contains("checked")){ el.classList.remove("checked"); notifyPaid = notifyPaid.filter(n => n !== i); }
-  else { el.classList.add("checked"); notifyPaid.push(i); }
+/* 🔁 TOGGLE PAYMENT */
+function toggle(id,mon,status){
+  let obj = {};
+  obj[`payments.${mon}`] = !status;
+  db.collection("members").doc(id).update(obj);
 }
 
-function submitNotify(){
-  const m = getMembers()[currentPayIdx];
-  m.paid = [...new Set([...(m.paid || []), ...notifyPaid])];
-  saveData();
-  document.getElementById("notify-modal").classList.remove("open");
-  showToast("✅ আপডেট হয়েছে!");
-  refreshAll();
+/* ❌ DELETE */
+function del(id){
+  db.collection("members").doc(id).delete();
 }
 
-function refreshAll(){
-  const members = getMembers();
-  renderMembers(members);
-  document.getElementById("admin-panel").style.display = isAdmin() ? "block" : "none";
-  document.getElementById("admin-panel-main").style.display = isAdmin() ? "block" : "none";
-  document.getElementById("admin-login").style.display = isAdmin() ? "none" : "block";
-}
-
-function switchYear(year){ currentYear = year; location.reload(); }
-function addYear(){ const y = prompt("নতুন বছর:"); if(y) switchYear(y); }
-function addMember(){ 
-    const members = getMembers();
-    members.push({id: document.getElementById("new-id").value, name: document.getElementById("new-name").value, paid:[], amount: 200});
-    localStorage.setItem(`ics_members_${currentYear}`, JSON.stringify(members));
-    location.reload();
-}
-function clearAllData(){ if(confirm("সব মুছবেন?")) { localStorage.clear(); location.reload(); } }
-
-document.addEventListener("DOMContentLoaded", () => { refreshAll(); });
+/* AUTO LOGIN CHECK */
+auth.onAuthStateChanged(user=>{
+  if(user){
+    loginBox.classList.add("hidden");
+    panel.classList.remove("hidden");
+    loadData();
+  }
+});
 </script>
+
 </body>
-</html>
+  </html>
