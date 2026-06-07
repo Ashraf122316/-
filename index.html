@@ -3,194 +3,457 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>সমিতি ম্যানেজমেন্ট PRO</title>
-
-<!-- Firebase COMPAT (IMPORTANT) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-
+<title>ইসলামী ছাত্র কল্যাণ সমিতি</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Noto+Sans+Bengali:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-body{font-family:sans-serif;background:#f4f4f4;padding:15px}
-.box{max-width:950px;margin:auto;background:#fff;padding:15px;border-radius:10px}
-input,button{padding:8px;margin:5px}
-button{cursor:pointer}
-.member{border-bottom:1px solid #ddd;padding:10px}
-.paid{color:green;font-weight:bold}
-.unpaid{color:red;font-weight:bold}
-.topbar{display:flex;gap:10px;flex-wrap:wrap}
-.hidden{display:none}
-.card{background:#eef;padding:10px;margin:5px;border-radius:8px}
+:root {
+  --green:#1a6b3a; --green-light:#2d8f52; --green-dark:#0f4224;
+  --gold:#c9a84c; --gold-light:#e8c96a; --gold-dark:#a07820;
+  --bg:#f5f0e8; --text:#1a1a1a; --text-muted:#666;
+  --border:#d4c9b0; --red:#c0392b; --red-light:#fadbd8;
+  --shadow:0 4px 20px rgba(0,0,0,0.1);
+  --shadow-lg:0 10px 40px rgba(0,0,0,0.18);
+  --radius:14px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Noto Sans Bengali',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* ===== HEADER ===== */
+header{background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 55%,var(--green-light) 100%);color:white;text-align:center;padding:26px 20px 20px;position:relative;overflow:hidden;}
+header::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.bismillah{font-size:17px;color:var(--gold-light);margin-bottom:7px;font-family:'Noto Serif Bengali',serif;letter-spacing:1px;}
+.header-icon{font-size:42px;margin-bottom:5px;display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.3));}
+header h1{font-family:'Noto Serif Bengali',serif;font-size:23px;font-weight:700;text-shadow:0 2px 4px rgba(0,0,0,0.3);}
+header .subtitle{font-size:11px;opacity:.8;margin-top:4px;color:var(--gold-light);}
+.admin-badges{margin-top:14px;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
+.admin-badge-card{background:rgba(255,255,255,0.13);border:1px solid rgba(201,168,76,0.5);border-radius:30px;padding:6px 16px;display:flex;align-items:center;gap:8px;backdrop-filter:blur(4px);}
+.admin-badge-card .badge-role{font-size:10px;color:var(--gold-light);opacity:.9;}
+.admin-badge-card .badge-name{font-size:13px;font-weight:600;color:white;font-family:'Noto Serif Bengali',serif;}
+
+/* ===== MAIN NAV ===== */
+.main-nav{background:var(--green-dark);display:flex;justify-content:center;border-bottom:3px solid var(--gold);position:sticky;top:0;z-index:100;}
+.main-nav button{background:none;border:none;color:rgba(255,255,255,.7);font-family:'Noto Sans Bengali',sans-serif;font-size:13px;padding:12px 18px;cursor:pointer;transition:all .2s;border-bottom:3px solid transparent;margin-bottom:-3px;white-space:nowrap;}
+.main-nav button:hover{color:white;background:rgba(255,255,255,.07);}
+.main-nav button.active{color:var(--gold-light);border-bottom-color:var(--gold);background:rgba(255,255,255,.08);}
+
+/* ===== YEAR TABS ===== */
+.year-tabs-wrapper{background:white;border-bottom:2px solid var(--border);padding:0 14px;display:flex;align-items:center;overflow-x:auto;gap:4px;scrollbar-width:none;box-shadow:0 2px 8px rgba(0,0,0,.05);}
+.year-tabs-wrapper::-webkit-scrollbar{display:none;}
+.year-tab{background:none;border:none;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;padding:11px 18px;cursor:pointer;color:var(--text-muted);border-bottom:3px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .2s;}
+.year-tab:hover{color:var(--green);}
+.year-tab.active{color:var(--green-dark);border-bottom-color:var(--green);font-weight:600;}
+.add-year-btn{background:var(--green);color:white;border:none;border-radius:20px;padding:6px 14px;font-family:'Noto Sans Bengali',sans-serif;font-size:11px;cursor:pointer;white-space:nowrap;margin-left:8px;transition:all .2s;}
+.add-year-btn:hover{background:var(--green-dark);transform:scale(1.05);}
+
+/* ===== CONTAINER / PAGES ===== */
+.container{max-width:1100px;margin:0 auto;padding:20px 16px;}
+.page{display:none;animation:fadeIn .3s ease;}
+.page.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== STATS ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px;}
+.stat-card{background:white;border-radius:var(--radius);padding:16px;text-align:center;border-left:4px solid var(--green);box-shadow:var(--shadow);transition:transform .2s;}
+.stat-card:hover{transform:translateY(-2px);}
+.stat-card.gold{border-left-color:var(--gold);}
+.stat-card.red{border-left-color:var(--red);}
+.stat-card.blue{border-left-color:#2980b9;}
+.stat-num{font-size:26px;font-weight:700;color:var(--green);font-family:'Noto Serif Bengali',serif;}
+.stat-card.gold .stat-num{color:var(--gold-dark);}
+.stat-card.red .stat-num{color:var(--red);}
+.stat-card.blue .stat-num{color:#2980b9;}
+.stat-label{font-size:11px;color:var(--text-muted);margin-top:3px;}
+
+/* ===== SECTION TITLE ===== */
+.section-title{font-family:'Noto Serif Bengali',serif;font-size:16px;color:var(--green-dark);border-bottom:2px solid var(--gold);padding-bottom:8px;margin-bottom:18px;display:flex;align-items:center;gap:8px;}
+
+/* ===== TOOLBAR ===== */
+.toolbar{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.search-box{flex:1;min-width:180px;padding:10px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;outline:none;background:white;transition:border-color .2s;}
+.search-box:focus{border-color:var(--green);}
+.filter-select{padding:10px 12px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;background:white;cursor:pointer;outline:none;}
+
+/* ===== MEMBER CARDS ===== */
+.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:16px;}
+.member-card{background:white;border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);border-top:3px solid var(--green);transition:transform .2s,box-shadow .2s;position:relative;}
+.member-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+.member-card.unpaid{border-top-color:var(--red);}
+.member-card.partial{border-top-color:var(--gold);}
+.member-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
+.member-id-badge{background:var(--green);color:white;font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600;}
+.member-status{font-size:10px;padding:3px 8px;border-radius:20px;font-weight:600;}
+.status-paid{background:#d4edda;color:#155724;}
+.status-partial{background:#fff3cd;color:#856404;}
+.status-unpaid{background:#f8d7da;color:#721c24;}
+.member-name{font-family:'Noto Serif Bengali',serif;font-size:16px;font-weight:600;color:var(--green-dark);margin-bottom:2px;}
+.member-meta{font-size:11px;color:var(--text-muted);margin-bottom:10px;}
+.payment-slots{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:8px;}
+.p-slot{border-radius:5px;padding:4px 2px;text-align:center;font-size:8px;font-weight:600;border:1.5px solid;cursor:default;}
+.slot-paid{background:#d4edda;color:#155724;border-color:#28a745;}
+.slot-unpaid{background:#f5f5f5;color:#bbb;border-color:#e0e0e0;}
+.slot-eid{background:#fff8e1;color:#856404;border-color:var(--gold);}
+.slot-eid-paid{background:#ffd700;color:#4a3000;border-color:var(--gold-dark);}
+.member-bar-row{display:flex;align-items:center;gap:7px;font-size:11px;color:var(--text-muted);margin-top:9px;}
+.paid-bar{flex:1;height:5px;background:#e8e8e8;border-radius:3px;overflow:hidden;}
+.paid-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green-light));border-radius:3px;transition:width .6s cubic-bezier(.4,0,.2,1);}
+.member-actions{display:flex;gap:6px;margin-top:12px;}
+.btn-sm{flex:1;padding:8px 0;border:none;border-radius:8px;font-family:'Noto Sans Bengali',sans-serif;font-size:12px;cursor:pointer;font-weight:600;transition:all .2s;}
+.btn-sm:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn-edit{background:var(--green);color:white;}
+.btn-pay{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:white;}
+.btn-receipt{background:#2980b9;color:white;}
+
+/* ===== MODAL ===== */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(3px);}
+.modal-overlay.open{display:flex;}
+.modal{background:white;border-radius:18px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 24px 70px rgba(0,0,0,.35);animation:slideUp .3s ease;}
+@keyframes slideUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.modal-header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;padding:18px 22px;border-radius:18px 18px 0 0;display:flex;justify-content:space-between;align-items:center;}
+.modal-header h3{font-family:'Noto Serif Bengali',serif;font-size:15px;}
+.modal-close{background:rgba(255,255,255,.2);border:none;color:white;width:30px;height:30px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.modal-close:hover{background:rgba(255,255,255,.35);}
+.modal-body{padding:22px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--green-dark);margin-bottom:5px;}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 13px;border:2px solid var(--border);border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green);}
+
+/* ===== SLOT CHECKBOXES ===== */
+.slots-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:6px;}
+.slot-check{display:flex;flex-direction:column;align-items:center;padding:9px 4px;border-radius:9px;border:2px solid var(--border);cursor:pointer;transition:all .2s;font-size:11px;text-align:center;gap:3px;user-select:none;}
+.slot-check:hover{border-color:var(--green);background:#f0faf4;}
+.slot-check.checked{border-color:var(--green);background:#d4edda;color:#155724;}
+.slot-check.eid-slot{border-color:var(--gold);}
+.slot-check.eid-slot:hover{background:#fff8e1;}
+.slot-check.eid-slot.checked{border-color:var(--gold-dark);background:#ffd700;color:#4a3000;}
+.slot-checkmark{width:17px;height:17px;border-radius:50%;border:2px solid #ccc;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all .2s;}
+.slot-check.checked .slot-checkmark{background:var(--green);border-color:var(--green);color:white;}
+.slot-check.eid-slot.checked .slot-checkmark{background:var(--gold-dark);border-color:var(--gold-dark);color:white;}
+
+/* ===== PAYMENT OPTIONS ===== */
+.payment-options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+.payment-btn{padding:14px;border:2px solid var(--border);border-radius:12px;background:white;cursor:pointer;text-align:center;transition:all .2s;font-family:'Noto Sans Bengali',sans-serif;}
+.payment-btn:hover{border-color:var(--green);background:#f0fff4;transform:translateY(-2px);box-shadow:var(--shadow);}
+.payment-btn .p-icon{font-size:26px;margin-bottom:5px;}
+.payment-btn .p-name{font-size:13px;font-weight:700;color:var(--green-dark);}
+.payment-btn .p-sub{font-size:10px;color:var(--text-muted);margin-top:2px;}
+
+/* ===== RECEIPT ===== */
+#receipt-area{background:white;border-radius:18px;padding:28px;box-shadow:var(--shadow-lg);max-width:420px;margin:0 auto;font-family:'Noto Serif Bengali',serif;}
+.receipt-header{text-align:center;border-bottom:2px dashed var(--gold);padding-bottom:16px;margin-bottom:16px;}
+.receipt-header .r-org{font-size:15px;font-weight:700;color:var(--green-dark);}
+.receipt-header .r-title{font-size:12px;color:var(--text-muted);margin-top:3px;}
+.receipt-no{background:var(--green-dark);color:white;font-size:11px;padding:4px 14px;border-radius:20px;display:inline-block;margin-top:8px;}
+.receipt-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:13px;border-bottom:1px solid #f0ece4;}
+.receipt-row:last-child{border:none;}
+.receipt-row .r-key{color:var(--text-muted);font-size:12px;}
+.receipt-row .r-val{font-weight:600;color:var(--green-dark);}
+.receipt-total{background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;border-radius:12px;padding:14px;text-align:center;margin-top:14px;}
+.receipt-total .t-label{font-size:12px;opacity:.85;}
+.receipt-total .t-amount{font-size:24px;font-weight:700;}
+.receipt-slots{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.receipt-slot-tag{background:var(--green);color:white;font-size:10px;padding:3px 9px;border-radius:20px;}
+.receipt-slot-tag.eid{background:var(--gold-dark);}
+.receipt-footer{text-align:center;margin-top:16px;font-size:10px;color:var(--text-muted);border-top:1px dashed var(--border);padding-top:12px;}
+.receipt-qr{width:60px;height:60px;margin:8px auto;background:#f0f0f0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:24px;}
+.btn-print{width:100%;padding:12px;background:var(--green-dark);color:white;border:none;border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;cursor:pointer;margin-top:14px;transition:background .2s;}
+.btn-print:hover{background:var(--green);}
+.btn-share{width:100%;padding:12px;background:linear-gradient(135deg,#25d366,#128c7e);color:white;border:none;border-radius:10px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;cursor:pointer;margin-top:8px;}
+
+/* ===== AI ASSISTANT ===== */
+.ai-chat{background:white;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.ai-chat-header{background:linear-gradient(135deg,#1a2a6c,#2d5af5);color:white;padding:16px 20px;display:flex;align-items:center;gap:12px;}
+.ai-avatar{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid rgba(255,255,255,.4);}
+.ai-chat-title{font-family:'Noto Serif Bengali',serif;font-size:15px;}
+.ai-chat-sub{font-size:11px;opacity:.75;margin-top:2px;}
+.ai-messages{height:320px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;background:#f9f9fb;}
+.ai-msg{max-width:85%;border-radius:14px;padding:11px 14px;font-size:13px;line-height:1.6;}
+.ai-msg.bot{background:white;color:var(--text);box-shadow:0 2px 8px rgba(0,0,0,.07);border-bottom-left-radius:4px;align-self:flex-start;}
+.ai-msg.user{background:linear-gradient(135deg,var(--green),var(--green-light));color:white;border-bottom-right-radius:4px;align-self:flex-end;}
+.ai-msg.loading{background:white;color:var(--text-muted);font-style:italic;}
+.ai-msg.bot .msg-head{font-size:10px;color:var(--text-muted);margin-bottom:4px;font-weight:600;}
+.ai-input-row{display:flex;gap:8px;padding:14px;border-top:2px solid var(--border);background:white;}
+.ai-input{flex:1;padding:10px 14px;border:2px solid var(--border);border-radius:25px;font-family:'Noto Sans Bengali',sans-serif;font-size:13px;outline:none;transition:border .2s;}
+.ai-input:focus{border-color:#2d5af5;}
+.ai-send{background:linear-gradient(135deg,#1a2a6c,#2d5af5);color:white;border:none;border-radius:50%;width:42px;height:42px;cursor:pointer;font-size:16px;transition:transform .2s;}
+.ai-send:hover{transform:scale(1.1);}
+.ai-quick-btns{display:flex;gap:6px;padding:0 14px 12px;flex-wrap:wrap;background:white;}
+.ai-quick{background:#eef2ff;color:#2d5af5;border:1px solid #c7d2fe;border-radius:20px;padding:5px 12px;font-family:'Noto Sans Bengali',sans-serif;font-size:11px;cursor:pointer;transition:all .2s;}
+.ai-quick:hover{background:#c7d2fe;}
+
+/* ===== ADMIN ===== */
+.login-box{max-width:360px;margin:40px auto;background:white;border-radius:18px;box-shadow:var(--shadow-lg);overflow:hidden;}
+.login-header{background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;padding:28px;text-align:center;}
+.login-header h2{font-family:'Noto Serif Bengali',serif;font-size:18px;margin-top:8px;}
+.login-body{padding:26px;}
+.btn-primary{width:100%;padding:12px;background:linear-gradient(135deg,var(--green-dark),var(--green));color:white;border:none;border-radius:10px;font-family:'Noto Serif Bengali',serif;font-size:14px;cursor:pointer;transition:all .2s;margin-top:6px;}
+.btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
+
+/* ===== HISTORY TABLE ===== */
+.history-table{width:100%;border-collapse:collapse;background:white;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+.history-table th{background:var(--green-dark);color:white;padding:11px 14px;text-align:left;font-size:12px;font-weight:500;}
+.history-table td{padding:10px 14px;border-bottom:1px solid #f0ece4;font-size:12px;}
+.history-table tr:last-child td{border-bottom:none;}
+.history-table tr:nth-child(even) td{background:#fafaf7;}
+.history-table tr:hover td{background:#f0fff4;}
+
+/* ===== RECEIPT HISTORY LIST ===== */
+.receipt-history-list{display:flex;flex-direction:column;gap:10px;}
+.rh-item{background:white;border-radius:var(--radius);padding:14px 18px;box-shadow:var(--shadow);display:flex;justify-content:space-between;align-items:center;border-left:4px solid var(--green);}
+.rh-item.eid{border-left-color:var(--gold);}
+.rh-info .rh-name{font-weight:600;font-size:14px;color:var(--green-dark);font-family:'Noto Serif Bengali',serif;}
+.rh-info .rh-meta{font-size:11px;color:var(--text-muted);margin-top:2px;}
+.rh-amount{font-size:18px;font-weight:700;color:var(--green);font-family:'Noto Serif Bengali',serif;}
+.rh-btn{background:var(--green);color:white;border:none;border-radius:8px;padding:6px 12px;font-family:inherit;font-size:11px;cursor:pointer;margin-top:6px;}
+
+/* ===== NOTICE BOARD ===== */
+.notice-board{background:white;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:20px;}
+.notice-header{background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:white;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;}
+.notice-header h4{font-family:'Noto Serif Bengali',serif;font-size:14px;}
+.notice-list{padding:14px 18px;display:flex;flex-direction:column;gap:8px;max-height:200px;overflow-y:auto;}
+.notice-item{padding:10px 13px;background:#fffbf0;border-radius:9px;border-left:3px solid var(--gold);font-size:12px;}
+.notice-item .n-date{font-size:10px;color:var(--text-muted);margin-top:3px;}
+.add-notice-form{padding:12px 18px;border-top:1px solid var(--border);display:flex;gap:8px;}
+.add-notice-form input{flex:1;padding:9px 12px;border:2px solid var(--border);border-radius:8px;font-family:inherit;font-size:12px;outline:none;}
+.add-notice-form input:focus{border-color:var(--gold);}
+.add-notice-form button{padding:9px 14px;background:var(--gold-dark);color:white;border:none;border-radius:8px;font-family:inherit;cursor:pointer;font-size:11px;}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--green-dark);color:white;padding:12px 20px;border-radius:12px;font-size:13px;box-shadow:0 10px 30px rgba(0,0,0,.25);transform:translateY(90px);opacity:0;transition:all .35s cubic-bezier(.4,0,.2,1);z-index:9999;border-left:4px solid var(--gold);max-width:300px;}
+.toast.show{transform:translateY(0);opacity:1;}
+
+/* ===== ADMIN BADGE ===== */
+.badge-admin{background:var(--gold);color:var(--green-dark);font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;margin-left:8px;}
+
+@media(max-width:600px){
+  header h1{font-size:18px;}
+  .main-nav button{padding:10px 10px;font-size:11px;}
+  .slots-grid{grid-template-columns:repeat(3,1fr);}
+  .payment-options{grid-template-columns:1fr 1fr;}
+  .members-grid{grid-template-columns:1fr;}
+}
+@media print{
+  body *{visibility:hidden;}
+  #receipt-area,#receipt-area *{visibility:visible;}
+  #receipt-area{position:fixed;top:0;left:0;width:100%;box-shadow:none;}
+}
 </style>
 </head>
-
 <body>
 
-<div class="box">
-
-<h2>🟢 ইসলামী ছাত্র কল্যাণ সমিতি (PRO)</h2>
-
-<!-- LOGIN -->
-<div id="loginBox">
-  <h3>🔐 Admin Login</h3>
-  <input id="email" placeholder="Email">
-  <input id="pass" type="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-</div>
-
-<!-- DASHBOARD -->
-<div id="panel" class="hidden">
-
-<div class="topbar">
-  <input id="name" placeholder="নাম">
-  <input id="code" placeholder="কোড">
-  <input id="phone" placeholder="মোবাইল">
-  <button onclick="addMember()">➕ Add</button>
-
-  <input id="search" placeholder="Search" onkeyup="render()">
-</div>
-
-<!-- DASHBOARD STATS -->
-<div class="card" id="stats"></div>
-
-<hr>
-
-<div id="list"></div>
-
-<button onclick="logout()">Logout</button>
-</div>
-
-</div>
-
-<script>
-/* 🔥 FIREBASE CONFIG */
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-const auth = firebase.auth();
-
-const months = ["jan","feb","mar","apr","may","jun","jul","aug","sep","oct","nov","dec"];
-
-let members = [];
-
-/* 🔐 LOGIN */
-function login(){
-  auth.signInWithEmailAndPassword(email.value, pass.value)
-  .then(()=>{
-    loginBox.classList.add("hidden");
-    panel.classList.remove("hidden");
-    loadData();
-  })
-  .catch(()=>alert("Login failed"));
-}
-
-/* 🚪 LOGOUT */
-function logout(){
-  auth.signOut();
-  location.reload();
-}
-
-/* ➕ ADD MEMBER */
-function addMember(){
-  db.collection("members").add({
-    name:name.value,
-    code:code.value,
-    phone:phone.value,
-    payments:{
-      jan:false,feb:false,mar:false,apr:false,
-      may:false,jun:false,jul:false,aug:false,
-      sep:false,oct:false,nov:false,dec:false
-    }
-  });
-
-  name.value="";code.value="";phone.value="";
-}
-
-/* 📡 LOAD DATA */
-function loadData(){
-  db.collection("members").onSnapshot(snap=>{
-    members = [];
-    snap.forEach(doc=>{
-      members.push({id:doc.id,...doc.data()});
-    });
-    render();
-  });
-}
-
-/* 📊 DASHBOARD */
-function updateStats(){
-  let total = members.length;
-  let paid = 0;
-
-  members.forEach(m=>{
-    if(Object.values(m.payments).filter(v=>v).length>0) paid++;
-  });
-
-  stats.innerHTML = `
-    👥 Total Members: ${total}<br>
-    💰 Active Paid Members: ${paid}<br>
-    ❗ Unpaid: ${total-paid}
-  `;
-}
-
-/* 📄 RENDER */
-function render(){
-  let key = search.value?.toLowerCase() || "";
-
-  let html = "";
-
-  members
-  .filter(m=>m.name.toLowerCase().includes(key) || m.code.includes(key))
-  .forEach(m=>{
-
-    html += `
-    <div class="member">
-      <b>[${m.code}] ${m.name}</b><br>
-      📱 ${m.phone}<br><br>
-
-      ${months.map(mon=>`
-        <button onclick="toggle('${m.id}','${mon}',${m.payments[mon]})">
-          ${mon.toUpperCase()} : ${m.payments[mon] ? "PAID":"UNPAID"}
-        </button>
-      `).join('')}
-
-      <br><br>
-      <button onclick="del('${m.id}')">❌ Delete</button>
+<header>
+  <div class="bismillah">بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</div>
+  <span class="header-icon">🕌</span>
+  <h1>ইসলামী ছাত্র কল্যাণ সমিতি</h1>
+  <p class="subtitle">সদস্য ব্যবস্থাপনা ও পেমেন্ট ট্র্যাকার</p>
+  <div class="admin-badges">
+    <div class="admin-badge-card">
+      <span style="font-size:16px">👤</span>
+      <div><div class="badge-role">অ্যাডমিন</div><div class="badge-name">আশরাফ উদ্দিন</div></div>
     </div>
-    `;
-  });
+    <div class="admin-badge-card">
+      <span style="font-size:16px">👤</span>
+      <div><div class="badge-role">অ্যাডমিন</div><div class="badge-name">সিয়াম হাসান</div></div>
+    </div>
+  </div>
+</header>
 
-  list.innerHTML = html;
+<nav class="main-nav">
+  <button class="active" onclick="showPage('members',this)">👥 সদস্যগণ</button>
+  <button onclick="showPage('history',this)">📋 হিস্টোরি</button>
+  <button onclick="showPage('receipts',this)">🧾 রিসিট</button>
+  <button onclick="showPage('ai',this)">🤖 AI সহকারী</button>
+  <button onclick="showPage('notice',this)">📢 নোটিশ</button>
+  <button onclick="showPage('admin',this)">🔒 অ্যাডমিন</button>
+</nav>
 
-  updateStats();
-}
+<div class="year-tabs-wrapper" id="year-tabs-wrapper">
+  <button class="add-year-btn" onclick="openAddYear()">＋ নতুন সাল</button>
+</div>
 
-/* 🔁 TOGGLE PAYMENT */
-function toggle(id,mon,status){
-  let obj = {};
-  obj[`payments.${mon}`] = !status;
-  db.collection("members").doc(id).update(obj);
-}
+<div id="page-members" class="page active">
+  <div class="container">
+    <div class="stats-grid" id="stats-grid"></div>
+    <div class="notice-board" id="mini-notice" style="display:none">
+      <div class="notice-header"><h4>📢 সর্বশেষ নোটিশ</h4></div>
+      <div class="notice-list" id="mini-notice-list"></div>
+    </div>
+    <div class="toolbar">
+      <input type="text" class="search-box" placeholder="🔍 নাম, ID বা মোবাইল দিয়ে খুঁজুন..." oninput="filterMembers()" id="search-input">
+      <select class="filter-select" onchange="filterMembers()" id="filter-status">
+        <option value="all">সবাই</option>
+        <option value="paid">সম্পূর্ণ পরিশোধ</option>
+        <option value="partial">আংশিক</option>
+        <option value="unpaid">বকেয়া</option>
+      </select>
+    </div>
+    <div class="section-title">👥 সদস্য তালিকা — <span id="year-label-members">২০২৪</span></div>
+    <div class="members-grid" id="members-grid"></div>
+  </div>
+</div>
 
-/* ❌ DELETE */
-function del(id){
-  db.collection("members").doc(id).delete();
-}
+<div id="page-history" class="page">
+  <div class="container">
+    <div class="section-title">📋 পেমেন্ট হিস্টোরি — <span id="year-label-history">২০২৪</span></div>
+    <div style="overflow-x:auto">
+      <table class="history-table">
+        <thead><tr><th>ID</th><th>নাম</th><th>মোবাইল</th><th>পরিশোধিত মাস</th><th>বকেয়া মাস</th><th>মোট টাকা</th><th>অবস্থা</th><th>রিসিট</th></tr></thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
 
-/* AUTO LOGIN CHECK */
-auth.onAuthStateChanged(user=>{
-  if(user){
-    loginBox.classList.add("hidden");
-    panel.classList.remove("hidden");
-    loadData();
-  }
-});
-</script>
+<div id="page-receipts" class="page">
+  <div class="container">
+    <div class="section-title">🧾 পেমেন্ট রিসিট — <span id="year-label-receipts">২০২৪</span></div>
+    <div style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap">
+      <input type="text" class="search-box" style="max-width:280px" placeholder="🔍 নাম বা ID দিয়ে খুঁজুন..." oninput="filterReceipts()" id="receipt-search">
+    </div>
+    <div class="receipt-history-list" id="receipt-list"></div>
+  </div>
+</div>
+
+<div id="page-ai" class="page">
+  <div class="container">
+    <div class="section-title">🤖 AI সহকারী — স্মার্ট বিশ্লেষণ</div>
+    <div class="ai-chat">
+      <div class="ai-chat-header">
+        <div class="ai-avatar">🤖</div>
+        <div>
+          <div class="ai-chat-title">সমিতি AI সহকারী</div>
+          <div class="ai-chat-sub">Claude AI দ্বারা পরিচালিত • সদস্যদের ডেটা বিশ্লেষণ করতে সক্ষম</div>
+        </div>
+      </div>
+      <div class="ai-quick-btns">
+        <button class="ai-quick" onclick="aiQuick('এই মাসের বকেয়া সদস্যদের তালিকা দাও')">📊 বকেয়া তালিকা</button>
+        <button class="ai-quick" onclick="aiQuick('মোট কতটাকা সংগৃহীত হয়েছে বিস্তারিত বলো')">💰 টাকার হিসাব</button>
+        <button class="ai-quick" onclick="aiQuick('কতজন সদস্য সম্পূর্ণ পেমেন্ট করেছে?')">✅ সম্পূর্ণ পরিশোধকারী</button>
+        <button class="ai-quick" onclick="aiQuick('সমিতির সামগ্রিক অবস্থা মূল্যায়ন করো')">📈 সার্বিক বিশ্লেষণ</button>
+        <button class="ai-quick" onclick="aiQuick('কোন সদস্য সবচেয়ে বেশি বকেয়া আছে?')">⚠️ সর্বোচ্চ বকেয়া</button>
+      </div>
+      <div class="ai-messages" id="ai-messages">
+        <div class="ai-msg bot"><div class="msg-head">🤖 AI সহকারী</div>আস্সালামু আলাইকুম! আমি ইসলামী ছাত্র কল্যাণ সমিতির AI সহকারী। সদস্যদের পেমেন্ট, বকেয়া, পরিসংখ্যান সম্পর্কে যেকোনো প্রশ্ন করুন। আমি সরাসরি আপনার ডেটা বিশ্লেষণ করে উত্তর দেব।</div>
+      </div>
+      <div class="ai-input-row">
+        <input type="text" class="ai-input" id="ai-input" placeholder="প্রশ্ন করুন... যেমন: কতজন সদস্য বকেয়া আছে?" onkeydown="if(event.key==='Enter')sendAI()">
+        <button class="ai-send" onclick="sendAI()">➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-notice" class="page">
+  <div class="container">
+    <div class="section-title">📢 নোটিশ বোর্ড</div>
+    <div class="notice-board">
+      <div class="notice-header"><h4>📌 সকল নোটিশ</h4><span style="font-size:11px;opacity:.8" id="notice-count">০টি নোটিশ</span></div>
+      <div class="notice-list" id="notice-full-list" style="max-height:none;padding:18px"></div>
+      <div class="add-notice-form" id="notice-add-form" style="display:none">
+        <input type="text" id="notice-input" placeholder="নোটিশ লিখুন..." maxlength="200">
+        <button onclick="addNotice()">➕ যোগ করুন</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="page-admin" class="page">
+  <div class="container">
+    <div id="admin-login">
+      <div class="login-box">
+        <div class="login-header">
+          <div style="font-size:36px">🔐</div>
+          <h2>অ্যাডমিন লগইন</h2>
+          <p style="font-size:11px;opacity:.75;margin-top:4px">শুধুমাত্র অ্যাডমিনদের জন্য</p>
+        </div>
+        <div class="login-body">
+          <div class="form-group">
+            <label>পাসওয়ার্ড</label>
+            <input type="password" id="admin-pass" placeholder="পাসওয়ার্ড দিন" onkeydown="if(event.key==='Enter')adminLogin()">
+          </div>
+          <button class="btn-primary" onclick="adminLogin()">🔓 লগইন করুন</button>
+        </div>
+      </div>
+    </div>
+    <div id="admin-panel" style="display:none">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:10px">
+        <div class="section-title" style="margin-bottom:0">⚙️ অ্যাডমিন প্যানেল <span class="badge-admin">ADMIN</span></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button onclick="openAddMember()" style="padding:8px 16px;background:var(--green);color:white;border:none;border-radius:8px;font-family:inherit;cursor:pointer;font-size:12px">➕ সদস্য যোগ</button>
+          <button onclick="exportCSV()" style="padding:8px 16px;background:#2980b9;color:white;border:none;border-radius:8px;font-family:inherit;cursor:pointer;font-size:12px">📥 CSV ডাউনলোড</button>
+          <button onclick="adminLogout()" style="padding:8px 16px;background:var(--red);color:white;border:none;border-radius:8px;font-family:inherit;cursor:pointer;font-size:12px">🚪 লগআউট</button>
+        </div>
+      </div>
+      <div class="stats-grid" id="admin-stats"></div>
+      <div class="section-title" style="margin-top:10px">✏️ সদস্য তালিকা — <span id="year-label-admin">২০২৪</span></div>
+      <div style="overflow-x:auto">
+        <table class="history-table">
+          <thead><tr><th>ID</th><th>নাম</th><th>মোবাইল</th><th>মাসিক চাঁদা</th><th>পরিশোধিত স্লট</th><th>অ্যাকশন</th></tr></thead>
+          <tbody id="admin-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>✏️ সদস্য তথ্য সম্পাদনা</h3><button class="modal-close" onclick="closeModal('edit-modal')">✕</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-idx">
+      <div class="form-group"><label>সদস্য ID</label><input type="text" id="edit-id" placeholder="যেমন: S-001"></div>
+      <div class="form-group"><label>পূর্ণ নাম</label><input type="text" id="edit-name" placeholder="নাম লিখুন"></div>
+      <div class="form-group"><label>মোবাইল নম্বর</label><input type="text" id="edit-phone" placeholder="01XXXXXXXXX"></div>
+      <div class="form-group"><label>মাসিক চাঁদা (টাকা)</label><input type="number" id="edit-amount" placeholder="যেমন: 200"></div>
+      <div class="form-group">
+        <label>পরিশোধিত মাস ও ঈদ নির্বাচন করুন</label>
+        <div class="slots-grid" id="slots-checkboxes"></div>
+      </div>
+      <button class="btn-primary" onclick="saveEdit()">💾 সংরক্ষণ করুন</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="add-member-modal">
+  <div class="modal">
+    <div class="modal-header"><h3>➕ নতুন সদস্য যোগ</h3><button class="modal-close" onclick="closeModal('add-member-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>সদস্য ID</label><input type="text" id="new-id" placeholder="যেমন: S-041"></div>
+      <div class="form-group"><label>পূর্ণ নাম</label><input type="text" id="new-name" placeholder="নাম লিখুন"></div>
+      <div class="form-group"><label>মোবাইল নম্বর</label><input type="text" id="new-phone" placeholder="01XXXXXXXXX"></div>
+      <div class="form-group"><label>মাসিক চাঁদা (টাকা)</label><input type="number" id="new-amount" placeholder="100 বা 200"></div>
+      <button class="btn-primary" onclick="addMember()">✅ যোগ করুন</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="add-year-modal">
+  <div class="modal" style="max-width:360px">
+    <div class="modal-header"><h3>📅 নতুন সাল যোগ</h3><button class="modal-close" onclick="closeModal('add-year-modal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>সাল লিখুন</label><input type="number" id="new-year-input" placeholder="যেমন: 2027" min="2020" max="2060"></div>
+      <p style="font-size:12px;color:var(--text-muted);margin-bottom:14px">⚠️ আগের বছরের সদস্যরা অটো কপি হবে, পেমেন্ট ফাঁকা থাকবে</p>
+      <button class="btn-primary" onclick="addNewYear()">✅ সাল তৈরি করুন</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="pay-modal">
+  <div class="modal">
+    <div class="modal-header" style="background:linear-gradient(135deg,#1a5276,#2980b9)">
+      <h3>💳 পেমেন্ট পাঠান</h3>
+      <button class="modal-close" onclick="closeModal('pay-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:#eaf4fb;border-radius:10px;padding:13px;margin-bottom:15px;font-size:13px;color:#1a5276">
+        সদস্য নির্বাচন করুন এবং পেমেন্ট সম্পন্ন করুন।
+      </div>
+      </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
 
 </body>
-  </html>
+</html>
