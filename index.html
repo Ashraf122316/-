@@ -1,316 +1,75 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 
-// প্রাথমিক কিছু ডামি ডাটা (সমিতির শুরুর হিসাব)
-const initialTransactions = [
-  { id: 1, date: '2026-06-20', type: 'income', category: 'মাসিক চাঁদা', description: 'জুন মাসের সাধারণ সদস্যদের চাঁদা', amount: 5000, donor: 'সদস্যবৃন্দ' },
-  { id: 2, date: '2026-06-21', type: 'expense', category: 'শিক্ষা সহায়তা', description: '১ জন গরিব ছাত্রের বই কেনা', amount: 1200, donor: '-' },
-  { id: 3, date: '2026-06-22', type: 'income', category: 'এককালীন অনুদান', description: 'শুভাকাঙ্ক্ষী কর্তৃক বিশেষ ফান্ড', amount: 10000, donor: 'আব্দুল্লাহ আল-মাহমুদ' },
-  { id: 4, date: '2026-06-23', type: 'expense', category: 'চিকিৎসা সহায়তা', description: 'অসুস্থ ছাত্রের চিকিৎসার অনুদান', amount: 3000, donor: '-' },
-];
-
-export default function IslamicWelfareWholesale() {
-  // স্টেট ম্যানেজমেন্ট
-  const [transactions, setTransactions] = useState(initialTransactions);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  // নতুন লেনদেন যোগ করার ফর্ম স্টেট
-  const [formData, setFormData] = useState({
-    date: new Date().toISOString().split('T')[0],
-    type: 'income',
-    category: 'মাসিক চাঁদা',
-    description: '',
-    amount: '',
-    donor: '',
-  });
-
-  // রিয়েল-টাইম হিসাব ক্যালকুলেশন (ইউজ-মেমো পারফরম্যান্স অপটিমাইজেশন)
-  const stats = useMemo(() => {
-    let income = 0;
-    let expense = 0;
-    transactions.forEach((t) => {
-      if (t.type === 'income') income += Number(t.amount);
-      if (t.type === 'expense') expense += Number(t.amount);
-    });
-    return {
-      totalIncome: income,
-      totalExpense: expense,
-      currentBalance: income - expense,
-    };
-  }, [transactions]);
-
-  // অ্যাডমিন লগইন হ্যান্ডলার
-  const handleLogin = (e) => {
-    e.preventDefault();
-    if (password === 'admin123') { // আপনি চাইলে পাসওয়ার্ড পরিবর্তন করতে পারেন
-      setIsAdmin(true);
-      setError('');
-    } else {
-      setError('ভুল পাসওয়ার্ড! আবার চেষ্টা করুন।');
-    }
-  };
-
-  // নতুন লেনদেন সাবমিট হ্যান্ডলার
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
-    if (!formData.description || !formData.amount) {
-      alert('অনুগ্রহ করে বিবরণ এবং টাকার পরিমাণ সঠিকভাবে লিখুন।');
-      return;
-    }
-
-    const newTransaction = {
-      id: Date.now(),
-      date: formData.date,
-      type: formData.type,
-      category: formData.category,
-      description: formData.description,
-      amount: parseFloat(formData.amount),
-      donor: formData.type === 'income' ? formData.donor || 'অজ্ঞাত' : '-',
-    };
-
-    setTransactions([newTransaction, ...transactions]);
-    // ফর্ম রিসেট
-    setFormData({
-      date: new Date().toISOString().split('T')[0],
-      type: 'income',
-      category: 'মাসিক চাঁদা',
-      description: '',
-      amount: '',
-      donor: '',
-    });
-  };
-
-  // লেনদেন ডিলিট হ্যান্ডলার (শুধুমাত্র অ্যাডমিন পারবে)
-  const handleDelete = (id) => {
-    if (confirm('আপনি কি নিশ্চিত যে এই হিসাবটি মুছে ফেলতে চান?')) {
-      setTransactions(transactions.filter((t) => t.id !== id));
-    }
+// মূল অ্যাপ কম্পোনেন্ট
+export default function App() {
+  const [activeTab, setActiveTab] = useState('home');
+  const [memberId, setMemberId] = useState('');
+  
+  // হোয়াটসঅ্যাপে মেসেজ পাঠানোর ফাংশন
+  const handleWhatsApp = () => {
+    const msg = `আমি পেমেন্ট করেছি। আমার ID: ${memberId}`;
+    window.open(`https://wa.me/8801340122316?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 font-sans">
-      {/* হেডার সেকশন */}
-      <header className="bg-emerald-700 text-white shadow-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-5 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <div className="text-center sm:text-left">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-wide">ইসলামী ছাত্র কল্যাণ সমিতি</h1>
-            <p className="text-emerald-100 text-sm mt-1">স্বচ্ছতা এবং কল্যাণে আমরা সদা জাগ্রত</p>
-          </div>
-          <div>
-            {isAdmin ? (
-              <div className="flex items-center gap-3">
-                <span className="bg-emerald-600 px-3 py-1.5 rounded-full text-xs font-semibold border border-emerald-400">অ্যাডমিন মোড সক্রিয়</span>
-                <button 
-                  onClick={() => setIsAdmin(false)} 
-                  className="bg-red-500 hover:bg-red-600 text-white text-sm px-4 py-1.5 rounded-lg transition-all"
-                >
-                  লগআউট
-                </button>
-              </div>
-            ) : (
-              <form onSubmit={handleLogin} className="flex items-center gap-2 bg-emerald-800 p-1.5 rounded-lg border border-emerald-600">
-                <input
-                  type="password"
-                  placeholder="অ্যাডমিন পাসওয়ার্ড"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="bg-emerald-900 text-white text-sm px-3 py-1.5 rounded focus:outline-none focus:ring-1 focus:ring-emerald-400 w-36 sm:w-44"
-                />
-                <button type="submit" className="bg-emerald-500 hover:bg-emerald-400 text-white text-sm px-3 py-1.5 rounded font-medium transition-all">
-                  লগইন
-                </button>
-              </form>
-            )}
-            {error && <p className="text-red-300 text-xs mt-1 text-center sm:text-right">{error}</p>}
-          </div>
+    <div className="min-h-screen bg-gray-50 font-sans">
+      {/* নেভিগেশন বার */}
+      <nav className="bg-green-700 text-white p-4 shadow-lg flex justify-between items-center">
+        <h1 className="font-bold text-lg">ইসলামী ছাত্র কল্যাণ সমিতি</h1>
+        <div className="space-x-4">
+          <button onClick={() => setActiveTab('home')} className="hover:text-gray-200 underline">সদস্য</button>
+          <button onClick={() => setActiveTab('admin')} className="hover:text-gray-200 underline">অ্যাডমিন</button>
         </div>
-      </header>
+      </nav>
 
-      <main className="max-w-7xl mx-auto px-4 py-8 space-y-8">
-        {/* রিয়েল-টাইম আর্থিক রিপোর্ট কার্ডসমূহ */}
-        <section className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-            <span className="text-slate-500 font-medium text-sm">সর্বমোট আয় (Total Income)</span>
-            <span className="text-3xl font-bold text-emerald-600 mt-2">৳ {stats.totalIncome.toLocaleString()}</span>
-            <div className="mt-4 text-xs text-emerald-600 bg-emerald-50 px-2 py-1 rounded inline-block w-max">সকল অনুদান ও চাঁদা</div>
-          </div>
-          <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between">
-            <span className="text-slate-500 font-medium text-sm">সর্বমোট ব্যয় (Total Expense)</span>
-            <span className="text-3xl font-bold text-rose-600 mt-2">৳ {stats.totalExpense.toLocaleString()}</span>
-            <div className="mt-4 text-xs text-rose-600 bg-rose-50 px-2 py-1 rounded inline-block w-max">ছাত্র কল্যাণ ও বিবিধ খরচ</div>
-          </div>
-          <div className="bg-white p-6 rounded-2xl shadow-sm border-2 border-emerald-500 bg-gradient-to-br from-white to-emerald-50/30 flex flex-col justify-between">
-            <span className="text-slate-700 font-semibold text-sm">বর্তমান তহবিল (Current Balance)</span>
-            <span className="text-4xl font-black text-slate-900 mt-2">৳ {stats.currentBalance.toLocaleString()}</span>
-            <div className="mt-4 text-xs text-slate-600 bg-slate-100 px-2 py-1 rounded inline-block w-max">যেকোনো সদস্যের জন্য উন্মুক্ত তথ্য</div>
-          </div>
-        </section>
+      <main className="p-4 max-w-4xl mx-auto">
+        {activeTab === 'home' ? (
+          /* সদস্য ড্যাশবোর্ড */
+          <div className="space-y-6">
+            <section className="bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-bold mb-4">আমার প্রোফাইল</h2>
+              <input 
+                type="text" 
+                placeholder="আপনার ID লিখুন (যেমন: S-001)" 
+                className="w-full border p-2 rounded mb-2"
+                onChange={(e) => setMemberId(e.target.value)}
+              />
+              <button className="w-full bg-blue-600 text-white p-2 rounded">প্রোফাইল দেখুন</button>
+            </section>
 
-        {/* অ্যাডমিন প্যানেল - লেনদেন যোগ করার ফর্ম (শুধুমাত্র লগইন থাকলে দৃশ্যমান হবে) */}
-        {isAdmin && (
-          <section className="bg-white p-6 rounded-2xl shadow-md border border-emerald-100 animate-fadeIn">
-            <h3 className="text-lg font-bold text-emerald-800 mb-4 flex items-center gap-2">
-              <span className="w-2 h-5 bg-emerald-600 rounded-full inline-block"></span>
-              নতুন ক্যাশ এন্ট্রি / হিসাব যোগ করুন
-            </h3>
-            <form onSubmit={handleFormSubmit} className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 items-end">
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">তারিখ</label>
-                <input
-                  type="date"
-                  value={formData.date}
-                  onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full border border-slate-200 rounded-lg p-2 text-sm focus:ring-1 focus:ring-emerald-500 focus:outline-none"
-                />
+            <section className="bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-bold mb-4">পেমেন্ট ও বার্তা</h2>
+              <button onClick={handleWhatsApp} className="w-full bg-green-600 text-white p-2 rounded">
+                WhatsApp এ জানান
+              </button>
+            </section>
+          </div>
+        ) : (
+          /* অ্যাডমিন প্যানেল */
+          <div className="grid md:grid-cols-2 gap-6">
+            <section className="bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-bold mb-4 text-red-600">অ্যাডমিন প্যানেল</h2>
+              <div className="space-y-4">
+                <input type="text" placeholder="সদস্য নাম" className="w-full border p-2 rounded" />
+                <input type="number" placeholder="মাসিক চাঁদা" className="w-full border p-2 rounded" />
+                <button className="w-full bg-green-700 text-white p-2 rounded">সদস্য যোগ করুন</button>
               </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">ধরণ</label>
-                <select
-                  value={formData.type}
-                  onChange={(e) => setFormData({ ...formData, type: e.target.value, category: e.target.value === 'income' ? 'মাসিক চাঁদা' : 'শিক্ষা সহায়তা' })}
-                  className="w-full border border-slate-200 rounded-lg p-2 text-sm focus:ring-1 focus:ring-emerald-500 focus:outline-none"
-                >
-                  <option value="income">আয় (In)</option>
-                  <option value="expense">ব্যয় (Out)</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">ক্যাটাগরি</label>
-                <select
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full border border-slate-200 rounded-lg p-2 text-sm focus:ring-1 focus:ring-emerald-500 focus:outline-none"
-                >
-                  {formData.type === 'income' ? (
-                    <>
-                      <option value="মাসিক চাঁদা">মাসিক চাঁদা</option>
-                      <option value="এককালীন অনুদান">এককালীন অনুদান</option>
-                      <option value="যাকাত ফান্ড">যাকাত ফান্ড</option>
-                      <option value="অন্যান্য">অন্যান্য</option>
-                    </>
-                  ) : (
-                    <>
-                      <option value="শিক্ষা সহায়তা">শিক্ষা সহায়তা</option>
-                      <option value="চিকিৎসা সহায়তা">চিকিৎসা সহায়তা</option>
-                      <option value="বই/লাইব্রেরি">বই/লাইব্রেরি</option>
-                      <option value="ইভেন্ট/প্রোগ্রাম">ইভেন্ট/প্রোগ্রাম</option>
-                      <option value="অন্যান্য">অন্যান্য</option>
-                    </>
-                  )}
-                </select>
-              </div>
-              <div className="lg:col-span-1">
-                <label className="block text-xs font-semibold text-slate-600 mb-1">টাকার পরিমাণ (৳)</label>
-                <input
-                  type="number"
-                  placeholder="0.00"
-                  value={formData.amount}
-                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                  className="w-full border border-slate-200 rounded-lg p-2 text-sm focus:ring-1 focus:ring-emerald-500 focus:outline-none"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-semibold text-slate-600 mb-1">{formData.type === 'income' ? 'দাতা/সদস্যের নাম' : 'মন্তব্য'}</label>
-                <input
-                  type="text"
-                  placeholder="নাম অথবা বিবরণ"
-                  value={formData.type === 'income' ? formData.donor : ''}
-                  disabled={formData.type === 'expense'}
-                  onChange={(e) => setFormData({ ...formData, donor: e.target.value })}
-                  className="w-full border border-slate-200 rounded-lg p-2 text-sm focus:ring-1 focus:ring-emerald-500 focus:outline-none bg-slate-50 disabled:bg-slate-100 disabled:cursor-not-allowed"
-                />
-              </div>
-              <div className="lg:col-span-1">
-                <label className="block text-xs font-semibold text-slate-600 mb-1">বিবরণ</label>
-                <input
-                  type="text"
-                  placeholder="সংক্ষিপ্ত বিবরণ লিখুন"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="w-full border border-slate-200 rounded-lg p-2 text-sm focus:ring-1 focus:ring-emerald-500 focus:outline-none"
-                />
-              </div>
-              <div className="lg:col-span-6 flex justify-end mt-2">
-                <button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium text-sm px-6 py-2.5 rounded-lg transition-all shadow">
-                  ডাটাবেজে যুক্ত করুন
-                </button>
-              </div>
-            </form>
-          </section>
+            </section>
+
+            <section className="bg-white p-6 rounded shadow">
+              <h2 className="text-xl font-bold mb-4">নোটিশ বোর্ড</h2>
+              <textarea placeholder="নোটিশ লিখুন..." className="w-full border p-2 rounded h-24 mb-2"></textarea>
+              <button className="w-full bg-orange-600 text-white p-2 rounded">প্রকাশ করুন</button>
+            </section>
+
+            <section className="bg-white p-6 rounded shadow col-span-full">
+              <h2 className="text-xl font-bold mb-4">মিটিং শিডিউল</h2>
+              <input type="text" placeholder="মিটিং এর বিষয়" className="w-full border p-2 rounded mb-2" />
+              <button className="w-full bg-gray-800 text-white p-2 rounded">+ মিটিং যোগ করুন</button>
+            </section>
+          </div>
         )}
-
-        {/* পাবলিক সেন্ট্রাল লেজার / ক্যাশ বুক টেবিল */}
-        <section className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="p-5 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h2 className="text-xl font-bold text-slate-800">পাবলিক ক্যাশ বুক (সেন্ট্রাল লেজার)</h2>
-              <p className="text-xs text-slate-500 mt-1">সমিতির প্রতিটি আয়-ব্যয়ের স্বচ্ছ ও লাইভ ডাটাবেজ</p>
-            </div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-1.5 rounded-lg">
-              <span>মোট এন্ট্রি: {transactions.length} টি</span>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-slate-50 text-slate-600 font-semibold text-xs uppercase tracking-wider border-b border-slate-100">
-                  <th className="py-4 px-6">তারিখ</th>
-                  <th className="py-4 px-6">ক্যাটাগরি</th>
-                  <th className="py-4 px-6">বিবরণ</th>
-                  <th className="py-4 px-6">দাতা/সদস্য</th>
-                  <th className="py-4 px-6 text-right">আয় (In)</th>
-                  <th className="py-4 px-6 text-right">ব্যয় (Out)</th>
-                  {isAdmin && <th className="py-4 px-6 text-center">অ্যাকশন</th>}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-sm">
-                {transactions.map((t) => (
-                  <tr key={t.id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-4 px-6 text-slate-500 whitespace-nowrap">{t.date}</td>
-                    <td className="py-4 px-6">
-                      <span className={`inline-block px-2.5 py-1 rounded-full text-xs font-medium ${
-                        t.type === 'income' ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-700'
-                      }`}>
-                        {t.category}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6 text-slate-700 max-w-xs truncate" title={t.description}>{t.description}</td>
-                    <td className="py-4 px-6 text-slate-600 font-medium">{t.donor}</td>
-                    <td className="py-4 px-6 text-right font-semibold text-emerald-600">
-                      {t.type === 'income' ? `৳ ${t.amount.toLocaleString()}` : '-'}
-                    </td>
-                    <td className="py-4 px-6 text-right font-semibold text-rose-600">
-                      {t.type === 'expense' ? `৳ ${t.amount.toLocaleString()}` : '-'}
-                    </td>
-                    {isAdmin && (
-                      <td className="py-4 px-6 text-center">
-                        <button
-                          onClick={() => handleDelete(t.id)}
-                          className="text-red-500 hover:text-red-700 text-xs font-semibold p-1 hover:bg-red-50 rounded transition-all"
-                        >
-                          মুছে ফেলুন
-                        </button>
-                      </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          {transactions.length === 0 && (
-            <div className="text-center py-12 text-slate-400">
-              ডাটাবেজে বর্তমানে কোনো হিসাব তথ্য নেই।
-            </div>
-          )}
-        </section>
       </main>
-
-      <footer className="bg-slate-900 text-slate-400 text-xs text-center py-6 mt-12 border-t border-slate-800">
-        <p>© 2026 ইসলামী ছাত্র কল্যাণ সমিতি। সর্বস্বত্ব সংরক্ষিত।</p>
-        <p className="mt-1 text-slate-600">ওয়েবসাইটটি সম্পূর্ণ স্বচ্ছতা নীতি মেনে ডিজাইন করা হয়েছে।</p>
-      </footer>
     </div>
   );
 }
