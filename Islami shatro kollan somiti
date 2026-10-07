@@ -1,0 +1,5360 @@
+==============================
+FILE: package.json
+==============================
+
+{
+  "name": "islami-chhatro-kollyan-samiti",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
+
+
+==============================
+FILE: netlify.toml
+==============================
+
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "same-origin"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+
+
+==============================
+FILE: .gitignore
+==============================
+
+node_modules/
+.netlify/
+.env
+.DS_Store
+
+
+==============================
+FILE: .env.example
+==============================
+
+SESSION_SECRET=CHANGE_THIS_TO_A_LONG_RANDOM_SECRET
+ADMIN_PASSWORD=CHANGE_THIS_TO_A_STRONG_ADMIN_PASSWORD
+ADMIN_MOBILE=01XXXXXXXXX
+
+
+==============================
+FILE: netlify/functions/api.mjs
+==============================
+
+import { getStore } from "@netlify/blobs";
+import crypto from "node:crypto";
+
+const store = () => getStore("samiti");
+
+const SECRET = process.env.SESSION_SECRET || "";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "";
+const ADMIN_MOBILE = process.env.ADMIN_MOBILE || "";
+
+const SESSION_HOURS = 12;
+
+const json = (data, status = 200) =>
+  new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      "content-type": "application/json; charset=utf-8",
+      "cache-control": "no-store"
+    }
+  });
+
+const fail = (message, status = 400) => json({ error: message }, status);
+
+function now() {
+  const d = new Date(Date.now() + 6 * 60 * 60 * 1000);
+  return d;
+}
+
+function today() {
+  return now().toISOString().slice(0, 10);
+}
+
+function currentMonth() {
+  return today().slice(0, 7);
+}
+
+function monthRange(from, to) {
+  const result = [];
+  let [y, m] = from.split("-").map(Number);
+  const [ey, em] = to.split("-").map(Number);
+
+  while (y < ey || (y === ey && m <= em)) {
+    result.push(
+      `${y}-${String(m).padStart(2, "0")}`
+    );
+
+    m++;
+
+    if (m === 13) {
+      m = 1;
+      y++;
+    }
+  }
+
+  return result;
+}
+
+function clean(v, max = 500) {
+  return String(v ?? "")
+    .trim()
+    .slice(0, max)
+    .replace(/[<>]/g, "");
+}
+
+function validDate(v) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+
+  const d = new Date(`${v}T00:00:00Z`);
+
+  return (
+    !Number.isNaN(d.getTime()) &&
+    d.toISOString().slice(0, 10) === v
+  );
+}
+
+function validMobile(v) {
+  return /^01\d{9}$/.test(v);
+}
+
+function validTxn(v) {
+  return /^[A-Za-z0-9_-]{4,30}$/.test(v);
+}
+
+function hashPassword(password) {
+  const salt = crypto.randomBytes(16).toString("hex");
+
+  const hash = crypto.scryptSync(
+    password,
+    salt,
+    64
+  ).toString("hex");
+
+  return `${salt}:${hash}`;
+}
+
+function verifyPassword(password, stored) {
+  const [salt, hash] = String(stored || "").split(":");
+
+  if (!salt || !hash) return false;
+
+  const calculated = crypto.scryptSync(
+    password,
+    salt,
+    64
+  ).toString("hex");
+
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(hash, "hex"),
+      Buffer.from(calculated, "hex")
+    );
+  } catch {
+    return false;
+  }
+}
+
+function sign(payload) {
+  const body = Buffer.from(
+    JSON.stringify(payload)
+  ).toString("base64url");
+
+  const sig = crypto
+    .createHmac("sha256", SECRET)
+    .update(body)
+    .digest("base64url");
+
+  return `${body}.${sig}`;
+}
+
+function unsign(token) {
+  if (!token || !SECRET) return null;
+
+  const [body, sig] = token.split(".");
+
+  if (!body || !sig) return null;
+
+  const expected = crypto
+    .createHmac("sha256", SECRET)
+    .update(body)
+    .digest("base64url");
+
+  if (sig.length !== expected.length) return null;
+
+  try {
+    if (
+      !crypto.timingSafeEqual(
+        Buffer.from(sig),
+        Buffer.from(expected)
+      )
+    ) {
+      return null;
+    }
+  } catch {
+    return null;
+  }
+
+  try {
+    const data = JSON.parse(
+      Buffer.from(body, "base64url").toString()
+    );
+
+    if (!data.exp || data.exp < Date.now()) {
+      return null;
+    }
+
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function cookie(name, value, maxAge = 43200) {
+  return `${name}=${value}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
+}
+
+function clearCookie(name) {
+  return `${name}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
+}
+
+async function loadDB() {
+  const data = await store().get("db", {
+    type: "json"
+  });
+
+  if (data) {
+    if (!data.settings) {
+      data.settings = defaultSettings();
+    }
+
+    if (!data.members) data.members = [];
+    if (!data.payments) data.payments = [];
+    if (!data.ledger) data.ledger = [];
+    if (!data.expenses) data.expenses = [];
+    if (!data.notices) data.notices = [];
+    if (!data.notifs) data.notifs = [];
+    if (!data.audit) data.audit = [];
+    if (!data.fails) data.fails = {};
+    if (!data.seq) data.seq = { m: 1, r: 1, l: 1 };
+
+    return data;
+  }
+
+  const db = {
+    members: [],
+    payments: [],
+    ledger: [],
+    expenses: [],
+    notices: [],
+    notifs: [],
+    audit: [],
+    fails: {},
+    seq: {
+      m: 1,
+      r: 1,
+      l: 1
+    },
+    settings: defaultSettings()
+  };
+
+  if (ADMIN_PASSWORD) {
+    db.members.push({
+      id: "ADMIN-0001",
+      name: "Super Admin",
+      mobile: ADMIN_MOBILE,
+      role: "super",
+      status: "active",
+      password: hashPassword(ADMIN_PASSWORD),
+      monthly: 0,
+      address: "",
+      joined: today()
+    });
+  }
+
+  await saveDB(db);
+
+  return db;
+}
+
+async function saveDB(db) {
+  return store().setJSON("db", db);
+}
+
+function defaultSettings() {
+  return {
+    name: "ইসলামী ছাত্র কল্যাণ সমিতি",
+    nagad: "",
+    bkash: "",
+    monthly: 100,
+    contact: "",
+    address: "",
+    currency: "৳",
+    prefix: "ISK-R",
+    instructions: ""
+  };
+}
+
+function safeUser(user) {
+  if (!user) return null;
+
+  const {
+    password,
+    ...safe
+  } = user;
+
+  return safe;
+}
+
+function roleRank(role) {
+  if (role === "super") return 3;
+  if (role === "admin") return 2;
+  return 1;
+}
+
+function sessionUser(req, db) {
+  const cookieHeader =
+    req.headers.get("cookie") || "";
+
+  const match = cookieHeader.match(
+    /samiti_session=([^;]+)/
+  );
+
+  if (!match) return null;
+
+  const session = unsign(match[1]);
+
+  if (!session) return null;
+
+  return db.members.find(
+    x =>
+      x.id === session.id &&
+      x.status === "active"
+  ) || null;
+}
+
+function requireRole(user, role = "member") {
+  if (!user) return false;
+
+  return (
+    roleRank(user.role) >=
+    roleRank(role)
+  );
+}
+
+function balance(db, memberId) {
+  return db.ledger
+    .filter(x => x.mid === memberId)
+    .reduce(
+      (sum, x) =>
+        sum + Number(x.amount || 0),
+      0
+    );
+}
+
+function approvedMonths(db, memberId) {
+  return db.payments
+    .filter(
+      x =>
+        x.mid === memberId &&
+        x.status === "approved"
+    )
+    .map(x => x.month);
+}
+
+function pendingMonths(db, memberId) {
+  return db.payments
+    .filter(
+      x =>
+        x.mid === memberId &&
+        x.status === "pending"
+    )
+    .map(x => x.month);
+}
+
+function memberSummary(db, user) {
+  const current = currentMonth();
+
+  const start = String(
+    user.joined || current
+  ).slice(0, 7);
+
+  const months =
+    start <= current
+      ? monthRange(start, current)
+      : [];
+
+  const approved = new Set(
+    approvedMonths(db, user.id)
+  );
+
+  const pending = new Set(
+    pendingMonths(db, user.id)
+  );
+
+  const monthList = months.map(m => ({
+    m,
+    s: approved.has(m)
+      ? "paid"
+      : pending.has(m)
+        ? "pending"
+        : "due"
+  }));
+
+  const dueMonths = monthList
+    .filter(x => x.s === "due")
+    .map(x => x.m);
+
+  const totalDeposit = db.ledger
+    .filter(x => x.mid === user.id)
+    .reduce(
+      (a, x) =>
+        a + Number(x.amount || 0),
+      0
+    );
+
+  const payments = db.payments
+    .filter(x => x.mid === user.id)
+    .sort(
+      (a, b) =>
+        new Date(b.at) -
+        new Date(a.at)
+    );
+
+  return {
+    balance: balance(db, user.id),
+    totalDeposit,
+    totalDue:
+      dueMonths.length *
+      Number(user.monthly || 0),
+    dueMonths,
+    pendingMonths: [...pending],
+    thisMonth:
+      approved.has(current)
+        ? "paid"
+        : pending.has(current)
+          ? "pending"
+          : "due",
+    last: payments[0] || null,
+    months: monthList
+  };
+}
+
+function adminStats(db) {
+  const active = db.members.filter(
+    x =>
+      x.role === "member" &&
+      x.status === "active"
+  );
+
+  const current = currentMonth();
+
+  let paidMembers = 0;
+  let dueMembers = 0;
+
+  for (const m of active) {
+    const hasApproved =
+      db.payments.some(
+        p =>
+          p.mid === m.id &&
+          p.month === current &&
+          p.status === "approved"
+      );
+
+    if (hasApproved) {
+      paidMembers++;
+    } else {
+      dueMembers++;
+    }
+  }
+
+  const approved =
+    db.payments.filter(
+      x => x.status === "approved"
+    );
+
+  const pending =
+    db.payments.filter(
+      x => x.status === "pending"
+    );
+
+  const rejected =
+    db.payments.filter(
+      x => x.status === "rejected"
+    );
+
+  const totalCollection =
+    approved.reduce(
+      (a, x) =>
+        a + Number(x.amount || 0),
+      0
+    );
+
+  const monthCollection =
+    approved
+      .filter(
+        x => x.month === current
+      )
+      .reduce(
+        (a, x) =>
+          a + Number(x.amount || 0),
+        0
+      );
+
+  const totalExpense =
+    db.expenses.reduce(
+      (a, x) =>
+        a + Number(x.amount || 0),
+      0
+    );
+
+  const monthly = {};
+
+  for (const p of approved) {
+    monthly[p.month] =
+      (monthly[p.month] || 0) +
+      Number(p.amount || 0);
+  }
+
+  const monthlyList =
+    Object.entries(monthly)
+      .sort(
+        (a, b) =>
+          a[0].localeCompare(b[0])
+      )
+      .slice(-6);
+
+  let totalDue = 0;
+
+  for (const m of active) {
+    totalDue +=
+      memberSummary(db, m).totalDue;
+  }
+
+  return {
+    totalMembers:
+      db.members.filter(
+        x => x.role === "member"
+      ).length,
+    active: active.length,
+    inactive:
+      db.members.filter(
+        x =>
+          x.role === "member" &&
+          x.status !== "active"
+      ).length,
+    paidMembers,
+    dueMembers,
+    pending: pending.length,
+    approved: approved.length,
+    rejected: rejected.length,
+    totalCollection,
+    monthCollection,
+    totalExpense,
+    fund:
+      totalCollection -
+      totalExpense,
+    totalDue,
+    monthly: monthlyList
+  };
+}
+
+function audit(db, by, action, before, after) {
+  db.audit.unshift({
+    id: db.audit.length + 1,
+    at: new Date().toISOString(),
+    by,
+    action,
+    before: before ?? null,
+    after: after ?? null
+  });
+
+  db.audit =
+    db.audit.slice(0, 2000);
+}
+
+function notify(db, uid, text) {
+  db.notifs.unshift({
+    id: Date.now(),
+    uid,
+    text,
+    at: new Date().toISOString()
+  });
+
+  db.notifs =
+    db.notifs.slice(0, 3000);
+}
+
+async function parseBody(req) {
+  try {
+    return await req.json();
+  } catch {
+    return {};
+  }
+}
+
+export default async function handler(req) {
+  try {
+    if (!SECRET || SECRET.length < 16) {
+      return fail(
+        "SESSION_SECRET সেট করা হয়নি।",
+        500
+      );
+    }
+
+    const db = await loadDB();
+
+    const url =
+      new URL(req.url);
+
+    const path =
+      url.pathname
+        .replace(/^\/api\/?/, "")
+        .replace(/\/$/, "");
+
+    const method = req.method;
+
+    if (
+      method !== "GET" &&
+      method !== "HEAD"
+    ) {
+      const requested =
+        req.headers.get(
+          "x-requested-with"
+        );
+
+      if (requested !== "samiti") {
+        return fail(
+          "Invalid request.",
+          403
+        );
+      }
+    }
+
+    const user =
+      sessionUser(req, db);
+
+    /* LOGIN */
+
+    if (
+      method === "POST" &&
+      path === "login"
+    ) {
+      const b =
+        await parseBody(req);
+
+      const id =
+        clean(b.id, 50);
+
+      const password =
+        String(b.password || "");
+
+      const key =
+        id.toLowerCase();
+
+      const failData =
+        db.fails[key];
+
+      if (
+        failData &&
+        failData.until > Date.now()
+      ) {
+        return fail(
+          "অনেকবার ভুল চেষ্টা হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করুন।",
+          429
+        );
+      }
+
+      const found =
+        db.members.find(
+          x =>
+            x.id.toLowerCase() ===
+              id.toLowerCase() ||
+            x.mobile === id
+        );
+
+      if (
+        !found ||
+        found.status !== "active" ||
+        !verifyPassword(
+          password,
+          found.password
+        )
+      ) {
+        const f =
+          db.fails[key] || {
+            count: 0,
+            until: 0
+          };
+
+        f.count++;
+
+        if (f.count >= 5) {
+          f.until =
+            Date.now() +
+            15 * 60 * 1000;
+          f.count = 0;
+        }
+
+        db.fails[key] = f;
+
+        await saveDB(db);
+
+        return fail(
+          "আইডি/মোবাইল অথবা পাসওয়ার্ড ভুল।",
+          401
+        );
+      }
+
+      delete db.fails[key];
+
+      const token =
+        sign({
+          id: found.id,
+          exp:
+            Date.now() +
+            SESSION_HOURS *
+              60 *
+              60 *
+              1000
+        });
+
+      await saveDB(db);
+
+      return new Response(
+        JSON.stringify({
+          ok: true
+        }),
+        {
+          headers: {
+            "content-type":
+              "application/json",
+            "cache-control":
+              "no-store",
+            "set-cookie":
+              cookie(
+                "samiti_session",
+                token
+              )
+          }
+        }
+      );
+    }
+
+    /* LOGOUT */
+
+    if (
+      method === "POST" &&
+      path === "logout"
+    ) {
+      return new Response(
+        JSON.stringify({
+          ok: true
+        }),
+        {
+          headers: {
+            "content-type":
+              "application/json",
+            "set-cookie":
+              clearCookie(
+                "samiti_session"
+              )
+          }
+        }
+      );
+    }
+
+    /* ME */
+
+    if (
+      method === "GET" &&
+      path === "me"
+    ) {
+      if (!user) {
+        return fail(
+          "Login required.",
+          401
+        );
+      }
+
+      const response = {
+        user: safeUser(user),
+        settings: db.settings,
+        notices: db.notices.slice(
+          0,
+          30
+        ),
+        notifs: db.notifs
+          .filter(
+            x =>
+              x.uid === user.id ||
+              x.uid === "*"
+          )
+          .slice(0, 50)
+      };
+
+      if (user.role === "member") {
+        response.summary =
+          memberSummary(
+            db,
+            user
+          );
+      }
+
+      if (roleRank(user.role) >= 2) {
+        response.stats =
+          adminStats(db);
+      }
+
+      if (user.role === "super") {
+        response.fullSettings =
+          db.settings;
+      }
+
+      return json(response);
+    }
+
+    if (!user) {
+      return fail(
+        "Login required.",
+        401
+      );
+    }
+
+    /* MEMBER PAYMENT */
+
+    if (
+      method === "POST" &&
+      path === "pay"
+    ) {
+      if (
+        user.role !== "member"
+      ) {
+        return fail(
+          "শুধু সদস্য payment submit করতে পারবেন।",
+          403
+        );
+      }
+
+      const b =
+        await parseBody(req);
+
+      const month =
+        clean(b.month, 7);
+
+      const amount =
+        Number(b.amount);
+
+      const methodName =
+        clean(b.method, 20)
+          .toLowerCase();
+
+      const txn =
+        clean(
+          b.txn,
+          40
+        ).toUpperCase();
+
+      const date =
+        clean(
+          b.date,
+          10
+        );
+
+      const note =
+        clean(
+          b.note,
+          300
+        );
+
+      const current =
+        currentMonth();
+
+      const joined =
+        String(
+          user.joined || current
+        ).slice(0, 7);
+
+      if (
+        !/^\d{4}-\d{2}$/.test(
+          month
+        )
+      ) {
+        return fail(
+          "সঠিক মাস নির্বাচন করুন।"
+        );
+      }
+
+      if (
+        month > current ||
+        month < joined
+      ) {
+        return fail(
+          "এই মাসের payment দেওয়া যাবে না।"
+        );
+      }
+
+      if (
+        !Number.isFinite(amount) ||
+        amount !==
+          Number(user.monthly)
+      ) {
+        return fail(
+          "চাঁদার পরিমাণ সঠিক নয়।"
+        );
+      }
+
+      if (
+        !["nagad", "bkash"].includes(
+          methodName
+        )
+      ) {
+        return fail(
+          "Payment method সঠিক নয়।"
+        );
+      }
+
+      if (!validTxn(txn)) {
+        return fail(
+          "Transaction ID সঠিক নয়।"
+        );
+      }
+
+      if (!validDate(date)) {
+        return fail(
+          "Payment date সঠিক নয়।"
+        );
+      }
+
+      if (date > today()) {
+        return fail(
+          "ভবিষ্যতের তারিখ দেওয়া যাবে না।"
+        );
+      }
+
+      if (
+        db.payments.some(
+          p =>
+            p.txn === txn &&
+            p.status !== "rejected"
+        )
+      ) {
+        return fail(
+          "এই Transaction ID আগে ব্যবহার করা হয়েছে।"
+        );
+      }
+
+      if (
+        db.payments.some(
+          p =>
+            p.mid === user.id &&
+            p.month === month &&
+            ["pending", "approved"].includes(
+              p.status
+            )
+        )
+      ) {
+        return fail(
+          "এই মাসের payment ইতিমধ্যে জমা দেওয়া হয়েছে।"
+        );
+      }
+
+      const payment = {
+        id:
+          `PAY-${Date.now()}-${crypto
+            .randomBytes(3)
+            .toString("hex")}`,
+        mid: user.id,
+        mname: user.name,
+        amount,
+        method: methodName,
+        txn,
+        date,
+        month,
+        note,
+        status: "pending",
+        at: new Date().toISOString()
+      };
+
+      db.payments.unshift(
+        payment
+      );
+
+      notify(
+        db,
+        "*",
+        `${user.name} (${user.id}) ${month} মাসের ${amount} টাকার payment submit করেছে।`
+      );
+
+      audit(
+        db,
+        user.id,
+        "PAYMENT_SUBMITTED",
+        null,
+        payment
+      );
+
+      await saveDB(db);
+
+      return json({
+        ok: true,
+        payment
+      });
+    }
+
+    /* PAYMENTS */
+
+    if (
+      method === "GET" &&
+      path === "payments"
+    ) {
+      if (
+        !requireRole(user, "admin")
+      ) {
+        return json({
+          payments:
+            db.payments
+              .filter(
+                x =>
+                  x.mid ===
+                  user.id
+              )
+              .slice(0, 500)
+        });
+      }
+
+      const status =
+        url.searchParams.get(
+          "status"
+        );
+
+      let payments =
+        db.payments;
+
+      if (status) {
+        payments =
+          payments.filter(
+            x =>
+              x.status ===
+              status
+          );
+      }
+
+      return json({
+        payments:
+          payments.slice(0, 1000)
+      });
+    }
+
+    /* REVIEW */
+
+    if (
+      method === "POST" &&
+      path === "review"
+    ) {
+      if (
+        !requireRole(
+          user,
+          "admin"
+        )
+      ) {
+        return fail(
+          "Admin access required.",
+          403
+        );
+      }
+
+      const b =
+        await parseBody(req);
+
+      const id =
+        clean(b.id, 100);
+
+      const action =
+        clean(b.action, 20);
+
+      const reason =
+        clean(
+          b.reason,
+          300
+        );
+
+      const payment =
+        db.payments.find(
+          x => x.id === id
+        );
+
+      if (!payment) {
+        return fail(
+          "Payment পাওয়া যায়নি।",
+          404
+        );
+      }
+
+      if (
+        payment.status !==
+        "pending"
+      ) {
+        return fail(
+          "এই payment ইতিমধ্যে review হয়েছে।"
+        );
+      }
+
+      const before = {
+        ...payment
+      };
+
+      if (action === "approve") {
+        payment.status =
+          "approved";
+
+        const ledger = {
+          id:
+            `LED-${db.seq.l++}`,
+          mid:
+            payment.mid,
+          amount:
+            payment.amount,
+          type:
+            "contribution",
+          ref:
+            payment.id,
+          month:
+            payment.month,
+          at:
+            new Date().toISOString()
+        };
+
+        db.ledger.push(
+          ledger
+        );
+
+        payment.balAfter =
+          balance(
+            db,
+            payment.mid
+          );
+
+        payment.receipt =
+          `${db.settings.prefix}-${String(
+            db.seq.r++
+          ).padStart(6, "0")}`;
+
+        notify(
+          db,
+          payment.mid,
+          `${payment.month} মাসের payment অনুমোদিত হয়েছে। Receipt: ${payment.receipt}`
+        );
+      } else if (
+        action === "reject"
+      ) {
+        payment.status =
+          "rejected";
+
+        payment.reason =
+          reason ||
+          "Payment যাচাই করা যায়নি।";
+
+        notify(
+          db,
+          payment.mid,
+          `${payment.month} মাসের payment বাতিল হয়েছে। কারণ: ${payment.reason}`
+        );
+      } else {
+        return fail(
+          "Review action সঠিক নয়।"
+        );
+      }
+
+      audit(
+        db,
+        user.id,
+        `PAYMENT_${action.toUpperCase()}`,
+        before,
+        payment
+      );
+
+      await saveDB(db);
+
+      return json({
+        ok: true,
+        payment
+      });
+    }
+
+    /* RECEIPT */
+
+    if (
+      method === "GET" &&
+      path === "receipt"
+    ) {
+      const id =
+        url.searchParams.get(
+          "id"
+        );
+
+      const payment =
+        db.payments.find(
+          x =>
+            x.id === id &&
+            x.status ===
+              "approved"
+        );
+
+      if (!payment) {
+        return fail(
+          "Receipt পাওয়া যায়নি।",
+          404
+        );
+      }
+
+      if (
+        user.role === "member" &&
+        payment.mid !==
+          user.id
+      ) {
+        return fail(
+          "Access denied.",
+          403
+        );
+      }
+
+      return json({
+        org:
+          db.settings.name,
+        receipt: payment
+      });
+    }
+
+    /* MEMBERS */
+
+    if (
+      method === "GET" &&
+      path === "members"
+    ) {
+      if (
+        !requireRole(
+          user,
+          "admin"
+        )
+      ) {
+        return fail(
+          "Admin access required.",
+          403
+        );
+      }
+
+      const members =
+        db.members
+          .filter(
+            x =>
+              x.role ===
+              "member"
+          )
+          .map(m => ({
+            ...safeUser(m),
+            balance:
+              balance(
+                db,
+                m.id
+              ),
+            thisMonth:
+              memberSummary(
+                db,
+                m
+              ).thisMonth
+          }));
+
+      return json({
+        members
+      });
+    }
+
+    /* ADD MEMBER */
+
+    if (
+      method === "POST" &&
+      path === "member"
+    ) {
+      if (
+        !requireRole(
+          user,
+          "admin"
+        )
+      ) {
+        return fail(
+          "Admin access required.",
+          403
+        );
+      }
+
+      const b =
+        await parseBody(req);
+
+      const name =
+        clean(
+          b.name,
+          100
+        );
+
+      const mobile =
+        clean(
+          b.mobile,
+          11
+        );
+
+      const monthly =
+        Number(b.monthly);
+
+      const password =
+        String(
+          b.password || ""
+        );
+
+      const address =
+        clean(
+          b.address,
+          300
+        );
+
+      const role =
+        clean(
+          b.role || "member",
+          20
+        );
+
+      if (!name) {
+        return fail(
+          "নাম দিন।"
+        );
+      }
+
+      if (
+        !validMobile(mobile)
+      ) {
+        return fail(
+          "সঠিক Bangladesh mobile number দিন।"
+        );
+      }
+
+      if (
+        db.members.some(
+          x =>
+            x.mobile ===
+            mobile
+        )
+      ) {
+        return fail(
+          "এই mobile number আগে ব্যবহার হয়েছে।"
+        );
+      }
+
+      if (
+        !Number.isFinite(
+          monthly
+        ) ||
+        monthly <= 0
+      ) {
+        return fail(
+          "মাসিক চাঁদা সঠিক নয়।"
+        );
+      }
+
+      if (
+        password.length <
+        8
+      ) {
+        return fail(
+          "Password কমপক্ষে ৮ অক্ষরের হতে হবে।"
+        );
+      }
+
+      if (
+        !["member", "admin", "super"].includes(
+          role
+        )
+      ) {
+        return fail(
+          "Role সঠিক নয়।"
+        );
+      }
+
+      if (
+        role !== "member" &&
+        user.role !== "super"
+      ) {
+        return fail(
+          "শুধু Super Admin admin তৈরি করতে পারবেন।",
+          403
+        );
+      }
+
+      const id =
+        `ISK-${String(
+          ++db.seq.m
+        ).padStart(4, "0")}`;
+
+      const member = {
+        id,
+        name,
+        mobile,
+        role,
+        status: "active",
+        password:
+          hashPassword(
+            password
+          ),
+        monthly,
+        address,
+        joined: today()
+      };
+
+      db.members.push(
+        member
+      );
+
+      audit(
+        db,
+        user.id,
+        "MEMBER_CREATED",
+        null,
+        safeUser(member)
+      );
+
+      await saveDB(db);
+
+      return json({
+        ok: true,
+        id
+      });
+    }
+
+    /* UPDATE MEMBER */
+
+    if (
+      method === "POST" &&
+      path === "member/update"
+    ) {
+      if (
+        !requireRole(
+          user,
+          "admin"
+        )
+      ) {
+        return fail(
+          "Admin access required.",
+          403
+        );
+      }
+
+      const b =
+        await parseBody(req);
+
+      const id =
+        clean(b.id, 50);
+
+      const member =
+        db.members.find(
+          x => x.id === id
+        );
+
+      if (!member) {
+        return fail(
+          "Member পাওয়া যায়নি।",
+          404
+        );
+      }
+
+      if (
+        member.role !==
+        "member" &&
+        user.role !==
+          "super"
+      ) {
+        return fail(
+          "এই account পরিবর্তন করার অনুমতি নেই।",
+          403
+        );
+      }
+
+      const before = {
+        ...safeUser(member)
+      };
+
+      if (
+        b.status !==
+        undefined
+      ) {
+        if (
+          !["active", "inactive"].includes(
+            b.status
+          )
+        ) {
+          return fail(
+            "Status সঠিক নয়।"
+          );
+        }
+
+        member.status =
+          b.status;
+      }
+
+      if (
+        b.monthly !==
+        undefined
+      ) {
+        const monthly =
+          Number(
+            b.monthly
+          );
+
+        if (
+          !Number.isFinite(
+            monthly
+          ) ||
+          monthly <= 0
+        ) {
+          return fail(
+            "Monthly amount সঠিক নয়।"
+          );
+        }
+
+        member.monthly =
+          monthly;
+      }
+
+      if (
+        b.password
+      ) {
+        if (
+          String(
+            b.password
+          ).length < 8
+        ) {
+          return fail(
+            "Password কমপক্ষে ৮ অক্ষর।"
+          );
+        }
+
+        member.password =
+          hashPassword(
+            String(
+              b.password
+            )
+          );
+      }
+
+      audit(
+        db,
+        user.id,
+        "MEMBER_UPDATED",
+        before,
+        safeUser(member)
+      );
+
+      await saveDB(db);
+
+      return json({
+        ok: true
+      });
+    }
+
+    /* NOTICE */
+
+    if (
+      method === "POST" &&
+      path === "notice"
+    ) {
+      if (
+        !requireRole(
+          user,
+          "admin"
+        )
+      ) {
+        return fail(
+          "Admin access required.",
+          403
+        );
+      }
+
+      const b =
+        await parseBody(req);
+
+      const title =
+        clean(
+          b.title,
+          150
+        );
+
+      const text =
+        clean(
+          b.text,
+          1000
+        );
+
+      const priority =
+        clean(
+          b.priority ||
+            "normal",
+          20
+        );
+
+      if (!title || !text) {
+        return fail(
+          "Title এবং notice text দিন।"
+        );
+      }
+
+      const notice = {
+        id:
+          Date.now(),
+        title,
+        text,
+        priority,
+        by: user.name,
+        at:
+          new Date().toISOString()
+      };
+
+      db.notices.unshift(
+        notice
+      );
+
+      notify(
+        db,
+        "*",
+        `নতুন নোটিশ: ${title}`
+      );
+
+      audit(
+        db,
+        user.id,
+        "NOTICE_CREATED",
+        null,
+        notice
+      );
+
+      await saveDB(db);
+
+      return json({
+        ok: true
+      });
+    }
+
+    /* EXPENSE */
+
+    if (
+      method === "GET" &&
+      path === "expenses"
+    ) {
+      if (
+        !requireRole(
+          user,
+          "admin"
+        )
+      ) {
+        return fail(
+          "Admin access required.",
+          403
+        );
+      }
+
+      return json({
+        expenses:
+          db.expenses
+            .slice(0, 1000)
+      });
+    }
+
+    if (
+      method === "POST" &&
+      path === "expense"
+    ) {
+      if (
+        !requireRole(
+          user,
+          "admin"
+        )
+      ) {
+        return fail(
+          "Admin access required.",
+          403
+        );
+      }
+
+      const b =
+        await parseBody(req);
+
+      const date =
+        clean(
+          b.date,
+          10
+        );
+
+      const category =
+        clean(
+          b.category,
+          100
+        );
+
+      const amount =
+        Number(
+          b.amount
+        );
+
+      const description =
+        clean(
+          b.description,
+          500
+        );
+
+      if (!validDate(date)) {
+        return fail(
+          "সঠিক date দিন।"
+        );
+      }
+
+      if (
+        !category ||
+        !description
+      ) {
+        return fail(
+          "Category এবং description দিন।"
+        );
+      }
+
+      if (
+        !Number.isFinite(
+          amount
+        ) ||
+        amount <= 0
+      ) {
+        return fail(
+          "সঠিক amount দিন।"
+        );
+      }
+
+      const expense = {
+        id:
+          `EXP-${Date.now()}`,
+        date,
+        category,
+        amount,
+        description,
+        by: user.id,
+        at:
+          new Date().toISOString()
+      };
+
+      db.expenses.unshift(
+        expense
+      );
+
+      audit(
+        db,
+        user.id,
+        "EXPENSE_CREATED",
+        null,
+        expense
+      );
+
+      await saveDB(db);
+
+      return json({
+        ok: true
+      });
+    }
+
+    /* SETTINGS */
+
+    if (
+      method === "POST" &&
+      path === "settings"
+    ) {
+      if (
+        user.role !==
+        "super"
+      ) {
+        return fail(
+          "Super Admin access required.",
+          403
+        );
+      }
+
+      const b =
+        await parseBody(req);
+
+      const before =
+        { ...db.settings };
+
+      const settings = {
+        ...db.settings
+      };
+
+      if (
+        b.name !==
+        undefined
+      ) {
+        settings.name =
+          clean(
+            b.name,
+            150
+          );
+      }
+
+      if (
+        b.nagad !==
+        undefined
+      ) {
+        settings.nagad =
+          clean(
+            b.nagad,
+            20
+          );
+      }
+
+      if (
+        b.bkash !==
+        undefined
+      ) {
+        settings.bkash =
+          clean(
+            b.bkash,
+            20
+          );
+      }
+
+      if (
+        b.monthly !==
+        undefined
+      ) {
+        const monthly =
+          Number(
+            b.monthly
+          );
+
+        if (
+          !Number.isFinite(
+            monthly
+          ) ||
+          monthly <= 0
+        ) {
+          return fail(
+            "Monthly amount সঠিক নয়।"
+          );
+        }
+
+        settings.monthly =
+          monthly;
+      }
+
+      if (
+        b.contact !==
+        undefined
+      ) {
+        settings.contact =
+          clean(
+            b.contact,
+            100
+          );
+      }
+
+      if (
+        b.address !==
+        undefined
+      ) {
+        settings.address =
+          clean(
+            b.address,
+            300
+          );
+      }
+
+      if (
+        b.currency !==
+        undefined
+      ) {
+        settings.currency =
+          clean(
+            b.currency,
+            10
+          );
+      }
+
+      if (
+        b.prefix !==
+        undefined
+      ) {
+        settings.prefix =
+          clean(
+            b.prefix,
+            20
+          );
+      }
+
+      if (
+        b.instructions !==
+        undefined
+      ) {
+        settings.instructions =
+          clean(
+            b.instructions,
+            1000
+          );
+      }
+
+      db.settings =
+        settings;
+
+      audit(
+        db,
+        user.id,
+        "SETTINGS_UPDATED",
+        before,
+        settings
+      );
+
+      await saveDB(db);
+
+      return json({
+        ok: true
+      });
+    }
+
+    /* AUDIT */
+
+    if (
+      method === "GET" &&
+      path === "audit"
+    ) {
+      if (
+        !requireRole(
+          user,
+          "admin"
+        )
+      ) {
+        return fail(
+          "Admin access required.",
+          403
+        );
+      }
+
+      return json({
+        audit:
+          db.audit.slice(
+            0,
+            1000
+          )
+      });
+    }
+
+    return fail(
+      "Endpoint not found.",
+      404
+    );
+  } catch (error) {
+    console.error(error);
+
+    return fail(
+      "Server error হয়েছে।",
+      500
+    );
+  }
+}
+
+
+==============================
+FILE: public/index.html
+==============================
+
+<!doctype html>
+<html lang="bn">
+<head>
+
+<meta charset="utf-8">
+
+<meta
+  name="viewport"
+  content="width=device-width,initial-scale=1,viewport-fit=cover"
+>
+
+<meta
+  name="theme-color"
+  content="#0b5d46"
+>
+
+<title>
+  ইসলামী ছাত্র কল্যাণ সমিতি
+</title>
+
+<link
+  href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap"
+  rel="stylesheet"
+>
+
+<style>
+
+:root{
+  --g:#0b5d46;
+  --g2:#08493a;
+  --gl:#e7f1ed;
+  --bg:#f3f5f4;
+  --c:#fff;
+  --t:#17231e;
+  --m:#5b6963;
+  --b:#dce3e0;
+  --ok:#067647;
+  --okb:#e6f4ec;
+  --wn:#a15c07;
+  --wnb:#fdf3e1;
+  --er:#b42318;
+  --erb:#fdeceb
+}
+
+*{
+  box-sizing:border-box
+}
+
+body{
+  margin:0;
+  font-family:'Hind Siliguri',system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--t);
+  font-size:15px;
+  line-height:1.55
+}
+
+h1,h2,h3{
+  margin:0
+}
+
+button,
+input,
+select,
+textarea{
+  font:inherit
+}
+
+.hide{
+  display:none!important
+}
+
+.card{
+  background:var(--c);
+  border:1px solid var(--b);
+  border-radius:10px;
+  padding:16px;
+  margin-bottom:14px
+}
+
+.card h3{
+  font-size:16px;
+  margin-bottom:10px
+}
+
+.grid{
+  display:grid;
+  gap:12px;
+  grid-template-columns:
+    repeat(auto-fit,minmax(150px,1fr));
+  margin-bottom:14px
+}
+
+.stat{
+  background:var(--c);
+  border:1px solid var(--b);
+  border-radius:10px;
+  padding:14px
+}
+
+.stat small{
+  color:var(--m);
+  display:block
+}
+
+.stat b{
+  font-size:22px;
+  font-weight:600
+}
+
+.stat.hero{
+  background:var(--g);
+  border-color:var(--g);
+  color:#fff;
+  grid-column:1/-1
+}
+
+.stat.hero small{
+  color:#cfe5dc
+}
+
+.stat.hero b{
+  font-size:30px
+}
+
+.btn{
+  background:var(--g);
+  color:#fff;
+  border:0;
+  border-radius:8px;
+  padding:10px 16px;
+  cursor:pointer;
+  font-weight:500
+}
+
+.btn:hover{
+  background:var(--g2)
+}
+
+.btn:disabled{
+  opacity:.6;
+  cursor:wait
+}
+
+.btn.sec{
+  background:#fff;
+  color:var(--g);
+  border:1px solid var(--g)
+}
+
+.btn.red{
+  background:var(--er)
+}
+
+.btn.sm{
+  padding:6px 12px;
+  font-size:13px
+}
+
+label{
+  display:block;
+  font-weight:500;
+  margin:10px 0 4px;
+  font-size:14px
+}
+
+input,
+select,
+textarea{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--b);
+  border-radius:8px;
+  background:#fff;
+  color:var(--t)
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  outline:2px solid var(--gl);
+  border-color:var(--g)
+}
+
+input[readonly]{
+  background:var(--bg)
+}
+
+.row{
+  display:grid;
+  gap:0 12px;
+  grid-template-columns:1fr
+}
+
+@media(min-width:640px){
+  .row{
+    grid-template-columns:1fr 1fr
+  }
+}
+
+.badge{
+  display:inline-block;
+  padding:2px 10px;
+  border-radius:99px;
+  font-size:12px;
+  font-weight:600
+}
+
+.paid,
+.approved,
+.active{
+  background:var(--okb);
+  color:var(--ok)
+}
+
+.due,
+.rejected,
+.inactive{
+  background:var(--erb);
+  color:var(--er)
+}
+
+.pending{
+  background:var(--wnb);
+  color:var(--wn)
+}
+
+.tw{
+  overflow-x:auto
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px
+}
+
+th,
+td{
+  text-align:left;
+  padding:9px 8px;
+  border-bottom:1px solid var(--b);
+  white-space:nowrap
+}
+
+th{
+  color:var(--m);
+  font-weight:500;
+  font-size:13px
+}
+
+.note{
+  background:var(--wnb);
+  border:1px solid #f1d9a8;
+  color:#6f4305;
+  padding:10px 12px;
+  border-radius:8px;
+  margin:10px 0;
+  font-size:14px
+}
+
+.empty{
+  text-align:center;
+  color:var(--m);
+  padding:24px
+}
+
+.pay{
+  border:1px solid var(--b);
+  border-radius:10px;
+  padding:14px;
+  margin-bottom:12px
+}
+
+.pay .num{
+  font-size:22px;
+  font-weight:600;
+  letter-spacing:1px;
+  margin:4px 0 10px
+}
+
+.acts{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap
+}
+
+#login{
+  min-height:100vh;
+  display:grid;
+  place-items:center;
+  padding:20px
+}
+
+#login .box{
+  width:100%;
+  max-width:400px
+}
+
+.brand{
+  text-align:center;
+  margin-bottom:18px
+}
+
+.brand h1{
+  font-size:22px;
+  color:var(--g)
+}
+
+.brand p{
+  margin:2px 0 0;
+  color:var(--m)
+}
+
+#app{
+  min-height:100vh
+}
+
+.top{
+  background:var(--g);
+  color:#fff;
+  padding:12px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:sticky;
+  top:0;
+  z-index:5
+}
+
+.top b{
+  font-size:17px
+}
+
+.top small{
+  opacity:.85
+}
+
+nav{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  border-top:1px solid var(--b);
+  display:flex;
+  overflow-x:auto;
+  z-index:6;
+  padding-bottom:env(safe-area-inset-bottom)
+}
+
+nav a{
+  flex:1;
+  min-width:72px;
+  text-align:center;
+  padding:10px 6px;
+  color:var(--m);
+  font-size:12.5px;
+  cursor:pointer;
+  white-space:nowrap
+}
+
+nav a.on{
+  color:var(--g);
+  font-weight:600;
+  box-shadow:
+    inset 0 -3px 0 var(--g)
+}
+
+main{
+  padding:16px;
+  padding-bottom:90px;
+  max-width:1000px;
+  margin:0 auto
+}
+
+@media(min-width:900px){
+
+  nav{
+    top:52px;
+    bottom:0;
+    right:auto;
+    width:210px;
+    flex-direction:column;
+    border-top:0;
+    border-right:1px solid var(--b);
+    overflow:visible
+  }
+
+  nav a{
+    text-align:left;
+    padding:12px 18px;
+    font-size:15px;
+    flex:none;
+    box-shadow:none!important
+  }
+
+  nav a.on{
+    background:var(--gl)
+  }
+
+  main{
+    margin-left:210px;
+    padding-bottom:30px;
+    max-width:none;
+    padding-right:28px
+  }
+
+  main>div{
+    max-width:960px
+  }
+}
+
+#toast{
+  position:fixed;
+  left:50%;
+  bottom:84px;
+  transform:translateX(-50%);
+  background:var(--t);
+  color:#fff;
+  padding:10px 18px;
+  border-radius:8px;
+  z-index:20;
+  max-width:90%
+}
+
+#toast.er{
+  background:var(--er)
+}
+
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  display:grid;
+  place-items:center;
+  padding:16px;
+  z-index:30
+}
+
+.modal .card{
+  max-width:440px;
+  width:100%;
+  margin:0
+}
+
+.rc h2{
+  text-align:center;
+  color:var(--g)
+}
+
+.rc td{
+  border:0;
+  padding:4px 0;
+  white-space:normal
+}
+
+@media print{
+
+  body *{
+    visibility:hidden
+  }
+
+  .modal,
+  .modal *{
+    visibility:visible
+  }
+
+  .modal{
+    position:absolute;
+    background:#fff
+  }
+
+  .noprint{
+    display:none!important
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div id="login" class="hide">
+
+  <div class="box card">
+
+    <div class="brand">
+
+      <h1 id="lname">
+        ইসলামী ছাত্র কল্যাণ সমিতি
+      </h1>
+
+      <p>
+        সদস্য ও হিসাব ব্যবস্থাপনা
+      </p>
+
+    </div>
+
+    <label>
+      সদস্য আইডি / মোবাইল নম্বর
+    </label>
+
+    <input
+      id="lid"
+      autocomplete="username"
+      placeholder="ISK-0001 বা 01XXXXXXXXX"
+    >
+
+    <label>
+      পাসওয়ার্ড
+    </label>
+
+    <input
+      id="lpw"
+      type="password"
+      autocomplete="current-password"
+    >
+
+    <button
+      class="btn"
+      id="lbtn"
+      style="width:100%;margin-top:16px"
+      onclick="doLogin()"
+    >
+      লগইন
+    </button>
+
+  </div>
+
+</div>
+
+
+<div id="app" class="hide">
+
+  <div class="top">
+
+    <div>
+      <b id="tname"></b>
+      <br>
+      <small id="tuser"></small>
+    </div>
+
+    <button
+      class="btn sec sm"
+      onclick="logout()"
+    >
+      লগআউট
+    </button>
+
+  </div>
+
+  <nav id="nav"></nav>
+
+  <main>
+    <div id="view"></div>
+  </main>
+
+</div>
+
+
+<div id="toast" class="hide"></div>
+
+
+<script>
+
+const $ =
+  s => document.querySelector(s);
+
+let D = null;
+
+let V = "home";
+
+let cache = {};
+
+const esc =
+  s =>
+    String(s ?? "")
+      .replace(
+        /[&<>\"']/g,
+        c => ({
+          "&":"&amp;",
+          "<":"&lt;",
+          ">":"&gt;",
+          "\"":"&quot;",
+          "'":"&#39;"
+        }[c])
+      );
+
+const money =
+  n =>
+    "৳" +
+    Number(n || 0)
+      .toLocaleString("bn-BD");
+
+const MN = [
+  "জানুয়ারি",
+  "ফেব্রুয়ারি",
+  "মার্চ",
+  "এপ্রিল",
+  "মে",
+  "জুন",
+  "জুলাই",
+  "আগস্ট",
+  "সেপ্টেম্বর",
+  "অক্টোবর",
+  "নভেম্বর",
+  "ডিসেম্বর"
+];
+
+const mlabel =
+  m => {
+
+    const [y,x] =
+      m.split("-");
+
+    return (
+      MN[
+        Number(x) - 1
+      ] +
+      " " +
+      Number(y)
+        .toLocaleString(
+          "bn-BD",
+          {
+            useGrouping:false
+          }
+        )
+    );
+  };
+
+const dt =
+  s =>
+    new Date(s)
+      .toLocaleDateString(
+        "bn-BD"
+      );
+
+const ST = {
+  paid:"পরিশোধিত",
+  due:"বকেয়া",
+  pending:"অপেক্ষমাণ",
+  approved:"অনুমোদিত",
+  rejected:"বাতিল",
+  active:"সক্রিয়",
+  inactive:"নিষ্ক্রিয়"
+};
+
+const badge =
+  s =>
+    `<span class="badge ${s}">
+      ${ST[s] || s}
+    </span>`;
+
+const PM = {
+  nagad:"Nagad",
+  bkash:"bKash"
+};
+
+
+async function api(
+  p,
+  b
+){
+
+  const r =
+    await fetch(
+      "/api/" + p,
+      {
+        method:
+          b
+            ? "POST"
+            : "GET",
+
+        headers:{
+          "content-type":
+            "application/json",
+
+          "x-requested-with":
+            "samiti"
+        },
+
+        body:
+          b
+            ? JSON.stringify(b)
+            : undefined
+      }
+    );
+
+  const d =
+    await r
+      .json()
+      .catch(
+        () => ({})
+      );
+
+  if (!r.ok){
+
+    const e =
+      new Error(
+        d.error ||
+        "ত্রুটি হয়েছে"
+      );
+
+    e.status =
+      r.status;
+
+    throw e;
+  }
+
+  return d;
+}
+
+
+let tt;
+
+function toast(
+  m,
+  er
+){
+
+  const t =
+    $("#toast");
+
+  t.textContent = m;
+
+  t.className =
+    er
+      ? "er"
+      : "";
+
+  clearTimeout(tt);
+
+  tt =
+    setTimeout(
+      () =>
+        t.className =
+          "hide",
+      3500
+    );
+}
+
+
+const fail =
+  e =>
+    toast(
+      e.message,
+      true
+    );
+
+
+async function busy(
+  btn,
+  fn
+){
+
+  if (btn)
+    btn.disabled = true;
+
+  try{
+    await fn();
+  }catch(e){
+    fail(e);
+  }finally{
+    if (btn)
+      btn.disabled = false;
+  }
+}
+
+
+async function boot(){
+
+  try{
+
+    D =
+      await api("me");
+
+    $("#login")
+      .classList
+      .add("hide");
+
+    $("#app")
+      .classList
+      .remove("hide");
+
+    V =
+      isAdmin()
+        ? "dash"
+        : "home";
+
+    render();
+
+  }catch(e){
+
+    $("#app")
+      .classList
+      .add("hide");
+
+    $("#login")
+      .classList
+      .remove("hide");
+  }
+}
+
+
+const isAdmin =
+  () =>
+    D &&
+    D.user.role !==
+      "member";
+
+
+async function doLogin(){
+
+  busy(
+    $("#lbtn"),
+    async () => {
+
+      await api(
+        "login",
+        {
+          id:
+            $("#lid").value,
+
+          password:
+            $("#lpw").value
+        }
+      );
+
+      $("#lpw").value =
+        "";
+
+      await boot();
+    }
+  );
+}
+
+
+$("#lpw")
+  .addEventListener(
+    "keydown",
+    e =>
+      e.key === "Enter" &&
+      doLogin()
+  );
+
+
+async function logout(){
+
+  await api(
+    "logout",
+    {}
+  );
+
+  D = null;
+
+  boot();
+}
+
+
+async function reload(){
+
+  D =
+    await api("me");
+
+  render();
+}
+
+
+const NAV_M = [
+  ["home","হোম"],
+  ["pay","চাঁদা দিন"],
+  ["hist","লেনদেন"],
+  ["prof","প্রোফাইল"]
+];
+
+const NAV_A = [
+  ["dash","ড্যাশবোর্ড"],
+  ["pend","পেন্ডিং"],
+  ["mem","সদস্য"],
+  ["exp","খরচ"],
+  ["not","নোটিশ"],
+  ["aud","অডিট লগ"]
+];
+
+
+function render(){
+
+  $("#tname")
+    .textContent =
+      D.settings.name;
+
+  $("#tuser")
+    .textContent =
+      D.user.name +
+      " • " +
+      D.user.id;
+
+  const items = [
+    ...(isAdmin()
+      ? NAV_A
+      : NAV_M)
+  ];
+
+  if (
+    D.user.role ===
+    "super"
+  ){
+
+    items.push([
+      "set",
+      "সেটিংস"
+    ]);
+  }
+
+  $("#nav")
+    .innerHTML =
+      items
+        .map(
+          ([k,l]) =>
+            `<a
+              class="${V===k?"on":""}"
+              onclick="go('${k}')"
+            >
+              ${l}
+            </a>`
+        )
+        .join("");
+
+  VIEWS[V]();
+}
+
+
+function go(v){
+
+  V = v;
+
+  render();
+
+  window.scrollTo(
+    0,
+    0
+  );
+}
+
+
+const out =
+  h =>
+    $("#view")
+      .innerHTML = h;
+
+
+const loading =
+  () =>
+    out(
+      '<div class="empty">লোড হচ্ছে...</div>'
+    );
+
+
+const VIEWS = {
+
+home(){
+
+  const s =
+    D.summary;
+
+  out(`
+
+  <div class="grid">
+
+    <div class="stat hero">
+      <small>
+        বর্তমান ব্যালেন্স
+      </small>
+
+      <b>
+        ${money(s.balance)}
+      </b>
+    </div>
+
+    <div class="stat">
+      <small>
+        মোট জমা
+      </small>
+      <b>
+        ${money(s.totalDeposit)}
+      </b>
+    </div>
+
+    <div class="stat">
+      <small>
+        মোট বকেয়া
+      </small>
+      <b>
+        ${money(s.totalDue)}
+      </b>
+    </div>
+
+    <div class="stat">
+      <small>
+        এই মাসের চাঁদা
+      </small>
+
+      <b>
+        ${money(D.user.monthly)}
+      </b>
+
+      ${badge(s.thisMonth)}
+    </div>
+
+    <div class="stat">
+      <small>
+        সর্বশেষ পেমেন্ট
+      </small>
+
+      <b>
+        ${
+          s.last
+            ? money(s.last.amount)
+            : "—"
+        }
+      </b>
+
+      <small>
+        ${
+          s.last
+            ? mlabel(s.last.month)
+            : ""
+        }
+      </small>
+    </div>
+
+    <div class="stat">
+      <small>
+        অ্যাকাউন্ট
+      </small>
+
+      <b>
+        ${D.user.id}
+      </b>
+
+      ${badge(D.user.status)}
+    </div>
+
+  </div>
+
+  ${
+    s.dueMonths.length
+      ? `
+        <button
+          class="btn"
+          onclick="go('pay')"
+          style="width:100%;margin-bottom:14px"
+        >
+          চাঁদা পরিশোধ করুন
+        </button>
+      `
+      : ""
+  }
+
+  <div class="card">
+
+    <h3>
+      মাসভিত্তিক চাঁদা
+    </h3>
+
+    <div class="tw">
+
+      <table>
+
+        <tr>
+          <th>মাস</th>
+          <th>অবস্থা</th>
+        </tr>
+
+        ${
+          s.months
+            .map(
+              m =>
+                `<tr>
+                  <td>
+                    ${mlabel(m.m)}
+                  </td>
+                  <td>
+                    ${badge(m.s)}
+                  </td>
+                </tr>`
+            )
+            .join("")
+        }
+
+      </table>
+
+    </div>
+
+  </div>
+
+  ${notices()}
+  ${notifs()}
+
+  `);
+},
+
+
+pay(){
+
+  const s =
+    D.summary;
+
+  const st =
+    D.settings;
+
+  const opts =
+    s.dueMonths.filter(
+      m =>
+        !s.pendingMonths
+          .includes(m)
+    );
+
+  const num =
+    (
+      k,
+      n
+    ) =>
+      st[k]
+
+        ? `
+        <div class="pay">
+
+          <b>
+            ${n} দিয়ে টাকা পাঠান
+          </b>
+
+          <div class="num">
+            ${esc(st[k])}
+          </div>
+
+          <div class="acts">
+
+            <button
+              class="btn sm"
+              onclick="copyNum('${esc(st[k])}')"
+            >
+              Copy Number
+            </button>
+
+            <button
+              class="btn sm sec"
+              onclick="openApp('${k}','${esc(st[k])}')"
+            >
+              Open ${n} App
+            </button>
+
+          </div>
+
+        </div>
+        `
+
+        : `
+        <div class="pay">
+
+          <b>${n}</b>
+
+          <p class="empty">
+            নম্বর এখনো সেট করা হয়নি
+          </p>
+
+        </div>
+        `;
+
+
+  out(`
+
+  <div class="card">
+
+    <h3>
+      পেমেন্ট নম্বর
+    </h3>
+
+    ${num(
+      "nagad",
+      "Nagad"
+    )}
+
+    ${num(
+      "bkash",
+      "bKash"
+    )}
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>
+      নির্দেশনা
+    </h3>
+
+    <ol
+      style="padding-left:20px;margin:0"
+    >
+
+      <li>
+        Nagad/bKash থেকে উপরের
+        নম্বরে টাকা পাঠান।
+      </li>
+
+      <li>
+        টাকা পাঠানোর পর
+        Transaction ID সংগ্রহ করুন।
+      </li>
+
+      <li>
+        নিচের ফর্মে মাস, মাধ্যম
+        ও Transaction ID দিয়ে Submit করুন।
+      </li>
+
+      <li>
+        অ্যাডমিন যাচাইয়ের পর
+        পেমেন্ট আপনার অ্যাকাউন্টে যোগ হবে।
+      </li>
+
+    </ol>
+
+    ${
+      st.instructions
+        ? `<p>
+            ${esc(st.instructions)}
+           </p>`
+        : ""
+    }
+
+    <div class="note">
+
+      <b>
+        সতর্কতা:
+      </b>
+
+      অ্যাডমিন যাচাই সম্পন্ন না হওয়া
+      পর্যন্ত আপনার ব্যালেন্সে টাকা
+      যোগ হবে না।
+
+    </div>
+
+  </div>
+
+
+  ${
+    opts.length
+
+      ? `
+
+      <div class="card">
+
+        <h3>
+          পেমেন্ট ফর্ম
+        </h3>
+
+        <div class="row">
+
+          <div>
+            <label>
+              সদস্য আইডি
+            </label>
+
+            <input
+              readonly
+              value="${D.user.id}"
+            >
+          </div>
+
+          <div>
+            <label>
+              নাম
+            </label>
+
+            <input
+              readonly
+              value="${esc(D.user.name)}"
+            >
+          </div>
+
+          <div>
+
+            <label>
+              চাঁদার মাস
+            </label>
+
+            <select id="pm">
+
+              ${
+                opts
+                  .map(
+                    m =>
+                      `<option
+                        value="${m}"
+                      >
+                        ${mlabel(m)}
+                      </option>`
+                  )
+                  .join("")
+              }
+
+            </select>
+
+          </div>
+
+
+          <div>
+
+            <label>
+              পরিমাণ
+            </label>
+
+            <input
+              id="pa"
+              readonly
+              value="${D.user.monthly}"
+            >
+
+          </div>
+
+
+          <div>
+
+            <label>
+              মাধ্যম
+            </label>
+
+            <select id="pt">
+
+              <option value="nagad">
+                Nagad
+              </option>
+
+              <option value="bkash">
+                bKash
+              </option>
+
+            </select>
+
+          </div>
+
+
+          <div>
+
+            <label>
+              Transaction ID
+            </label>
+
+            <input
+              id="px"
+              autocapitalize="characters"
+              maxlength="30"
+            >
+
+          </div>
+
+
+          <div>
+
+            <label>
+              পেমেন্টের তারিখ
+            </label>
+
+            <input
+              id="pd"
+              type="date"
+              max="${new Date().toISOString().slice(0,10)}"
+              value="${new Date().toISOString().slice(0,10)}"
+            >
+
+          </div>
+
+        </div>
+
+
+        <label>
+          নোট (ঐচ্ছিক)
+        </label>
+
+        <textarea
+          id="pn"
+          rows="2"
+          maxlength="300"
+        ></textarea>
+
+
+        <button
+          class="btn"
+          id="pbtn"
+          style="margin-top:14px"
+          onclick="submitPay()"
+        >
+          Submit করুন
+        </button>
+
+      </div>
+
+      `
+
+      : `
+
+      <div class="card empty">
+
+        কোনো বকেয়া মাস নেই।
+        জাযাকাল্লাহু খাইরান।
+
+      </div>
+
+      `
+  }
+
+  `);
+},
+
+
+async hist(){
+
+  loading();
+
+  const f =
+    cache.hf || "";
+
+  const d =
+    await api(
+      "payments" +
+      (
+        f
+          ? "?status=" + f
+          : ""
+      )
+    );
+
+  out(`
+
+  <div class="card">
+
+    <h3>
+      আমার লেনদেন
+    </h3>
+
+    <select
+      onchange="
+        cache.hf=this.value;
+        VIEWS.hist()
+      "
+      style="max-width:220px;margin-bottom:10px"
+    >
+
+      ${
+        [
+          ["","সব"],
+          ["approved","অনুমোদিত"],
+          ["pending","অপেক্ষমাণ"],
+          ["rejected","বাতিল"]
+        ]
+        .map(
+          ([v,l]) =>
+            `<option
+              value="${v}"
+              ${v===f?"selected":""}
+            >
+              ${l}
+            </option>`
+        )
+        .join("")
+      }
+
+    </select>
+
+
+    ${
+      d.payments.length
+
+        ? `
+
+        <div class="tw">
+
+          <table>
+
+            <tr>
+              <th>তারিখ</th>
+              <th>মাস</th>
+              <th>পরিমাণ</th>
+              <th>মাধ্যম</th>
+              <th>Txn ID</th>
+              <th>অবস্থা</th>
+              <th>ব্যালেন্স</th>
+              <th></th>
+            </tr>
+
+            ${
+              d.payments
+                .map(
+                  p =>
+                    `<tr>
+
+                      <td>
+                        ${dt(p.at)}
+                      </td>
+
+                      <td>
+                        ${mlabel(p.month)}
+                      </td>
+
+                      <td>
+                        ${money(p.amount)}
+                      </td>
+
+                      <td>
+                        ${PM[p.method]}
+                      </td>
+
+                      <td>
+                        ${esc(p.txn)}
+                      </td>
+
+                      <td>
+                        ${badge(p.status)}
+                      </td>
+
+                      <td>
+                        ${
+                          p.balAfter != null
+                            ? money(p.balAfter)
+                            : "—"
+                        }
+                      </td>
+
+                      <td>
+                        ${
+                          p.status ===
+                          "approved"
+
+                            ? `
+                              <button
+                                class="btn sm sec"
+                                onclick="showReceipt('${p.id}')"
+                              >
+                                রসিদ
+                              </button>
+                              `
+
+                            : p.reason
+                              ? esc(
+                                  p.reason
+                                )
+                              : ""
+                        }
+                      </td>
+
+                    </tr>`
+                )
+                .join("")
+            }
+
+          </table>
+
+        </div>
+
+        `
+
+        : `
+
+        <div class="empty">
+          কোনো লেনদেন নেই
+        </div>
+
+        `
+    }
+
+  </div>
+
+  `);
+},
+
+
+prof(){
+
+  const u =
+    D.user;
+
+  out(`
+
+  <div class="card">
+
+    <h3>
+      প্রোফাইল
+    </h3>
+
+    <table>
+
+      ${
+        [
+          ["নাম",u.name],
+          ["সদস্য আইডি",u.id],
+          ["মোবাইল",u.mobile],
+          ["ঠিকানা",u.address || "—"],
+          ["যোগদান",dt(u.joined)],
+          ["মাসিক চাঁদা",money(u.monthly)]
+        ]
+        .map(
+          ([a,b]) =>
+            `<tr>
+
+              <td
+                style="color:var(--m)"
+              >
+                ${a}
+              </td>
+
+              <td>
+                ${esc(b)}
+              </td>
+
+            </tr>`
+        )
+        .join("")
+      }
+
+    </table>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>
+      যোগাযোগ
+    </h3>
+
+    <p>
+      ${esc(D.settings.contact || "—")}
+      <br>
+      ${esc(D.settings.address || "")}
+    </p>
+
+  </div>
+
+  ${notifs()}
+
+  `);
+},
+
+
+dash(){
+
+  const s =
+    D.stats;
+
+  const mx =
+    Math.max(
+      1,
+      ...s.monthly.map(
+        x => x[1]
+      )
+    );
+
+  const st =
+    (
+      a,
+      b,
+      c
+    ) =>
+      `<div class="stat ${c || ""}">
+
+        <small>
+          ${a}
+        </small>
+
+        <b>
+          ${b}
+        </b>
+
+      </div>`;
+
+
+  out(`
+
+  <div class="grid">
+
+    ${st(
+      "বর্তমান তহবিল",
+      money(s.fund),
+      "hero"
+    )}
+
+    ${st(
+      "মোট সদস্য",
+      s.totalMembers
+    )}
+
+    ${st(
+      "সক্রিয়",
+      s.active
+    )}
+
+    ${st(
+      "নিষ্ক্রিয়",
+      s.inactive
+    )}
+
+    ${st(
+      "এ মাসের সংগ্রহ",
+      money(s.monthCollection)
+    )}
+
+    ${st(
+      "মোট সংগ্রহ",
+      money(s.totalCollection)
+    )}
+
+    ${st(
+      "মোট বকেয়া",
+      money(s.totalDue)
+    )}
+
+    ${st(
+      "এ মাসে পরিশোধিত",
+      s.paidMembers
+    )}
+
+    ${st(
+      "এ মাসে বকেয়া",
+      s.dueMembers
+    )}
+
+    ${st(
+      "পেন্ডিং পেমেন্ট",
+      s.pending
+    )}
+
+    ${st(
+      "অনুমোদিত",
+      s.approved
+    )}
+
+    ${st(
+      "বাতিল",
+      s.rejected
+    )}
+
+    ${st(
+      "মোট খরচ",
+      money(s.totalExpense)
+    )}
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>
+      মাসিক সংগ্রহ
+      (সর্বশেষ ৬ মাস)
+    </h3>
+
+    ${
+      s.monthly.length
+
+        ? s.monthly
+            .map(
+              ([m,v]) =>
+
+                `<div
+                  style="
+                    display:flex;
+                    align-items:center;
+                    gap:10px;
+                    margin:6px 0
+                  "
+                >
+
+                  <span
+                    style="
+                      width:110px;
+                      font-size:13px
+                    "
+                  >
+                    ${mlabel(m)}
+                  </span>
+
+                  <div
+                    style="
+                      flex:1;
+                      background:var(--gl);
+                      border-radius:4px
+                    "
+                  >
+
+                    <div
+                      style="
+                        width:${v/mx*100}%;
+                        background:var(--g);
+                        height:14px;
+                        border-radius:4px
+                      "
+                    ></div>
+
+                  </div>
+
+                  <span
+                    style="
+                      width:70px;
+                      text-align:right;
+                      font-size:13px
+                    "
+                  >
+                    ${money(v)}
+                  </span>
+
+                </div>`
+            )
+            .join("")
+
+        : `
+          <div class="empty">
+            এখনো কোনো সংগ্রহ নেই
+          </div>
+          `
+    }
+
+  </div>
+
+  ${notifs()}
+
+  `);
+},
+
+
+async pend(){
+
+  loading();
+
+  const d =
+    await api(
+      "payments?status=pending"
+    );
+
+  out(`
+
+  <div class="card">
+
+    <h3>
+      পেন্ডিং পেমেন্ট
+    </h3>
+
+    ${
+      d.payments.length
+
+        ? `
+
+        <div class="tw">
+
+          <table>
+
+            <tr>
+              <th>সদস্য</th>
+              <th>আইডি</th>
+              <th>পরিমাণ</th>
+              <th>মাধ্যম</th>
+              <th>Txn ID</th>
+              <th>পেমেন্ট তারিখ</th>
+              <th>মাস</th>
+              <th>জমার সময়</th>
+              <th>নোট</th>
+              <th></th>
+            </tr>
+
+            ${
+              d.payments
+                .map(
+                  p =>
+
+                    `<tr>
+
+                      <td>
+                        ${esc(p.mname)}
+                      </td>
+
+                      <td>
+                        ${p.mid}
+                      </td>
+
+                      <td>
+                        ${money(p.amount)}
+                      </td>
+
+                      <td>
+                        ${PM[p.method]}
+                      </td>
+
+                      <td>
+                        ${esc(p.txn)}
+                      </td>
+
+                      <td>
+                        ${p.date}
+                      </td>
+
+                      <td>
+                        ${mlabel(p.month)}
+                      </td>
+
+                      <td>
+                        ${new Date(
+                          p.at
+                        ).toLocaleString(
+                          "bn-BD"
+                        )}
+                      </td>
+
+                      <td>
+                        ${esc(p.note)}
+                      </td>
+
+                      <td>
+
+                        <div class="acts">
+
+                          <button
+                            class="btn sm"
+                            onclick="
+                              review(
+                                '${p.id}',
+                                'approve',
+                                this
+                              )
+                            "
+                          >
+                            Approve
+                          </button>
+
+                          <button
+                            class="btn sm red"
+                            onclick="
+                              review(
+                                '${p.id}',
+                                'reject',
+                                this
+                              )
+                            "
+                          >
+                            Reject
+                          </button>
+
+                        </div>
+
+                      </td>
+
+                    </tr>`
+                )
+                .join("")
+            }
+
+          </table>
+
+        </div>
+
+        `
+
+        : `
+
+        <div class="empty">
+          কোনো পেন্ডিং পেমেন্ট নেই
+        </div>
+
+        `
+    }
+
+  </div>
+
+  `);
+},
+
+
+async mem(){
+
+  loading();
+
+  const d =
+    await api(
+      "members"
+    );
+
+  const sup =
+    D.user.role ===
+    "super";
+
+
+  out(`
+
+  <div class="card">
+
+    <h3>
+      নতুন সদস্য যোগ করুন
+    </h3>
+
+    <div class="row">
+
+      <div>
+
+        <label>
+          নাম
+        </label>
+
+        <input id="mn">
+
+      </div>
+
+
+      <div>
+
+        <label>
+          মোবাইল
+          (১১ ডিজিট)
+        </label>
+
+        <input
+          id="mm"
+          inputmode="numeric"
+          maxlength="11"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label>
+          মাসিক চাঁদা
+        </label>
+
+        <input
+          id="mc"
+          type="number"
+          min="1"
+          value="${
+            D.fullSettings?.monthly ||
+            D.settings.monthly ||
+            100
+          }"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label>
+          প্রাথমিক পাসওয়ার্ড
+          (৮+ অক্ষর)
+        </label>
+
+        <input
+          id="mp"
+          type="password"
+          autocomplete="new-password"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label>
+          ঠিকানা
+        </label>
+
+        <input id="ma">
+
+      </div>
+
+
+      <div>
+
+        <label>
+          ভূমিকা
+        </label>
+
+        <select id="mr">
+
+          <option value="member">
+            সদস্য
+          </option>
+
+          ${
+            sup
+              ? `
+                <option value="admin">
+                  অ্যাডমিন/কোষাধ্যক্ষ
+                </option>
+
+                <option value="super">
+                  Super Admin
+                </option>
+                `
+              : ""
+          }
+
+        </select>
+
+      </div>
+
+    </div>
+
+
+    <button
+      class="btn"
+      style="margin-top:14px"
+      onclick="addMember(this)"
+    >
+      সদস্য যোগ করুন
+    </button>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>
+      সদস্য তালিকা
+    </h3>
+
+    <div class="tw">
+
+      <table>
+
+        <tr>
+          <th>আইডি</th>
+          <th>নাম</th>
+          <th>মোবাইল</th>
+          <th>ভূমিকা</th>
+          <th>চাঁদা</th>
+          <th>ব্যালেন্স</th>
+          <th>এ মাস</th>
+          <th>অবস্থা</th>
+          <th></th>
+        </tr>
+
+        ${
+          d.members
+            .map(
+              m =>
+
+                `<tr>
+
+                  <td>
+                    ${m.id}
+                  </td>
+
+                  <td>
+                    ${esc(m.name)}
+                  </td>
+
+                  <td>
+                    ${esc(m.mobile)}
+                  </td>
+
+                  <td>
+                    ${m.role}
+                  </td>
+
+                  <td>
+                    ${money(m.monthly)}
+                  </td>
+
+                  <td>
+                    ${money(m.balance)}
+                  </td>
+
+                  <td>
+                    ${
+                      m.thisMonth === "-"
+                        ? "—"
+                        : badge(
+                            m.thisMonth
+                          )
+                    }
+                  </td>
+
+                  <td>
+                    ${badge(m.status)}
+                  </td>
+
+                  <td>
+
+                    <div class="acts">
+
+                      <button
+                        class="btn sm sec"
+                        onclick="
+                          memStatus(
+                            '${m.id}',
+                            '${
+                              m.status ===
+                              "active"
+                                ? "inactive"
+                                : "active"
+                            }'
+                          )
+                        "
+                      >
+                        ${
+                          m.status ===
+                          "active"
+                            ? "নিষ্ক্রিয়"
+                            : "সক্রিয়"
+                        }
+                      </button>
+
+                      <button
+                        class="btn sm sec"
+                        onclick="
+                          memEdit('${m.id}')
+                        "
+                      >
+                        সম্পাদনা
+                      </button>
+
+                    </div>
+
+                  </td>
+
+                </tr>`
+            )
+            .join("")
+        }
+
+      </table>
+
+    </div>
+
+  </div>
+
+  `);
+},
+
+
+async exp(){
+
+  loading();
+
+  const d =
+    await api(
+      "expenses"
+    );
+
+
+  out(`
+
+  <div class="card">
+
+    <h3>
+      খরচ যোগ করুন
+    </h3>
+
+    <div class="row">
+
+      <div>
+
+        <label>
+          তারিখ
+        </label>
+
+        <input
+          id="ed"
+          type="date"
+          value="${
+            new Date()
+              .toISOString()
+              .slice(0,10)
+          }"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label>
+          ক্যাটাগরি
+        </label>
+
+        <input id="ec">
+
+      </div>
+
+
+      <div>
+
+        <label>
+          পরিমাণ
+        </label>
+
+        <input
+          id="ea"
+          type="number"
+          min="1"
+        >
+
+      </div>
+
+
+      <div>
+
+        <label>
+          বিবরণ
+        </label>
+
+        <input id="ex">
+
+      </div>
+
+    </div>
+
+
+    <button
+      class="btn"
+      style="margin-top:14px"
+      onclick="addExp(this)"
+    >
+      খরচ সংরক্ষণ
+    </button>
+
+  </div>
+
+
+  <div class="card">
+
+    <h3>
+      খরচের তালিকা
+    </h3>
+
+    ${
+      d.expenses.length
+
+        ? `
+
+        <div class="tw">
+
+          <table>
+
+            <tr>
+              <th>আইডি</th>
+              <th>তারিখ</th>
+              <th>ক্যাটাগরি</th>
+              <th>পরিমাণ</th>
+              <th>বিবরণ</th>
+              <th>যোগকারী</th>
+            </tr>
+
+            ${
+              d.expenses
+                .map(
+                  x =>
+
+                    `<tr>
+
+                      <td>
+                        ${x.id}
+                      </td>
+
+                      <td>
+                        ${x.date}
+                      </td>
+
+                      <td>
+                        ${esc(x.category)}
+                      </td>
+
+                      <td>
+                        ${money(x.amount)}
+                      </td>
+
+                      <td>
+                        ${esc(x.description)}
+                      </td>
+
+                      <td>
+                        ${x.by}
+                      </td>
+
+                    </tr>`
+                )
+                .join("")
+            }
+
+          </table>
+
+        </div>
+
+        `
+
+        : `
+
+        <div class="empty">
+          কোনো খরচ নেই
+        </div>
+
+        `
+    }
+
+  </div>
+
+  `);
+},
+
+
+not(){
+
+  out(`
+
+  <div class="card">
+
+    <h3>
+      নোটিশ প্রকাশ
+    </h3>
+
+    <label>
+      শিরোনাম
+    </label>
+
+    <input id="nt">
+
+    <label>
+      বিবরণ
+    </label>
+
+    <textarea
+      id="nx"
+      rows="4"
+    ></textarea>
+
+    <label>
+      গুরুত্ব
+    </label>
+
+    <select id="np">
+
+      <option value="normal">
+        সাধারণ
+      </option>
+
+      <option value="high">
+        জরুরি
+      </option>
+
+    </select>
+
+    <button
+      class="btn"
+      style="margin-top:14px"
+      onclick="addNotice(this)"
+    >
+      প্রকাশ করুন
+    </button>
+
+  </div>
+
+  ${notices()}
+
+  `);
+},
+
+
+async aud(){
+
+  loading();
+
+  const d =
+    await api(
+      "audit"
+    );
+
+
+  out(`
+
+  <div class="card">
+
+    <h3>
+      অডিট লগ
+      (শুধু দেখা যাবে,
+      মোছা যাবে না)
+    </h3>
+
+    ${
+      d.audit.length
+
+        ? `
+
+        <div class="tw">
+
+          <table>
+
+            <tr>
+              <th>সময়</th>
+              <th>কে</th>
+              <th>কাজ</th>
+              <th>আগের মান</th>
+              <th>নতুন মান</th>
+            </tr>
+
+            ${
+              d.audit
+                .map(
+                  a =>
+
+                    `<tr>
+
+                      <td>
+                        ${new Date(
+                          a.at
+                        ).toLocaleString(
+                          "bn-BD"
+                        )}
+                      </td>
+
+                      <td>
+                        ${a.by}
+                      </td>
+
+                      <td>
+                        ${a.action}
+                      </td>
+
+                      <td
+                        style="
+                          white-space:normal;
+                          max-width:240px;
+                          font-size:12px
+                        "
+                      >
+                        ${esc(
+                          JSON.stringify(
+                            a.before
+                          )
+                        )}
+                      </td>
+
+                      <td
+                        style="
+                          white-space:normal;
+                          max-width:240px;
+                          font-size:12px
+                        "
+                      >
+                        ${esc(
+                          JSON.stringify(
+                            a.after
+                          )
+                        )}
+                      </td>
+
+                    </tr>`
+                )
+                .join("")
+            }
+
+          </table>
+
+        </div>
+
+        `
+
+        : `
+
+        <div class="empty">
+          কোনো রেকর্ড নেই
+        </div>
+
+        `
+    }
+
+  </div>
+
+  `);
+},
+
+
+set(){
+
+  const s =
+    D.fullSettings ||
+    D.settings;
+
+  const f =
+    (
+      id,
+      l,
+      v,
+      t="text"
+    ) =>
+      `<div>
+
+        <label>
+          ${l}
+        </label>
+
+        <input
+          id="${id}"
+          type="${t}"
+          value="${esc(v)}"
+        >
+
+      </div>`;
+
+
+  out(`
+
+  <div class="card">
+
+    <h3>
+      সেটিংস
+    </h3>
+
+    <div class="row">
+
+      ${f(
+        "s_name",
+        "সমিতির নাম",
+        s.name
+      )}
+
+      ${f(
+        "s_nagad",
+        "Nagad নম্বর",
+        s.nagad
+      )}
+
+      ${f(
+        "s_bkash",
+        "bKash নম্বর",
+        s.bkash
+      )}
+
+      ${f(
+        "s_monthly",
+        "ডিফল্ট মাসিক চাঁদা",
+        s.monthly,
+        "number"
+      )}
+
+      ${f(
+        "s_contact",
+        "যোগাযোগ নম্বর",
+        s.contact
+      )}
+
+      ${f(
+        "s_address",
+        "ঠিকানা",
+        s.address
+      )}
+
+      ${f(
+        "s_currency",
+        "মুদ্রা চিহ্ন",
+        s.currency
+      )}
+
+      ${f(
+        "s_prefix",
+        "রসিদ প্রিফিক্স",
+        s.prefix
+      )}
+
+    </div>
+
+
+    <label>
+      পেমেন্ট নির্দেশনা
+      (অতিরিক্ত)
+    </label>
+
+    <textarea
+      id="s_ins"
+      rows="3"
+    >${esc(s.instructions)}</textarea>
+
+
+    <button
+      class="btn"
+      style="margin-top:14px"
+      onclick="saveSet(this)"
+    >
+      সংরক্ষণ করুন
+    </button>
+
+  </div>
+
+  `);
+}
+
+};
+
+
+function notices(){
+
+  return `
+
+  <div class="card">
+
+    <h3>
+      নোটিশ
+    </h3>
+
+    ${
+      D.notices.length
+
+        ? D.notices
+            .map(
+              n =>
+
+                `<div
+                  style="
+                    padding:8px 0;
+                    border-bottom:
+                      1px solid var(--b)
+                  "
+                >
+
+                  <b>
+                    ${esc(n.title)}
+                  </b>
+
+                  ${
+                    n.priority ===
+                    "high"
+
+                      ? `
+                        <span
+                          class="badge due"
+                        >
+                          জরুরি
+                        </span>
+                        `
+                      : ""
+                  }
+
+                  <br>
+
+                  <span>
+                    ${esc(n.text)}
+                  </span>
+
+                  <br>
+
+                  <small
+                    style="color:var(--m)"
+                  >
+                    ${dt(n.at)}
+                    •
+                    ${esc(n.by)}
+                  </small>
+
+                </div>`
+            )
+            .join("")
+
+        : `
+          <div class="empty">
+            কোনো নোটিশ নেই
+          </div>
+          `
+    }
+
+  </div>
+
+  `;
+}
+
+
+function notifs(){
+
+  return `
+
+  <div class="card">
+
+    <h3>
+      নোটিফিকেশন
+    </h3>
+
+    ${
+      D.notifs.length
+
+        ? D.notifs
+            .map(
+              n =>
+
+                `<div
+                  style="
+                    padding:7px 0;
+                    border-bottom:
+                      1px solid var(--b)
+                  "
+                >
+
+                  ${esc(n.text)}
+
+                  <br>
+
+                  <small
+                    style="color:var(--m)"
+                  >
+                    ${new Date(
+                      n.at
+                    ).toLocaleString(
+                      "bn-BD"
+                    )}
+                  </small>
+
+                </div>`
+            )
+            .join("")
+
+        : `
+          <div class="empty">
+            কোনো নোটিফিকেশন নেই
+          </div>
+          `
+    }
+
+  </div>
+
+  `;
+}
+
+
+async function copyNum(n){
+
+  try{
+
+    await navigator
+      .clipboard
+      .writeText(n);
+
+  }catch{
+
+    const t =
+      document.createElement(
+        "input"
+      );
+
+    t.value = n;
+
+    document.body
+      .appendChild(t);
+
+    t.select();
+
+    document.execCommand(
+      "copy"
+    );
+
+    t.remove();
+  }
+
+  toast(
+    "Number copied successfully"
+  );
+}
+
+
+function openApp(
+  k,
+  n
+){
+
+  copyNum(n);
+
+  if (
+    !/Android/i.test(
+      navigator.userAgent
+    )
+  ){
+
+    toast(
+      "এই ডিভাইসে অ্যাপ খুলবে না। নম্বর কপি করা হয়েছে।",
+      true
+    );
+
+    return;
+  }
+
+  const pkg = {
+    nagad:
+      "com.konasl.nagad",
+
+    bkash:
+      "com.bKash.customerapp"
+  }[k];
+
+  if (!pkg) return;
+
+  location.href =
+    `intent://#Intent;package=${pkg};end`;
+}
+
+
+function submitPay(){
+
+  busy(
+    $("#pbtn"),
+    async () => {
+
+      await api(
+        "pay",
+        {
+          month:
+            $("#pm").value,
+
+          amount:
+            $("#pa").value,
+
+          method:
+            $("#pt").value,
+
+          txn:
+            $("#px").value,
+
+          date:
+            $("#pd").value,
+
+          note:
+            $("#pn").value
+        }
+      );
+
+      toast(
+        "পেমেন্ট জমা হয়েছে। অ্যাডমিন যাচাইয়ের অপেক্ষায় আছে।"
+      );
+
+      await reload();
+
+      go("hist");
+    }
+  );
+}
+
+
+async function review(
+  id,
+  action,
+  btn
+){
+
+  let reason;
+
+  if (
+    action ===
+    "reject"
+  ){
+
+    reason =
+      prompt(
+        "বাতিলের কারণ লিখুন"
+      );
+
+    if (!reason)
+      return;
+
+  }else{
+
+    if (
+      !confirm(
+        "এই পেমেন্ট অনুমোদন করবেন?"
+      )
+    )
+      return;
+  }
+
+  busy(
+    btn,
+    async () => {
+
+      await api(
+        "review",
+        {
+          id,
+          action,
+          reason
+        }
+      );
+
+      toast(
+        action ===
+        "approve"
+          ? "অনুমোদিত হয়েছে"
+          : "বাতিল হয়েছে"
+      );
+
+      await reload();
+
+      go("pend");
+    }
+  );
+}
+
+
+function addMember(
+  btn
+){
+
+  busy(
+    btn,
+    async () => {
+
+      const r =
+        await api(
+          "member",
+          {
+            name:
+              $("#mn").value,
+
+            mobile:
+              $("#mm").value,
+
+            monthly:
+              $("#mc").value,
+
+            password:
+              $("#mp").value,
+
+            address:
+              $("#ma").value,
+
+            role:
+              $("#mr").value
+          }
+        );
+
+      toast(
+        "সদস্য যোগ হয়েছে: " +
+        r.id
+      );
+
+      VIEWS.mem();
+    }
+  );
+}
+
+
+async function memStatus(
+  id,
+  status
+){
+
+  if (
+    !confirm(
+      "অবস্থা পরিবর্তন করবেন?"
+    )
+  )
+    return;
+
+  try{
+
+    await api(
+      "member/update",
+      {
+        id,
+        status
+      }
+    );
+
+    VIEWS.mem();
+
+  }catch(e){
+
+    fail(e);
+  }
+}
+
+
+async function memEdit(
+  id
+){
+
+  const monthly =
+    prompt(
+      "নতুন মাসিক চাঁদা (ফাঁকা রাখলে অপরিবর্তিত)"
+    );
+
+  const password =
+    prompt(
+      "নতুন পাসওয়ার্ড (ফাঁকা রাখলে অপরিবর্তিত)"
+    );
+
+  const b = {
+    id
+  };
+
+  if (monthly)
+    b.monthly =
+      monthly;
+
+  if (password)
+    b.password =
+      password;
+
+  if (
+    !monthly &&
+    !password
+  )
+    return;
+
+  try{
+
+    await api(
+      "member/update",
+      b
+    );
+
+    toast(
+      "হালনাগাদ হয়েছে"
+    );
+
+    VIEWS.mem();
+
+  }catch(e){
+
+    fail(e);
+  }
+}
+
+
+function addExp(
+  btn
+){
+
+  busy(
+    btn,
+    async () => {
+
+      await api(
+        "expense",
+        {
+          date:
+            $("#ed").value,
+
+          category:
+            $("#ec").value,
+
+          amount:
+            $("#ea").value,
+
+          description:
+            $("#ex").value
+        }
+      );
+
+      toast(
+        "খরচ সংরক্ষিত হয়েছে"
+      );
+
+      await reload();
+
+      VIEWS.exp();
+    }
+  );
+}
+
+
+function addNotice(
+  btn
+){
+
+  busy(
+    btn,
+    async () => {
+
+      await api(
+        "notice",
+        {
+          title:
+            $("#nt").value,
+
+          text:
+            $("#nx").value,
+
+          priority:
+            $("#np").value
+        }
+      );
+
+      toast(
+        "নোটিশ প্রকাশিত হয়েছে"
+      );
+
+      await reload();
+
+      go("not");
+    }
+  );
+}
+
+
+function saveSet(
+  btn
+){
+
+  busy(
+    btn,
+    async () => {
+
+      await api(
+        "settings",
+        {
+          name:
+            $("#s_name").value,
+
+          nagad:
+            $("#s_nagad").value,
+
+          bkash:
+            $("#s_bkash").value,
+
+          monthly:
+            $("#s_monthly").value,
+
+          contact:
+            $("#s_contact").value,
+
+          address:
+            $("#s_address").value,
+
+          currency:
+            $("#s_currency").value,
+
+          prefix:
+            $("#s_prefix").value,
+
+          instructions:
+            $("#s_ins").value
+        }
+      );
+
+      toast(
+        "সেটিংস সংরক্ষিত হয়েছে"
+      );
+
+      await reload();
+    }
+  );
+}
+
+
+async function showReceipt(
+  id
+){
+
+  try{
+
+    const d =
+      await api(
+        "receipt?id=" +
+        encodeURIComponent(id)
+      );
+
+    const p =
+      d.receipt;
+
+    const m =
+      document.createElement(
+        "div"
+      );
+
+    m.className =
+      "modal";
+
+    m.innerHTML = `
+
+      <div class="card rc">
+
+        <h2>
+          ${esc(d.org)}
+        </h2>
+
+        <p
+          style="
+            text-align:center;
+            margin:2px 0 12px
+          "
+        >
+          পেমেন্ট রসিদ
+        </p>
+
+
+        <table>
+
+          ${
+            [
+              ["রসিদ নম্বর",p.receipt],
+              ["সদস্যের নাম",p.mname],
+              ["সদস্য আইডি",p.mid],
+              ["চাঁদার মাস",mlabel(p.month)],
+              ["পরিমাণ",money(p.amount)],
+              ["মাধ্যম",PM[p.method]],
+              ["Transaction ID",p.txn],
+              ["পেমেন্ট তারিখ",p.date],
+              ["অবস্থা","APPROVED"]
+            ]
+            .map(
+              ([a,b]) =>
+                `<tr>
+
+                  <td
+                    style="color:var(--m)"
+                  >
+                    ${a}
+                  </td>
+
+                  <td>
+                    <b>
+                      ${esc(b)}
+                    </b>
+                  </td>
+
+                </tr>`
+            )
+            .join("")
+          }
+
+        </table>
+
+
+        <div
+          class="acts noprint"
+          style="margin-top:14px"
+        >
+
+          <button
+            class="btn"
+            onclick="window.print()"
+          >
+            প্রিন্ট / PDF
+          </button>
+
+          <button
+            class="btn sec"
+            onclick="
+              this.closest('.modal').remove()
+            "
+          >
+            বন্ধ করুন
+          </button>
+
+        </div>
+
+      </div>
+
+    `;
+
+    document.body
+      .appendChild(m);
+
+  }catch(e){
+
+    fail(e);
+  }
+}
+
+
+boot();
+
+</script>
+
+</body>
+</html>
+
+
+==============================
+END OF PROJECT
+==============================
