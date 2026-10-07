@@ -1,0 +1,10 @@
+{
+  "name": "islami-chhatro-kollyan-samiti",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Islami Chhatro Kollyan Samiti Management System",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}
